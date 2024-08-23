@@ -11,8 +11,7 @@ www.roblox.com/games/6125133811/SPARKING-CARDS
 
 Please tell *me*
 
-Should I open source?
-Should I use multi universes? *roblox places*
+Should I use multi universes? *(roblox places)*
 
 > If you can, reccomend me some things!
 > maybe give me an idea or two *ehehe*
