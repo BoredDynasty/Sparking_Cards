@@ -1,3 +1,4 @@
+--!strict
 local char = script.Parent
 
 local rnd = Random.new()
@@ -8,8 +9,7 @@ local shakeIterations = 0
 local shakeSpeed = 0.07
 local shakeScale = 0.5
 
-
-char.Humanoid.Touched:Connect(function(hit:Instance, bodyPart:Instance)
+char.Humanoid.Touched:Connect(function(hit: Instance, bodyPart: Instance)
 	if hit:FindFirstAncestor("Grass") and not table.find(foliageTouching, hit) then
 		table.insert(foliageTouching, hit)
 
@@ -27,9 +27,7 @@ char.Humanoid.Touched:Connect(function(hit:Instance, bodyPart:Instance)
 	end
 end)
 
-
 game:GetService("RunService").Heartbeat:Connect(function()
-
 	local v = char.HumanoidRootPart.AssemblyLinearVelocity.Magnitude
 
 	if v > 0.1 then

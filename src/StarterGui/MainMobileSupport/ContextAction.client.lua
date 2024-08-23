@@ -1,3 +1,4 @@
+--!strict
 local ContextActionService = game:GetService("ContextActionService")
 
 local function collectTreasure(actionName, inputState, inputObject)

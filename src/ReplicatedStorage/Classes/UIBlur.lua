@@ -1,3 +1,4 @@
+--!strict
 
 --[[
 java - 2022
@@ -56,8 +57,8 @@ end
 
 directory = propvar(Instance.new("Folder"), {
 	Name = "GuiBlur",
-	
-	Parent = camera
+
+	Parent = camera,
 })
 
 local blur = propvar(Instance.new("DepthOfFieldEffect"), {
@@ -66,7 +67,7 @@ local blur = propvar(Instance.new("DepthOfFieldEffect"), {
 	InFocusRadius = 0,
 	NearIntensity = 1,
 
-	Parent = camera
+	Parent = camera,
 })
 
 local REFERENCE_part = propvar(Instance.new("Part"), {
@@ -77,57 +78,48 @@ local REFERENCE_part = propvar(Instance.new("Part"), {
 	Massless = true,
 	Color = Color3.new(1, 1, 1),
 	Material = Enum.Material.Glass,
-	Transparency = 0.999
+	Transparency = 0.999,
 })
 
 propvar(Instance.new("BlockMesh"), {
 	Offset = Vector3.new(0, 0, 0.025),
 	Scale = Vector3.new(1, 1, 0),
-	
-	Parent = REFERENCE_part
+
+	Parent = REFERENCE_part,
 })
 
 local module = {
-	new =  function(GuiObject)
+	new = function(GuiObject)
 		local BlurObject = {}
-		
+
 		local part = REFERENCE_part:Clone()
-		
-		local NewSize = Vector2.new(
-			GuiObject.AbsoluteSize.X * scale,
-			GuiObject.AbsoluteSize.Y * scale
-		)
-		local NewPosition = Vector2.new(
-			GuiObject.AbsolutePosition.X * scale,
-			GuiObject.AbsolutePosition.Y * scale
-		)
-		
-		local Screen = Vector2.new(
-			(camera.ViewportSize.X * scale) / 2, 
-			-(camera.ViewportSize.Y * scale) / 2
-		)
-		
+
+		local NewSize = Vector2.new(GuiObject.AbsoluteSize.X * scale, GuiObject.AbsoluteSize.Y * scale)
+		local NewPosition = Vector2.new(GuiObject.AbsolutePosition.X * scale, GuiObject.AbsolutePosition.Y * scale)
+
+		local Screen = Vector2.new((camera.ViewportSize.X * scale) / 2, -(camera.ViewportSize.Y * scale) / 2)
+
 		local Corner = Vector3.new(NewSize.X / 2, -(NewSize.Y / 2), 0) + Vector3.new(-Screen.X, -Screen.Y, 0)
 
 		part.Size = Vector3.new(NewSize.X, NewSize.Y, 0)
 		part.CFrame = camera.CFrame * CFrame.new(Vector3.new(0, 0, -offset))
 		part.Parent = directory
-		
+
 		count += 1
-		
+
 		parts[count] = {
 			[1] = part,
 			[2] = Corner + Vector3.new(NewPosition.X, -NewPosition.Y - (36 * scale), 0),
-			[3] = GuiObject
+			[3] = GuiObject,
 		}
-		
+
 		function BlurObject:Disconnect()
 			local a = parts[count]
-			
+
 			a[1]:Destroy()
 			a = nil
 		end
-		
+
 		return BlurObject
 	end,
 }
@@ -135,24 +127,15 @@ local module = {
 game:GetService("RunService").RenderStepped:Connect(function()
 	scale = 0.000182908 * (2160 / camera.ViewportSize.Y)
 	blurscaleoffset = Vector2.new(-22 * scale, -22 * scale)
-	
-	for _, a in next, parts do
-		local NewSize = Vector2.new(
-			a[3].AbsoluteSize.X * scale,
-			a[3].AbsoluteSize.Y * scale
-		)
-		local NewPosition = Vector2.new(
-			a[3].AbsolutePosition.X * scale,
-			a[3].AbsolutePosition.Y * scale
-		)
 
-		local Screen = Vector2.new(
-			(camera.ViewportSize.X * scale) / 2, 
-			-(camera.ViewportSize.Y * scale) / 2
-		)
+	for _, a in next, parts do
+		local NewSize = Vector2.new(a[3].AbsoluteSize.X * scale, a[3].AbsoluteSize.Y * scale)
+		local NewPosition = Vector2.new(a[3].AbsolutePosition.X * scale, a[3].AbsolutePosition.Y * scale)
+
+		local Screen = Vector2.new((camera.ViewportSize.X * scale) / 2, -(camera.ViewportSize.Y * scale) / 2)
 
 		local Corner = Vector3.new(NewSize.X / 2, -(NewSize.Y / 2), 0) + Vector3.new(-Screen.X, -Screen.Y, 0)
-		
+
 		a[2] = Corner + Vector3.new(NewPosition.X, -NewPosition.Y - (36 * scale), 0)
 		a[1].CFrame = camera.CFrame * CFrame.new(Vector3.new(0, 0, -offset)) * CFrame.new(a[2])
 		a[1].Size = Vector3.new(NewSize.X, NewSize.Y, 0) + Vector3.new(blurscaleoffset.X, blurscaleoffset.Y, 0)

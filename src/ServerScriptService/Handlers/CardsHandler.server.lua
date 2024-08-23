@@ -1,4 +1,5 @@
 --!strict
+--[[
 local Container = workspace.CardsContainer
 local Card = script.Card
 
@@ -13,3 +14,4 @@ local function CreateCard(container)
 end
 
 CreateCard(Container)
+--]]

@@ -2,8 +2,13 @@
 local MarketplaceService = game:GetService("MarketplaceService")
 local Players = game:GetService("Players")
 local AnalyticsService = game:GetService("AnalyticsService")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local UserInputService = game:GetService("UserInputService")
+
+local HTTPClass = require(ReplicatedStorage.Classes.PostClass)
 
 print("Economic Analytics are enabled.")
+print("Custom Analytics are enabled.")
 
 local productFunctions = {}
 
@@ -27,6 +32,7 @@ productFunctions[1904591683] = function(receipt, player)
 		MultiplierNumber = 3
 	end
 	--]]
+	HTTPClass.PostAsync("Economics", "The player has bought 50 Cards for Robux! | ", player.Name)
 	if Cards then
 		--local newMultiplier = math.ceil(50 * MultiplierNumber)
 		--Cards.Value += newMultiplier
@@ -43,6 +49,17 @@ productFunctions[1904591683] = function(receipt, player)
 		)
 
 		return true -- indicate a successful purchase
+	end
+end
+
+productFunctions[1906572512] = function(receipt, player)
+	local alreadyDonated = {}
+	if not table.find(alreadyDonated, player.Name) then
+		table.insert(alreadyDonated, player.Name)
+		print("Donated Successfully!")
+		AnalyticsService:LogOnboardingFunnelStepEvent(player, 4, "Donation")
+		task.wait(10)
+		table.clear(alreadyDonated)
 	end
 end
 

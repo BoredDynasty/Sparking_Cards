@@ -24,7 +24,7 @@ clone.Parent = Players.LocalPlayer.PlayerGui
 local TweenService = game:GetService("TweenService")
 local TweenParams = TweenInfo.new(2, Enum.EasingStyle.Sine, Enum.EasingDirection.Out)
 
-local GameSize = script.ApproxGameSize -- we will use this to determine the size of the game
+local GameSize = script.ApproxGameSize.Value -- we will use this to determine the size of the game
 GameSize = math.ceil(GameSize * 0.5)
 
 local function onGameLoaded()

@@ -1,17 +1,17 @@
-local Players = game:GetService('Players');
-local TweenService = game:GetService('TweenService');
+--!strict
+local Players = game:GetService("Players")
+local TweenService = game:GetService("TweenService")
 local TweenParams = TweenInfo.new(0.1, Enum.EasingStyle.Sine)
+
+local PlayerGui = Players.LocalPlayer.PlayerGui
 
 local SoundFade = TweenInfo.new(5)
 
 local RespawnEvent = game:GetService("ReplicatedStorage").RemoteEvents.RespawnPlayer
 
-local Frame = script.Parent.DynamicUI.DeathScreen.Frame
+local Frame = PlayerGui.DynamicUI.DeathScreen.Frame
 local MessageText = Frame.Message
 local PunishmentText = Frame.Punishment
-
-local Death = script.Death
-local Theme = script.Theme
 
 local Messages = {
 	"You can do better than that, right?",
@@ -29,10 +29,10 @@ Players.RespawnTime = math.huge -- hehe
 
 local function TypewriterEffect(textObject, text: string)
 	local Text = text
-	local ticka = script.tick
+	-- local ticka = script.tick
 	for i = 1, #Text do
 		textObject.Text = string.sub(Text, 1, i)
-		ticka:Play()
+		-- ticka:Play()
 		task.wait(0.05)
 	end
 end

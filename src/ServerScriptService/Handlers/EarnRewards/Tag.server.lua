@@ -16,10 +16,11 @@ local Remote = ReplicatedStorage.RemoteEvents.AwardPlayer
 
 local MainTag = CollectionService:GetTagged("Awardable")
 
-for _, AwardablePart in pairs(MainTag) do
-	print("Found an Awardable part. " .. tostring(AwardablePart.Name))
-	AwardablePart.Touched:Connect(function(player)
-		local Player = Players:GetPlayerFromCharacter(player.Parent)
+for _, Awardable in pairs(MainTag) do
+	local AwardablePart = Awardable
+
+	AwardablePart.Touched:Connect(function(hit)
+		local Player = game.Players:GetPlayerFromCharacter(hit.Parent)
 		if Player then
 			Remote:FireClient(Player, 3)
 		end

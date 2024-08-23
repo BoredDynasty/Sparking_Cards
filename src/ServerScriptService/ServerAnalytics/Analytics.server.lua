@@ -1,3 +1,4 @@
+--!strict
 local AnalyticsService = game:GetService("AnalyticsService")
 local Players = game:GetService("Players")
 local HTTPService = game:GetService("HttpService")
@@ -7,7 +8,6 @@ local CollectionService = game:GetService("CollectionService")
 local FunnelSessionID = HTTPService:GenerateGUID(false)
 
 print("Funnel Analytics are enabled.")
-
 
 Players.PlayerAdded:Connect(function(player)
 	AnalyticsService:LogOnboardingFunnelStepEvent(

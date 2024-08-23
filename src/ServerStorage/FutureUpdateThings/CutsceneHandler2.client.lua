@@ -1,3 +1,4 @@
+--!strict
 local RunService = game:GetService("RunService")
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
@@ -22,7 +23,7 @@ function Cinematic(Target, Folder, AnimId) --/first arg is a which client will s
 	Anim.AnimationId = AnimId
 	local Animation = Animator:LoadAnimation(Anim)
 	Animation:Play()
-	
+
 	local CinematicsFolder = Folder
 
 	local CurrentCameraCFrame = workspace.CurrentCamera.CFrame
@@ -43,7 +44,7 @@ function Cinematic(Target, Folder, AnimId) --/first arg is a which client will s
 			Camera.CFrame = Target.CFrame * NeededFrame.Value
 			if NeededFOV then
 				Camera.FieldOfView = tonumber(NeededFOV.Value)
-			end	
+			end
 		else
 			Connection:Disconnect()
 			game.StarterGui:SetCore("ResetButtonCallback", true)
@@ -51,11 +52,11 @@ function Cinematic(Target, Folder, AnimId) --/first arg is a which client will s
 			game.StarterGui:SetCoreGuiEnabled(Enum.CoreGuiType.Backpack, false)
 			Character.Humanoid.AutoRotate = true
 			Camera.CameraType = Enum.CameraType.Custom
-			Camera.CFrame = CurrentCameraCFrame	
+			Camera.CFrame = CurrentCameraCFrame
 			Camera.FieldOfView = 70
 			Anim:Destroy()
 		end
-		
+
 		Character.Humanoid.Died:Connect(function()
 			Connection:Disconnect()
 			game.StarterGui:SetCore("ResetButtonCallback", true)
@@ -63,7 +64,7 @@ function Cinematic(Target, Folder, AnimId) --/first arg is a which client will s
 			game.StarterGui:SetCoreGuiEnabled(Enum.CoreGuiType.Backpack, false)
 			Character.Humanoid.AutoRotate = true
 			Camera.CameraType = Enum.CameraType.Custom
-			Camera.CFrame = CurrentCameraCFrame	
+			Camera.CFrame = CurrentCameraCFrame
 			Camera.FieldOfView = 70
 			Anim:Destroy()
 		end)
@@ -71,6 +72,6 @@ function Cinematic(Target, Folder, AnimId) --/first arg is a which client will s
 end
 
 Remote.OnClientEvent:Connect(function(HumRP, Folder, AnimId)
-	AnimId = "rbxassetid://"..AnimId
+	AnimId = "rbxassetid://" .. AnimId
 	Cinematic(HumRP, Folder, AnimId)
 end)

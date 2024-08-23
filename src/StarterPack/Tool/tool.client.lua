@@ -1,3 +1,4 @@
+--!strict
 local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
@@ -12,7 +13,7 @@ params.FilterType = Enum.RaycastFilterType.Blacklist
 local gravityController = nil
 
 local function getGravityUp(self, oldGravity)
-	local result = workspace:Raycast(self.HRP.Position, -5*oldGravity, params)
+	local result = workspace:Raycast(self.HRP.Position, -5 * oldGravity, params)
 	if result and result.Instance.CanCollide and not result.Instance.Parent:FindFirstChild("Humanoid") then
 		return result.Normal
 	end
@@ -29,7 +30,7 @@ tool.Equipped:Connect(function()
 		end
 	end))
 
-	params.FilterDescendantsInstances = {gravityController.Character}
+	params.FilterDescendantsInstances = { gravityController.Character }
 end)
 
 tool.Unequipped:Connect(function()

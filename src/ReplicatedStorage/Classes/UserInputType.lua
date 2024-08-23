@@ -1,3 +1,4 @@
+--!strict
 local UserInputService = game:GetService("UserInputService")
 
 local UserInput = {}
@@ -17,7 +18,11 @@ end
 function UserInput.getInputType()
 	local lastInputEnum = UserInputService:GetLastInputType()
 
-	if lastInputEnum == Enum.UserInputType.Keyboard or string.find(tostring(lastInputEnum.Name), "MouseButton") or lastInputEnum == Enum.UserInputType.MouseWheel then
+	if
+		lastInputEnum == Enum.UserInputType.Keyboard
+		or string.find(tostring(lastInputEnum.Name), "MouseButton")
+		or lastInputEnum == Enum.UserInputType.MouseWheel
+	then
 		inputTypeString = "Keyboard/Mouse"
 	elseif lastInputEnum == Enum.UserInputType.Touch then
 		inputTypeString = "Touch"

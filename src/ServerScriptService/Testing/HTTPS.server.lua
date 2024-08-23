@@ -1,3 +1,4 @@
+--!strict
 local HttpService = game:GetService("HttpService")
 
 local URL_ASTROS = "http://api.open-notify.org/astros.json"
@@ -15,4 +16,3 @@ if data.message == "success" then
 		print(i .. ": " .. person.name .. " is on " .. person.craft)
 	end
 end
-

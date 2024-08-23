@@ -18,16 +18,16 @@ Remote.OnServerEvent:Connect(function(player: Player, AddCards: number, CurrentR
 	local Cards = LeaderstatsFolder:FindFirstChild("Cards")
 	local Rank = LeaderstatsFolder:FindFirstChild("Rank")
 	local Multiplier = LeaderstatsFolder:FindFirstChild("MultiplierType")
-	
+
 	local hasPass = false
-	
+
 	local success, message = pcall(function()
 		hasPass = MarketplaceService:UserOwnsGamePassAsync(player.UserId, PassID)
 	end)
 
-	if not success then 
+	if not success then
 		warn("We had an error checking if " .. tostring(player.Name) .. " has the Double Cards gamepass. " .. message)
-		return 
+		return
 	end
 
 	if AddCards then
@@ -36,6 +36,7 @@ Remote.OnServerEvent:Connect(function(player: Player, AddCards: number, CurrentR
 		else
 			Cards.Value += math.ceil(AddCards)
 			MarketplaceService:PromptGamePassPurchase(player, PassID)
+			print("You're gonna need it!")
 		end
 	end
 
@@ -58,6 +59,4 @@ Remote.OnServerEvent:Connect(function(player: Player, AddCards: number, CurrentR
 			Multiplier.Value = "Absolute Sparking"
 		end
 	end
-	
-	
 end)
