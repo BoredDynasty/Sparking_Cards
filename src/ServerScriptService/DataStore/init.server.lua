@@ -10,6 +10,8 @@ local Players = game:GetService("Players")
 local Analytics = game:GetService("AnalyticsService")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
+local PostClass = require(ReplicatedStorage.Classes.PostClass)
+
 local GiftRemote = ReplicatedStorage.RemoteEvents.GiftPlayer
 
 local AuraTypes = {
@@ -82,7 +84,7 @@ game.Players.PlayerAdded:Connect(function(player)
 	if GetPosition then
 		local SavedPosition = SavedPositionGUI:Clone()
 		SavedPosition.Parent = player.PlayerGui
-		SavedPosition.LastPosition.Visible = false
+		SavedPosition.LastPosition.Visible = true
 
 		local function OpenFrame()
 			SavedPosition.LastPosition.Rotation = 90 -- just to set up the visuals
@@ -162,19 +164,16 @@ end)
 
 -- TODO -- make it more optimized
 
-while wait(math.random(60, 190)) do
+while task.wait(math.random(60, 190)) do
 	for i, v in pairs(Players:GetChildren()) do
 		pcall(function()
 			local HumanoidPos = game.Workspace:WaitForChild(v.Name).HumanoidRootPart.Position
 			local HumanoidOri = game.Workspace:WaitForChild(v.Name).HumanoidRootPart.Orientation
 
-			PDS:SetAsync(
-				v.UserId,
-				{
-					{ math.floor(HumanoidPos.X), math.floor(HumanoidPos.Y), math.floor(HumanoidPos.Z) },
-					{ math.floor(HumanoidOri.X), math.floor(HumanoidOri.Y), math.floor(HumanoidOri.Z) },
-				}
-			)
+			PDS:SetAsync(v.UserId, {
+				{ math.floor(HumanoidPos.X), math.floor(HumanoidPos.Y), math.floor(HumanoidPos.Z) },
+				{ math.floor(HumanoidOri.X), math.floor(HumanoidOri.Y), math.floor(HumanoidOri.Z) },
+			})
 			print(
 				"Saved "
 					.. v.DisplayName
@@ -189,5 +188,52 @@ while wait(math.random(60, 190)) do
 		end)
 	end
 end
+
+local function saveAllData()
+	for i, v in pairs(Players:GetChildren()) do
+		local success, err = pcall(function()
+			local HumanoidPos = game.Workspace:WaitForChild(v.Name).HumanoidRootPart.Position
+			local HumanoidOri = game.Workspace:WaitForChild(v.Name).HumanoidRootPart.Orientation
+
+			PDS:SetAsync(v.UserId, {
+				{ math.floor(HumanoidPos.X), math.floor(HumanoidPos.Y), math.floor(HumanoidPos.Z) },
+				{ math.floor(HumanoidOri.X), math.floor(HumanoidOri.Y), math.floor(HumanoidOri.Z) },
+			})
+			print(
+				"Saved "
+					.. v.DisplayName
+					.. "'s Position: ("
+					.. math.floor(HumanoidPos.X)
+					.. " , "
+					.. math.floor(HumanoidPos.Y)
+					.. " , "
+					.. math.floor(HumanoidPos.Z)
+					.. " ) "
+			)
+		end)
+		if not success then
+			PostClass.PostAsync(
+				"Data Failiure ",
+				"A Data Failure Has Happened. Here are the Users Involved. | " .. table.concat(v),
+				" | Last Positions = { "
+					.. v.DisplayName
+					.. "Positions = "
+					.. v.Character.HumanoidRootPart.Position.X
+					.. v.Character.HumanoidRootPart.Position.Y
+					.. v.Character.HumanoidRootPart.Position.Z
+			)
+		end
+	end
+
+	local success, err = pcall(function()
+		for i, v in pairs(Players:GetChildren()) do
+			CardsData:SetAsync(v.UserId, v.leaderstats.Cards.Value)
+			RankData:SetAsync(v.UserId, v.leaderstats.Rank.Value)
+			MultiplierType:SetAsync(v.UserId, v.leaderstats.MultiplierType.Value)
+		end
+	end)
+end
+
+game:BindToClose(saveAllData)
 
 print("We save your position every 60 - 190 Seconds. ( just to make sure we don't overload the datastores )")

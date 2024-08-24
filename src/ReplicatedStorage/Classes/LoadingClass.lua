@@ -7,8 +7,6 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local TweenService = game:GetService("TweenService")
 local TweenParams = TweenInfo.new(0.35, Enum.EasingStyle.Sine)
 
-local Remote = ReplicatedStorage.RemoteEvents.SpecificUIHide.LoadingArea
-
 local Frame = ReplicatedStorage.LoadingArea.Background
 local LoadingText = Frame.Loading
 local Indicator = LoadingText.dropshadow_16_20

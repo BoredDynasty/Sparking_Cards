@@ -1,3 +1,4 @@
+--!strict
 -- Janitor
 -- Original by Validark
 -- Modifications by pobammer
@@ -21,16 +22,16 @@ local METHOD_NOT_FOUND_ERROR = "Object %s doesn't have method %s, are you sure y
 --local NOT_A_PROMISE = "Invalid argument #1 to 'Janitor:AddPromise' (Promise expected, got %s (%s))"
 
 local Janitor = {
-	ClassName = "Janitor";
+	ClassName = "Janitor",
 	__index = {
-		CurrentlyCleaning = true;
-		[IndicesReference] = nil;
-	};
+		CurrentlyCleaning = true,
+		[IndicesReference] = nil,
+	},
 }
 
 local TypeDefaults = {
-	["function"] = true;
-	RBXScriptConnection = "Disconnect";
+	["function"] = true,
+	RBXScriptConnection = "Disconnect",
 }
 
 --[[**
@@ -39,8 +40,8 @@ local TypeDefaults = {
 **--]]
 function Janitor.new()
 	return setmetatable({
-		CurrentlyCleaning = false;
-		[IndicesReference] = nil;
+		CurrentlyCleaning = false,
+		[IndicesReference] = nil,
 	}, Janitor)
 end
 
@@ -255,7 +256,7 @@ Janitor.__call = Janitor.__index.Cleanup
 -- @param Instance Instance The Instance the Janitor will wait for to be Destroyed
 -- @returns Disconnectable table to stop Janitor from being cleaned up upon Instance Destroy (automatically cleaned up by Janitor, btw)
 -- @author Corecii
-local Disconnect = {Connected = true}
+local Disconnect = { Connected = true }
 Disconnect.__index = Disconnect
 function Disconnect:Disconnect()
 	if self.Connected then
@@ -324,7 +325,7 @@ end
 **--]]
 function Janitor.__index:LinkToInstances(...)
 	local ManualCleanup = Janitor.new()
-	for _, Object in ipairs({...}) do
+	for _, Object in ipairs({ ... }) do
 		ManualCleanup:Add(self:LinkToInstance(Object, true), "Disconnect")
 	end
 

@@ -7,6 +7,8 @@ local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local AnalyticsService = game:GetService("AnalyticsService")
 
+local MatchSettings = require(ReplicatedStorage.MatchSettings)
+
 local RemoteFolder = ReplicatedStorage.RemoteEvents
 local CutsceneRemote = RemoteFolder.CutsceneRemote
 local PlayCardRemote = RemoteFolder.PlayCard
@@ -33,6 +35,7 @@ local function TakeDamage(victim, attack)
 			attack = Attacks.Water
 		else
 			print("This attack doesn't exist")
+			attack = Attacks.Water -- set a default value
 		end
 
 		if not attack then
@@ -54,7 +57,6 @@ local function TakeDamage(victim, attack)
 		end
 		task.wait()
 		table.remove(Debounce, 1)
-		return attack
 	end
 end
 
@@ -63,6 +65,10 @@ PlayCardRemote.OnServerEvent:Connect(function(victim, attack)
 		error("? What happened?")
 		debug.traceback()
 		return
+	end
+
+	if not victim then
+		victim = Players:WaitForChild("Dynablox1005")
 	end
 
 	local rand = math.random(1, 4)

@@ -2,6 +2,8 @@
 --!nocheck
 
 local Class = {}
+Class = Class.__index
+Class.ProfileTemplate = '"http://www.roblox.com/Thumbs/Avatar.ashx?x=200&y=200&Format=Png&username="' -- ..LocalPlayer.Name
 
 local HttpService = game:GetService("HttpService")
 local URL =
@@ -24,6 +26,15 @@ function Class.PostAsync(title: string, description: string, extra: string) -- S
 	local finalData = HttpService:JSONEncode(data)
 	task.wait(0.01)
 	HttpService:PostAsync(URL, finalData)
+end
+
+function Class.GenerateGUID(curly: boolean)
+	if not curly then
+		curly = false
+	end
+
+	local newGUID = HttpService:GenerateGUID(curly)
+	return newGUID
 end
 
 return Class
