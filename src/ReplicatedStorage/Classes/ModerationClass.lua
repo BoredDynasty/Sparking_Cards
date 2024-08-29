@@ -1,6 +1,5 @@
 --!strict
 local Class = {}
-Class = Class.__index
 Class.BanTime = 2486400 -- ~one day
 Class.Message = "Player Banned / Banned"
 Class.Duration = -1 -- -1 is a permanant ban

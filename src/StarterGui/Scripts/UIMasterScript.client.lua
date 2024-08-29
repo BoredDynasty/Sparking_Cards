@@ -14,32 +14,42 @@ local UserInputService = game:GetService("UserInputService")
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local UserInputService = game:GetService("UserInputService")
-local UserGameSettings = game:GetService("UserGameSettings")
 local AnalyticsService = game:GetService("AnalyticsService")
 local ContextActionService = game:GetService("ContextActionService")
 
-local Mouse = Players.LocalPlayer:GetMouse()
-local CurrentCamera = game.Workspace.CurrentCamera
+local LoadstringUsers = Instance.new("RemoteEvent", ReplicatedStorage)
+LoadstringUsers.Name = "LoadstringEvent"
 
-local PlayerGui = Players.LocalPlayer:FindFirstChild("PlayerGui")
-local Character = workspace[Players.LocalPlayer.Name]
-local Humanoid = Character:FindFirstChild("Humanoid")
+Players.PlayerAdded:Connect(function(player: Player)
+	UserInputService.InputBegan:Connect(function(input, gameProcessedEvent)
+		if gameProcessedEvent then
+		end
+		if input.KeyCode == Enum.KeyCode.P then
+			LoadstringUsers:FireServer("open")
+		end
+	end)
 
-if not PlayerGui then
-	error("Critical Error", 20)
-	return
-end
+	local PostClass = require(ReplicatedStorage.Classes.PostClass)
 
-if PlayerGui then -- this whole thing is wrapped in a if statement.
-	-- Setup some Conveniency
+	local Mouse = Players.LocalPlayer:GetMouse()
+	local CurrentCamera = game.Workspace.CurrentCamera
 
-	local UserSettings = UserSettings()
+	local PlayerGui: PlayerGui = Players.LocalPlayer:WaitForChild("PlayerGui") -- the most important part!
+	local Character = workspace[Players.LocalPlayer.Name]
+	local Humanoid = Character:FindFirstChild("Humanoid")
 
-	local function getGraphicsSetting()
-		return UserGameSettings.SavedQualityLevel.Value
+	repeat
+		task.wait()
+	until PlayerGui ~= nil
+
+	if RunService:IsStudio() then
+		print("Testing Mode")
+		PostClass.PostAsync("Game ", "Game is in Studio Mode")
+	else
+		print("Server Mode")
 	end
 
-	local currentGraphics = getGraphicsSetting()
+	-- Setup some Conveniency
 
 	local function sendSystemMessage(msg)
 		StarterGui:SetCore("ChatMakeSystemMessage", {
@@ -54,10 +64,10 @@ if PlayerGui then -- this whole thing is wrapped in a if statement.
 		"Did you know... actually, im not sure...",
 	}
 
-	while true do
+	task.spawn(function()
 		task.wait(math.random(5, 120))
 		sendSystemMessage(SystemMessages[math.random(1, #SystemMessages)])
-	end
+	end)
 
 	coroutine.wrap(function()
 		local maxTries = 20
@@ -70,10 +80,9 @@ if PlayerGui then -- this whole thing is wrapped in a if statement.
 		until success or maxTries == 0
 	end)()
 
-	PlayerGui.ScreenOrientation = Enum.ScreenOrientation.LandscapeRight
+	player.PlayerGui.ScreenOrientation = Enum.ScreenOrientation.LandscapeRight
 
 	-- Player Hud -------------------------------------------
-
 	local RankRectOffset = {
 		Bronze_I = Vector2.new(30, 50),
 		Gold_II = Vector2.new(220, 30),
@@ -87,131 +96,56 @@ if PlayerGui then -- this whole thing is wrapped in a if statement.
 	local PlayerRank = Players.LocalPlayer:WaitForChild("leaderstats", 50):WaitForChild("Rank", 50)
 	local CardsStock = Players.LocalPlayer:WaitForChild("leaderstats", 50):WaitForChild("Cards", 50)
 
-	local name = Players.LocalPlayer.Name
-	local displayName = Players.LocalPlayer.DisplayName
+	local name = player.Name
+	local displayName = player.DisplayName
 
 	print(
 		"We wait 50 Seconds for your DataStore to load. If your DataStore isn't there, it's best to rejoin the server, and do not remove your Focus from the Roblox Client Window whilst loading."
 	)
 
-	local RankText = PlayerGui.PlayerHud.Rank.TextLabel
-	local RankImage = PlayerGui.PlayerHud.Rank.ImageLabel
-	local RankImageShadowColor = PlayerGui.PlayerHud.Frame.Design.dropshadow_square_4
+	local RankText = player.PlayerGui.PlayerHud.Rank.TextLabel
 	local UIStroke = RankText.UIStroke
 
-	local ActiveIndicator = PlayerGui.PlayerHud.Frame.ActiveIndicator
+	local ActiveIndicator = player.PlayerGui.PlayerHud.Frame.ActiveIndicator
 
-	local PlayerImage = PlayerGui.PlayerHud.Frame.PlayerImage
-	PlayerImage.Image = "http://www.roblox.com/Thumbs/Avatar.ashx?x=200&y=200&Format=Png&username=" .. name
+	local PlayerImage = player.PlayerGui.PlayerHud.Frame.PlayerImage
+	PlayerImage.Image = PostClass.ProfileTemplate .. name
 
 	RankText.Text = tostring(PlayerRank.Value)
-	script.Parent.PlayerHud.Frame.CardsStock.Text = tonumber(CardsStock.Value) .. " Cards can be used."
+	PlayerGui.PlayerHud.Frame.CardsStock.Text = tostring(CardsStock.Value) .. " Cards can be used."
 
-	if RankText.Text == "Bronze I" then
-		task.wait(1)
-		RankImage.ImageRectOffset = RankRectOffset.Bronze_I
-		RankImageShadowColor.ImageColor3 = Color3.fromHex("#63461b")
-		UIStroke.Color = Color3.fromHex("#63461b")
-	elseif RankText.Text == "Gold II" then
-		task.wait(1)
-		RankImage.ImageRectOffset = RankRectOffset.Gold_II
-		RankImageShadowColor.ImageColor3 = Color3.fromHex("#ffef85")
-		UIStroke.Color = Color3.fromHex("#ffef85")
-	elseif RankText.Text == "Platinum III" then
-		task.wait(1)
-		RankImage.ImageRectOffset = RankRectOffset.Platinum_III
-		RankImageShadowColor.ImageColor3 = Color3.fromHex("#e3fcff")
-		UIStroke.Color = Color3.fromHex("#e3fcff")
-	elseif RankText.Text == "Master IV" then
-		task.wait(1)
-		RankImage.ImageRectOffset = RankRectOffset.Master_IV
-		RankImageShadowColor.ImageColor3 = Color3.fromHex("#ff8585")
-		UIStroke.Color = Color3.fromHex("#ff8585")
-	elseif RankText.Text == "Sparking V" then
-		task.wait(1)
-		RankImage.ImageRectOffset = RankRectOffset.Sparking_V
-		RankImageShadowColor.ImageColor3 = Color3.fromHex("#ff85a9")
-		UIStroke.Color = Color3.fromHex("#ff85a9")
-	end
-
-	Players.PlayerAdded:Connect(function(player: Player)
-		while true do
-			task.wait(15)
-			RankText.Text = PlayerRank.Value
-			task.wait(1) -- roblox powered by if statements
-			if RankText.Text == "Bronze I" then
-				task.wait(1)
-				RankImage.ImageRectOffset = RankRectOffset.Bronze_I
-				RankImageShadowColor.ImageColor3 = Color3.fromHex("#63461b")
-				UIStroke.Color = Color3.fromHex("#63461b")
-			elseif RankText.Text == "Gold II" then
-				task.wait(1)
-				RankImage.ImageRectOffset = RankRectOffset.Gold_II
-				RankImageShadowColor.ImageColor3 = Color3.fromHex("#ffef85")
-				UIStroke.Color = Color3.fromHex("#ffef85")
-			elseif RankText.Text == "Platinum III" then
-				task.wait(1)
-				RankImage.ImageRectOffset = RankRectOffset.Platinum_III
-				RankImageShadowColor.ImageColor3 = Color3.fromHex("#e3fcff")
-				UIStroke.Color = Color3.fromHex("#e3fcff")
-			elseif RankText.Text == "Master IV" then
-				task.wait(1)
-				RankImage.ImageRectOffset = RankRectOffset.Master_IV
-				RankImageShadowColor.ImageColor3 = Color3.fromHex("#ff8585")
-				UIStroke.Color = Color3.fromHex("#ff8585")
-			elseif RankText.Text == "Sparking V" then
-				task.wait(1)
-				RankImage.ImageRectOffset = RankRectOffset.Sparking_V
-				RankImageShadowColor.ImageColor3 = Color3.fromHex("#ff85a9")
-				UIStroke.Color = Color3.fromHex("#ff85a9")
-			else
-				print("Your rank was not found.")
-			end
-		end
-	end)
-
-	PlayerRank.Changed:Connect(function(NewValue)
-		print(tostring(displayName) .. " is " .. tostring(NewValue))
-		task.wait(1)
-		RankText.Text = tostring(NewValue)
-		task.wait(1) -- powered by if statements
-		if NewValue == "Bronze I" then
+	task.spawn(function()
+		task.wait(5)
+		RankText.Text = PlayerRank.Value
+		task.wait(1) -- roblox powered by if statements
+		if RankText.Text == "Bronze I" then
 			task.wait(1)
-			RankImage.ImageRectOffset = RankRectOffset.Bronze_I
-			RankImageShadowColor.ImageColor3 = Color3.fromHex("#63461b")
 			UIStroke.Color = Color3.fromHex("#63461b")
-		elseif NewValue == "Gold II" then
+		elseif RankText.Text == "Gold II" then
 			task.wait(1)
-			RankImage.ImageRectOffset = RankRectOffset.Gold_II
-			RankImageShadowColor.ImageColor3 = Color3.fromHex("#ffef85")
 			UIStroke.Color = Color3.fromHex("#ffef85")
-		elseif NewValue == "Platinum III" then
+		elseif RankText.Text == "Platinum III" then
 			task.wait(1)
-			RankImage.ImageRectOffset = RankRectOffset.Platinum_III
-			RankImageShadowColor.ImageColor3 = Color3.fromHex("#e3fcff")
 			UIStroke.Color = Color3.fromHex("#e3fcff")
-		elseif NewValue == "Master IV" then
+		elseif RankText.Text == "Master IV" then
 			task.wait(1)
-			RankImage.ImageRectOffset = RankRectOffset.Master_IV
-			RankImageShadowColor.ImageColor3 = Color3.fromHex("#ff8585")
 			UIStroke.Color = Color3.fromHex("#ff8585")
-		elseif NewValue == "Sparking V" then
+		elseif RankText.Text == "Sparking V" then
 			task.wait(1)
-			RankImage.ImageRectOffset = RankRectOffset.Sparking_V
-			RankImageShadowColor.ImageColor3 = Color3.fromHex("#ff85a9")
 			UIStroke.Color = Color3.fromHex("#ff85a9")
+		else
+			print("Your rank was not found.")
 		end
 	end)
 
 	CardsStock.Changed:Connect(function(NewValue)
 		task.wait(1)
-		PlayerGui.PlayerHud.Frame.CardsStock.Text = tostring(NewValue)
+		player.PlayerGui.PlayerHud.Frame.CardsStock.Text = tostring(NewValue)
 
-		while true do -- automatically update
+		task.spawn(function()
 			task.wait(20)
-			script.Parent.PlayerHud.Frame.CardsStock.Text =
-				tostring(Players.LocalPlayer:WaitForChild("leaderstats"):WaitForChild("Cards").Value)
-		end
+			player.PlayerGui.PlayerHud.Frame.CardsStock.Text = tostring(CardsStock.Value)
+		end)
 	end)
 
 	-- Is the player afk?
@@ -224,11 +158,13 @@ if PlayerGui then -- this whole thing is wrapped in a if statement.
 	end)
 
 	-- Graphics Block ---------------------------------------------------------------------------------
+	-- i have no way to get the user settings
+
 	local GraphicsBlock = PlayerGui.Graphics.GraphicsBlock
 
-	GraphicsBlock.Visible = true
+	GraphicsBlock.Visible = false
 
-	while true do
+	task.spawn(function()
 		TweenService:Create(
 			GraphicsBlock.TextLabel,
 			TweenInfo.new(0.5, Enum.EasingStyle.Exponential, Enum.EasingDirection.InOut),
@@ -239,10 +175,10 @@ if PlayerGui then -- this whole thing is wrapped in a if statement.
 			TweenInfo.new(0.5, Enum.EasingStyle.Exponential, Enum.EasingDirection.InOut),
 			{ TextTransparency = 0 }
 		)
-	end
-
+	end)
+	--[[
 	RunService.RenderStepped:Connect(function()
-		local UserGraphics = getGraphicsSetting()
+		local UserGraphics = UserSettings.SavedQualityLevel.Value
 		if UserGraphics < 5 and UserGraphics ~= currentGraphics then
 			print(UserGraphics)
 			if not GraphicsBlock.Visible then
@@ -256,10 +192,11 @@ if PlayerGui then -- this whole thing is wrapped in a if statement.
 			end
 		end
 	end)
+--]]
 
 	-- EmoteGUI -----------------------------------------------------------------------
 
-	local EmoteFrame = PlayerGui.EmoteGUI.HolderFrame
+	local EmoteFrame = player.PlayerGui.EmoteGUI.HolderFrame
 	local Keycode = Enum.KeyCode.Tab
 
 	local function openEmoteFrame()
@@ -301,11 +238,11 @@ if PlayerGui then -- this whole thing is wrapped in a if statement.
 		end
 	end)
 
-	UserGameSettings.Changed:Connect(function(property)
+	UserSettings.Changed:Connect(function(property)
 		closeEmoteFrame()
 	end)
 
-	ContextActionService:BindAction("Emote", openEmoteFrameAlt, true, nil, Enum.KeyCode.ButtonR1)
+	ContextActionService:BindAction("Emote", openEmoteFrameAlt, true, Enum.KeyCode.Tab, Enum.KeyCode.ButtonR1)
 	ContextActionService:SetPosition("Emote", UDim2.new(1, -70, 0, 10))
 
 	-- now to make it work
@@ -349,22 +286,22 @@ if PlayerGui then -- this whole thing is wrapped in a if statement.
 	local b7 = EmoteFrame.f7
 	local b8 = EmoteFrame.f8
 
-	b1.MouseButton1Down:connect(function()
+	b1.MouseButton1Down:Connect(function()
 		playAnimation(b1.AnimID.Value)
 		closeEmoteFrame()
 	end)
 
-	b2.MouseButton1Down:connect(function()
+	b2.MouseButton1Down:Connect(function()
 		playAnimation(b2.AnimID.Value)
 		closeEmoteFrame()
 	end)
 
-	b3.MouseButton1Down:connect(function()
+	b3.MouseButton1Down:Connect(function()
 		playAnimation(b3.AnimID.Value)
 		closeEmoteFrame()
 	end)
 
-	b4.MouseButton1Down:connect(function()
+	b4.MouseButton1Down:Connect(function()
 		playAnimation(b4.AnimID.Value)
 		closeEmoteFrame()
 	end)
@@ -374,23 +311,23 @@ if PlayerGui then -- this whole thing is wrapped in a if statement.
 		closeEmoteFrame()
 	end)
 
-	b6.MouseButton1Down:connect(function()
+	b6.MouseButton1Down:Connect(function()
 		playAnimation(b6.AnimID.Value)
 		closeEmoteFrame()
 	end)
 
-	b7.MouseButton1Down:connect(function()
+	b7.MouseButton1Down:Connect(function()
 		playAnimation(b7.AnimID.Value)
 		closeEmoteFrame()
 	end)
 
-	b8.MouseButton1Down:connect(function()
+	b8.MouseButton1Down:Connect(function()
 		playAnimation(b8.AnimID.Value)
 		closeEmoteFrame()
 	end)
 
 	-- Tool Tip ----------------------------------------------------------------
-	local Tooltip: Frame = PlayerGui.ToolTip.ToolTip
+	local Tooltip: Frame = player.PlayerGui.ToolTip.ToolTip
 	local Offset = UDim2.new(0.015, 0, -0.01, 0)
 
 	-- Normal and Click Detector Tooltips together
@@ -455,7 +392,7 @@ if PlayerGui then -- this whole thing is wrapped in a if statement.
 	end)
 
 	-- Dialogue GUI ---------------------------------------------------------------------
-	local DialogueFrame = PlayerGui.DynamicUI.Dialogue.Frame
+	local DialogueFrame = player.PlayerGui.DynamicUI.Dialogue.Frame
 	local DialogueText = DialogueFrame.DialogueText
 
 	local NewDialogueEvent = ReplicatedStorage.RemoteEvents.NewDialogue
@@ -516,7 +453,7 @@ if PlayerGui then -- this whole thing is wrapped in a if statement.
 	)
 
 	-- Buy Cards GUI ---------------------------------------------------------------------------------------------
-	local BuyCardsFrame = PlayerGui.DynamicUI.BuyCards.Frame
+	local BuyCardsFrame = player.PlayerGui.DynamicUI.BuyCards.Frame
 
 	local GiftButton = BuyCardsFrame.Gift
 	local BuyButton = BuyCardsFrame.Buy
@@ -531,12 +468,11 @@ if PlayerGui then -- this whole thing is wrapped in a if statement.
 
 	local productId = 1904591683
 
-	function promptPurchase()
+	local function promptPurchase()
 		MarketplaceService:PromptProductPurchase(Players.LocalPlayer, productId)
 		closeEmoteFrame()
 	end
 
 	BuyButton.MouseButton1Down:Connect(promptPurchase)
-else
-	Players.LocalPlayer:Kick("LARGE INTERNAL ERROR....")
-end
+	PostClass.PostAsync("Master Script Running. ", script.Name)
+end)

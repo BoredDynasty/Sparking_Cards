@@ -11,9 +11,9 @@ for hum, humanoid in pairs(Tag) do
 		local animation: Animation = script.Parent:WaitForChild("Animation")
 		local dance = humanoid:LoadAnimation(animation)
 		dance:Play()
-		while true do
+		task.spawn(function()
 			task.wait(5)
 			dance:Play()
-		end
+		end)
 	end
 end

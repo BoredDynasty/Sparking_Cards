@@ -1,12 +1,19 @@
 --!strict
-game:GetService("ReplicatedFirst"):RemoveDefaultLoadingScreen()
-game:GetService("StarterGui"):SetCoreGuiEnabled(Enum.CoreGuiType.All, false)
+--!nonstrict
 
+local ReplicatedFirst = game:GetService("ReplicatedFirst")
+local StarterGui = game:GetService("StarterGui")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
-
 local UserInputService = game:GetService("UserInputService")
-
 local Players = game:GetService("Players")
+local TweenService = game:GetService("TweenService")
+
+local MathClass = require(ReplicatedStorage:WaitForChild("Classes").MathClass) -- Use waitforchild cuz everythings still loading
+
+local TweenParams = TweenInfo.new(2, Enum.EasingStyle.Sine, Enum.EasingDirection.Out)
+
+ReplicatedFirst:RemoveDefaultLoadingScreen()
+StarterGui:SetCoreGuiEnabled(Enum.CoreGuiType.All, false)
 
 local loadingScreen = script.Loading
 
@@ -21,20 +28,17 @@ local textIndicator = background.Loading
 local clone = loadingScreen:Clone()
 clone.Parent = Players.LocalPlayer.PlayerGui
 
-local TweenService = game:GetService("TweenService")
-local TweenParams = TweenInfo.new(2, Enum.EasingStyle.Sine, Enum.EasingDirection.Out)
-
-local GameSize = script.ApproxGameSize.Value -- we will use this to determine the size of the game
-GameSize = math.ceil(GameSize * 0.5)
+local GameSize = script.Parent:WaitForChild("ApproxGameSize").Value -- we will use this to determine the size of the game
+GameSize = MathClass.RoundUp(GameSize * 0.5)
 
 local function onGameLoaded()
-	game:GetService("StarterGui"):SetCoreGuiEnabled(Enum.CoreGuiType.PlayerList, false)
-	game:GetService("StarterGui"):SetCoreGuiEnabled(Enum.CoreGuiType.Chat, true)
-	game:GetService("StarterGui"):SetCoreGuiEnabled(Enum.CoreGuiType.Health, false)
-	game:GetService("StarterGui"):SetCoreGuiEnabled(Enum.CoreGuiType.Backpack, false)
-	game:GetService("StarterGui"):SetCoreGuiEnabled(Enum.CoreGuiType.EmotesMenu, false)
-	game:GetService("StarterGui"):SetCoreGuiEnabled(Enum.CoreGuiType.Captures, true)
-	game:GetService("StarterGui"):SetCoreGuiEnabled(Enum.CoreGuiType.SelfView, true)
+	StarterGui:SetCoreGuiEnabled(Enum.CoreGuiType.PlayerList, false)
+	StarterGui:SetCoreGuiEnabled(Enum.CoreGuiType.Chat, true)
+	StarterGui:SetCoreGuiEnabled(Enum.CoreGuiType.Health, false)
+	StarterGui:SetCoreGuiEnabled(Enum.CoreGuiType.Backpack, false)
+	StarterGui:SetCoreGuiEnabled(Enum.CoreGuiType.EmotesMenu, false)
+	StarterGui:SetCoreGuiEnabled(Enum.CoreGuiType.Captures, true)
+	StarterGui:SetCoreGuiEnabled(Enum.CoreGuiType.SelfView, true)
 
 	TweenService:Create(indicator, TweenInfo.new(3), { ImageColor3 = Color3.fromHex("#ff4141") }):Play()
 	clone.Background.Loading.Text = "Loaded."

@@ -14,18 +14,17 @@ mainFrame.Visible = true
 
 local ReplicatedFirst = game:GetService("ReplicatedFirst")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local NotificationService = game:GetService("ExperienceNotificationService")
 
 -- Controller Support
 local UserInputService = game:GetService("UserInputService")
 local ContextActionService = game:GetService("ContextActionService")
 local HapticsService = game:GetService("HapticService")
 
+local GlobalSettings = require(ReplicatedStorage.GlobalSettings)
 
 local tweenservice = game.TweenService
-local TInfoParams = TweenInfo.new(0.3,
-	Enum.EasingStyle.Sine,
-	Enum.EasingDirection.InOut
-)
+local TInfoParams = TweenInfo.new(0.3, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut)
 
 blur.Enabled = true
 
@@ -35,38 +34,53 @@ local Camera = workspace.CurrentCamera
 
 -- LoadingScreen.Visible = true
 
-local Settings = {"Light Mode", "Dark Mode"}
+local Settings = GlobalSettings.PlayerSettings
+local hidePlayers = false
+--[[
+local function canPromptOptIn()
+	local success, canPrompt = pcall(function()
+		return NotificationService:CanPromptOptInAsync()
+	end)
+	return success and canPrompt
+end
 
+local canPrompt = canPromptOptIn()
+if canPrompt then
+	local success, errorMessage = pcall(function()
+		NotificationService:PromptOptIn()
+	end)
+end
+--]]
 local function creditsFrameSequence()
-	tweenservice:Create(creditsFrame, TweenInfo.new(5), {BackgroundTransparency = 0})
+	tweenservice:Create(creditsFrame, TweenInfo.new(5), { BackgroundTransparency = 0 })
 	for i, v in pairs(creditsFrame:GetDescendants()) do
 		if v:IsA("TextLabel") then
-			tweenservice:Create(v, TweenInfo.new(5), {TextTransparency = 0})
+			tweenservice:Create(v, TweenInfo.new(5), { TextTransparency = 0 })
 		end
 	end
-	tweenservice:Create(creditsFrame.Image, TweenInfo.new(5), {ImageTransparency = 0})
+	tweenservice:Create(creditsFrame.Image, TweenInfo.new(5), { ImageTransparency = 0 })
 end
 
 local function stopCreditsSequence()
-	tweenservice:Create(creditsFrame, TInfoParams, {BackgroundTransparency = 1})
+	tweenservice:Create(creditsFrame, TInfoParams, { BackgroundTransparency = 1 })
 	for i, v in pairs(creditsFrame:GetDescendants()) do
 		if v:IsA("TextLabel") then
-			tweenservice:Create(v, TInfoParams, {TextTransparency = 1})
+			tweenservice:Create(v, TInfoParams, { TextTransparency = 1 })
 		end
 	end
-	tweenservice:Create(creditsFrame.Image, TInfoParams, {ImageTransparency = 1})
+	tweenservice:Create(creditsFrame.Image, TInfoParams, { ImageTransparency = 1 })
 	emptyFrame.Visible = true
-	tweenservice:Create(emptyFrame, TweenInfo.new(2), {BackgroundTransparency = 0})
+	tweenservice:Create(emptyFrame, TweenInfo.new(2), { BackgroundTransparency = 0 })
 	task.wait(5)
-	tweenservice:Create(emptyFrame, TweenInfo.new(2), {Position = UDim2.new(0, 0, -1, 0)})
+	tweenservice:Create(emptyFrame, TweenInfo.new(2), { Position = UDim2.new(0, 0, -1, 0) })
 	mainFrame.Visible = true
 end
 
 local function PlayGame()
 	task.wait(0.1)
 	mainFrame.Visible = false
-	tweenservice:Create(blur, TweenInfo.new(1), {Size = 0}):Play()
-	Camera.CameraType = Enum.CameraType.Custom	
+	tweenservice:Create(blur, TweenInfo.new(1), { Size = 0 }):Play()
+	Camera.CameraType = Enum.CameraType.Custom
 
 	HapticsService:SetMotor(Enum.UserInputType.Gamepad1, Enum.VibrationMotor.Large, 2.5)
 	task.wait(0.2)
@@ -78,10 +92,10 @@ local function OpenSettings()
 	settingsFrame.Size = UDim2.new(0, 0, 0, 0)
 	game.ReplicatedStorage.Sounds.FrameOpen:Play()
 
-	wait(0.1)
+	task.wait(0.1)
 	settingsFrame.Visible = true
-	tweenservice:Create(settingsFrame, TInfoParams, {Rotation = -5}):Play()
-	tweenservice:Create(settingsFrame, TInfoParams, {Size = UDim2.new(0.31, 0, 0.409, 0)}):Play()
+	tweenservice:Create(settingsFrame, TInfoParams, { Rotation = -5 }):Play()
+	tweenservice:Create(settingsFrame, TInfoParams, { Size = UDim2.new(0.31, 0, 0.409, 0) }):Play()
 
 	HapticsService:SetMotor(Enum.UserInputType.Gamepad1, Enum.VibrationMotor.Large, 0.5)
 	task.wait(0.2)
@@ -89,10 +103,10 @@ local function OpenSettings()
 end
 
 local function ExitSettings()
-	tweenservice:Create(settingsFrame, TInfoParams, {Rotation = 90}):Play()
-	tweenservice:Create(settingsFrame, TInfoParams, {Size = UDim2.new(0, 0, 0, 0)}):Play()
+	tweenservice:Create(settingsFrame, TInfoParams, { Rotation = 90 }):Play()
+	tweenservice:Create(settingsFrame, TInfoParams, { Size = UDim2.new(0, 0, 0, 0) }):Play()
 	game.ReplicatedStorage.Sounds.FrameClose:Play()
-	wait(0.23)
+	task.wait(0.23)
 	settingsFrame.Visible = false
 
 	HapticsService:SetMotor(Enum.UserInputType.Gamepad1, Enum.VibrationMotor.Large, 0.5)
@@ -114,10 +128,8 @@ settingsFrame.Exit.MouseButton1Down:Connect(function()
 	settingsFrame.TextBox:ReleaseFocus()
 end)
 
-
-while true do
-	wait(1)
-	if settingsFrame.TextBox.Text == "Dark Mode" then 
+local function checkSettings()
+	if settingsFrame.TextBox.Text == Settings.A then
 		game.Lighting.ClockTime = 12
 		game.Lighting.ExposureCompensation = 0
 		game.Lighting.Brightness = 5
@@ -127,8 +139,7 @@ while true do
 		game.Lighting.EnvironmentDiffuseScale = 1
 		game.Lighting.EnvironmentSpecularScale = 1
 		game.Lighting.ShadowSoftness = 0.2
-
-	elseif settingsFrame.TextBox.Text == "Light Mode" then 
+	elseif settingsFrame.TextBox.Text == Settings.B then
 		game.Lighting.ClockTime = 4
 		game.Lighting.ExposureCompensation = -3
 		game.Lighting.Brightness = -5
@@ -138,6 +149,64 @@ while true do
 		game.Lighting.EnvironmentDiffuseScale = 1
 		game.Lighting.EnvironmentSpecularScale = 1
 		game.Lighting.ShadowSoftness = 0.2
-
 	end
+
+	if settingsFrame.TextBox.Text == Settings.D then
+	end
+end
+
+task.spawn(checkSettings)
+
+if settingsFrame.TextBox.Text == Settings.C then
+	hidePlayers = true
+	task.wait(0.05)
+	task.spawn(function()
+		while task.wait(0.5) do
+			if hidePlayers then
+				for _, player in pairs(game.Players:GetPlayers()) do
+					for _, playerModel in pairs(workspace:GetChildren()) do
+						if player.Name == playerModel.Name then
+							if player.Name ~= game.Players.LocalPlayer.Name then
+								playerModel.Parent = ReplicatedStorage
+							end
+						end
+					end
+				end
+			else
+				for _, player in pairs(game.Players:GetPlayers()) do
+					for _, playerModel in pairs(workspace:GetChildren()) do
+						if player.Name == playerModel.Name then
+							if player.Name ~= game.Players.LocalPlayer.Name then
+								playerModel.Parent = game.Workspace
+							end
+						end
+					end
+				end
+			end
+		end
+	end)
+else
+	hidePlayers = false
+end
+
+if settingsFrame.TextBox.Text == Settings.E then
+	task.spawn(function()
+		for index, lightBeams in pairs(game.Workspace:GetDescendants()) do
+			if lightBeams:IsA("Beam") then
+				if lightBeams.Name == "Beam" then
+					lightBeams.Enabled = false
+				end
+			end
+		end
+	end)
+else
+	task.spawn(function()
+		for index, lightBeams in pairs(game.Workspace:GetDescendants()) do
+			if lightBeams:IsA("Beam") then
+				if lightBeams.Name == "Beam" then
+					lightBeams.Enabled = true
+				end
+			end
+		end
+	end)
 end

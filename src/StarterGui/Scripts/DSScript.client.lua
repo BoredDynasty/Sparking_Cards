@@ -9,7 +9,7 @@ local SoundFade = TweenInfo.new(5)
 
 local RespawnEvent = game:GetService("ReplicatedStorage").RemoteEvents.RespawnPlayer
 
-local Frame = PlayerGui.DynamicUI.DeathScreen.Frame
+local Frame = PlayerGui:WaitForChild("DynamicUI").DeathScreen.Frame
 local MessageText = Frame.Message
 local PunishmentText = Frame.Punishment
 

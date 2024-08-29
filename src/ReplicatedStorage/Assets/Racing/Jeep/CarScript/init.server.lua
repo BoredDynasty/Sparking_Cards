@@ -1,3 +1,4 @@
+--!strict
 --Scripted by DermonDarble
 
 local car = script.Parent
@@ -22,9 +23,10 @@ local bodyGyro = car.Chassis.BodyGyro
 
 local function UpdateThruster(thruster)
 	-- Raycasting
-	local hit, position = Raycast.new(thruster.Position, thruster.CFrame:vectorToWorldSpace(Vector3.new(0, -1, 0)) * stats.Height.Value) --game.Workspace:FindPartOnRay(ray, car)
+	local hit, position =
+		Raycast.new(thruster.Position, thruster.CFrame:vectorToWorldSpace(Vector3.new(0, -1, 0)) * stats.Height.Value) --game.Workspace:FindPartOnRay(ray, car)
 	local thrusterHeight = (position - thruster.Position).magnitude
-	
+
 	-- Wheel
 	local wheelWeld = thruster:FindFirstChild("WheelWeld")
 	wheelWeld.C0 = CFrame.new(0, -math.min(thrusterHeight, stats.Height.Value * 0.8) + (wheelWeld.Part1.Size.Y / 2), 0)
@@ -38,7 +40,7 @@ local function UpdateThruster(thruster)
 		end
 		wheelWeld.C0 = wheelWeld.C0 * CFrame.Angles(0, (car.Chassis.RotVelocity.Y / 2) * direction, 0)
 	end
-	
+
 	-- Particles
 	if hit and thruster.Velocity.magnitude >= 5 then
 		wheelWeld.Part1.ParticleEmitter.Enabled = true
@@ -66,30 +68,35 @@ car.DriveSeat.Changed:connect(function(property)
 	end
 end)
 
---spawn(function()
-	while true do
-		game:GetService("RunService").Stepped:wait()
-		for i, part in pairs(car:GetChildren()) do
-			if part.Name == "Thruster" then
-				UpdateThruster(part)
-			end
-		end
-		if car.DriveSeat.Occupant then
-			local ratio = car.DriveSeat.Velocity.magnitude / stats.Speed.Value
-			car.EngineBlock.Running.Pitch = 1 + ratio / 4
-			bodyPosition.MaxForce = Vector3.new()
-			bodyGyro.MaxTorque = Vector3.new()
-		else
-			local hit, position, normal = Raycast.new(car.Chassis.Position, car.Chassis.CFrame:vectorToWorldSpace(Vector3.new(0, -1, 0)) * stats.Height.Value)
-			if hit and hit.CanCollide then
-				bodyPosition.MaxForce = Vector3.new(mass / 5, math.huge, mass / 5)
-				bodyPosition.Position = (CFrame.new(position, position + normal) * CFrame.new(0, 0, -stats.Height.Value + 0.5)).p
-				bodyGyro.MaxTorque = Vector3.new(math.huge, 0, math.huge)
-				bodyGyro.CFrame = CFrame.new(position, position + normal) * CFrame.Angles(-math.pi/2, 0, 0)
-			else
-				bodyPosition.MaxForce = Vector3.new()
-				bodyGyro.MaxTorque = Vector3.new()
-			end
+task.spawn(function()
+	game:GetService("RunService").Stepped:wait()
+	for i, part in pairs(car:GetChildren()) do
+		if part.Name == "Thruster" then
+			UpdateThruster(part)
 		end
 	end
---end)
+	if car.DriveSeat.Occupant then
+		local ratio = car.DriveSeat.Velocity.magnitude / stats.Speed.Value
+		car.EngineBlock.Running.Pitch = 1 + ratio / 4
+		bodyPosition.MaxForce = Vector3.new()
+		bodyGyro.MaxTorque = Vector3.new()
+	else
+		local hit, position, normal = Raycast.new(
+			car.Chassis.Position,
+			car.Chassis.CFrame:vectorToWorldSpace(Vector3.new(0, -1, 0)) * stats.Height.Value
+		)
+		if hit and hit.CanCollide then
+			bodyPosition.MaxForce = Vector3.new(mass / 5, math.huge, mass / 5)
+			bodyPosition.Position = (CFrame.new(position, position + normal) * CFrame.new(
+				0,
+				0,
+				-stats.Height.Value + 0.5
+			)).p
+			bodyGyro.MaxTorque = Vector3.new(math.huge, 0, math.huge)
+			bodyGyro.CFrame = CFrame.new(position, position + normal) * CFrame.Angles(-math.pi / 2, 0, 0)
+		else
+			bodyPosition.MaxForce = Vector3.new()
+			bodyGyro.MaxTorque = Vector3.new()
+		end
+	end
+end)

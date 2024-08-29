@@ -6,7 +6,7 @@ local UserInputService = game:GetService("UserInputService")
 local RemoteFolder = ReplicatedStorage.RemoteEvents
 local PlayCardRemote: RemoteEvent = RemoteFolder.PlayCard
 
-local MatchSettings = require(ReplicatedStorage.MatchSettings)
+local MatchSettings = require(ReplicatedStorage.GlobalSettings)
 
 local TInfo = TweenInfo.new(0.1, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut)
 
@@ -59,6 +59,6 @@ if
 then
 	TextBox.TextColor3 = Color3.fromHex("#ff4e41")
 else
-	TextBox.TextColor3 = Color3.fromHex("FFFFFFF")
+	TextBox.TextColor3 = Color3.new(255, 255, 255)
 	RemoteFolder.PlayCard:FireServer(CurrentVictim, TextBox.Text)
 end

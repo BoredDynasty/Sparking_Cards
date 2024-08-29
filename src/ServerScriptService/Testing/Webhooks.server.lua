@@ -1,63 +1,41 @@
 --!strict
 -- Discord Webhooks
 
-local webhook =
-	"https://discord.com/api/webhooks/1270220282392739884/VfivnCGrhDxYGnAZ9F8giiq86Nmm9yezVQww9__TF4-UNdQH_B7lCnS8_a9rpO5szz05"
-local HTTP = game:GetService("HttpService")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local SendWebhook = ReplicatedStorage.RemoteEvents:FindFirstChildOfClass("UnreliableRemoteEvent") -- so the client can also send webhooks hehe
 
-local profileTemplate = '"http://www.roblox.com/Thumbs/Avatar.ashx?x=200&y=200&Format=Png&username="'
+local PostClass = require(ReplicatedStorage.Classes.PostClass)
+
+_G.Red = 15548997
+_G.Grey = 3426654
+print(_VERSION)
 
 game.Players.PlayerAdded:Connect(function(plr: Player)
-	local leaderstats = plr:WaitForChild("leaderstats")
-	local data = {
-		["embeds"] = {
-			{
-				["title"] = "Player Joined",
-				["description"] = plr.Name
-					.. " has joined [Sparking Cards](https://www.roblox.com/games/6125133811/SPARKING-CARDS), UserID: "
-					.. plr.UserId,
-				["color"] = 5635967,
-			},
-		},
-	}
+	PostClass.PostAsync(
+		"Player Joined",
+		plr.Name
+			.. " has joined [Sparking Cards](https://www.roblox.com/games/6125133811/SPARKING-CARDS), UserID: "
+			.. plr.UserId
+	)
 
 	plr.Chatted:Connect(function(msg)
-		local data = {
-			["embeds"] = {
-				{
-					["title"] = plr.Name,
-					["description"] = plr.Name .. " says: " .. msg,
-					["color"] = 16777087,
-				},
-			},
-		}
-
-		local finaldata = HTTP:JSONEncode(data)
-		task.wait(1)
-		HTTP:PostAsync(webhook, finaldata)
-		return "Log recieved!"
+		PostClass.PostAsync("Player Chatted ", plr.Name, "The Player says [ " .. msg .. "]", 3426654)
 	end)
-
-	local finaldata = HTTP:JSONEncode(data)
-	HTTP:PostAsync(webhook, finaldata)
-	return "Log recieved!"
 end)
 
 game.Players.PlayerRemoving:Connect(function(plr: Player)
-	local data = {
-		["embeds"] = {
-			{
-				["title"] = "Player Left",
-				["description"] = plr.Name
-					.. " has left [Sparking Cards](https://www.roblox.com/games/6125133811/SPARKING-CARDS). UserID: "
-					.. plr.UserId,
-				["color"] = 16732240,
-			},
-		},
-	}
-	local finaldata = HTTP:JSONEncode(data)
-	HTTP:PostAsync(webhook, finaldata)
-	return "Log recieved!"
+	PostClass.PostAsync(
+		"Player Left",
+		plr.Name
+			.. " has Left [Sparking Cards](https://www.roblox.com/games/6125133811/SPARKING-CARDS), UserID: "
+			.. plr.UserId,
+		nil,
+		15548997
+	)
+end)
+
+SendWebhook.OnServerEvent:Connect(function(player, name, playerName, Text, color)
+	PostClass.PostAsync(name, playerName, Text, color)
 end)
 
 -- Just to notify the player.

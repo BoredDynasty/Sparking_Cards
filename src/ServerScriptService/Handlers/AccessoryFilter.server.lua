@@ -1,6 +1,9 @@
 --!strict
 local Players = game:GetService("Players")
 local AnalyticsService = game:GetService("AnalyticsService")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+
+local PostClass = require(ReplicatedStorage.Classes.PostClass)
 
 type Pair<A, B> = {
 	A: A,
@@ -8,6 +11,13 @@ type Pair<A, B> = {
 	P: Player,
 }
 
-local webhook =
-	"https://discord.com/api/webhooks/1270220282392739884/VfivnCGrhDxYGnAZ9F8giiq86Nmm9yezVQww9__TF4-UNdQH_B7lCnS8_a9rpO5szz05"
-local HTTP = game:GetService("HttpService")
+Players.PlayerAdded:Connect(function(player)
+	for index, accessory in pairs(player) do
+		if accessory:IsA("Accessory") then
+			accessory:AddTag("Accessory")
+			if accessory.Name == "Top" then -- still a work-in-progress
+				accessory:AddTag("Bad Accessory")
+			end
+		end
+	end
+end)

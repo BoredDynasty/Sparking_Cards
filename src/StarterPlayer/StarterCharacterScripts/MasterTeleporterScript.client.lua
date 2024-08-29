@@ -1,39 +1,18 @@
 --!strict
+local CollectionService = game:GetService("CollectionService")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
-local Class = ReplicatedStorage.Classes.LoadingClass
+local Class = require(ReplicatedStorage.Classes.TeleportClass)
+local PostClass = require(ReplicatedStorage.Classes.PostClass)
 
-local TeleportParts = {
-	TestingGrounds = workspace.testingAreaSpawn,
-	Spawn = workspace.Subway.SpawnLocation.Part,
-	TheRoadManhole = workspace.Maps.TheRoad["Meshes/Manhole"],
-}
+local TeleportTag = "TeleportPart"
+local TPTag = CollectionService:GetTagged(TeleportTag)
 
-local Vents = {
-	TestingGroundsVent = workspace.Subway.Vents.TestingAreaVent,
-	TheRoadVent = workspace.Subway.Vents.TheRoadVent,
-}
+for index, tag in pairs(TPTag) do
+	local Teleport = tag
 
-local function teleport(player: Player, where: CFrame, size)
-	if not size then
-		size = 0.5
-	end
-	task.wait(0.01)
-	Class.New(size)
-	player.Character:PivotTo(where)
+	local destination = Teleport:GetAttribute("Destination")
+
+	Teleport.ClickDetector.MouseClick:Connect(function(player)
+		player.Character.HumanoidRootPart:PivotTo(destination)
+	end)
 end
-
-Vents.TestingGroundsVent.Frame.ClickDetector.MouseClick:Connect(function(player)
-	teleport(player, TeleportParts.TestingGrounds.CFrame, 0.7)
-end)
-
-Vents.TheRoadVent.Frame.ClickDetector.MouseClick:Connect(function(Player)
-	teleport(Player, TeleportParts.TheRoadManhole.CFrame, 1.2)
-end)
-
-TeleportParts.TheRoadManhole.ClickDetector.MouseClick:Connect(function(player)
-	teleport(player, TeleportParts.Spawn.CFrame)
-end)
-
-TeleportParts.TestingGrounds.ClickDetector.MouseClick:Connect(function(player)
-	teleport(player, TeleportParts.Spawn, 1.2)
-end)

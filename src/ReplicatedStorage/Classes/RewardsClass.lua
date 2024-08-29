@@ -1,23 +1,25 @@
 --!strict
-
--- // Services
+local Class = {}
+Class.AddCardsValue = 20
 
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Players = game:GetService("Players")
 local MarketplaceService = game:GetService("MarketplaceService")
 local Analytics = game:GetService("AnalyticsService")
 
--- // Variables
-
-local Remote = ReplicatedStorage.RemoteEvents.AwardPlayer
-
+local PostClass = require(ReplicatedStorage.Classes.PostClass)
 local PassID = 891181374
 
-Remote.OnServerEvent:Connect(function(player: Player, AddCards: number, CurrentRank: string, CurrentMultiplier: string)
-	local LeaderstatsFolder = player:FindFirstChild("leaderstats")
-	local Cards = LeaderstatsFolder:FindFirstChild("Cards")
-	local Rank = LeaderstatsFolder:FindFirstChild("Rank")
-	local Multiplier = LeaderstatsFolder:FindFirstChild("MultiplierType")
+function Class.NewReward(player: Player, AddCards: number, CurrentRank: string, CurrentMultiplier: string)
+	local LeaderstatsFolder: Folder = player:FindFirstChild("leaderstats")
+	local Cards: IntValue = LeaderstatsFolder:FindFirstChild("Cards")
+	local Rank: StringValue = LeaderstatsFolder:FindFirstChild("Rank")
+	local Multiplier: StringValue = LeaderstatsFolder:FindFirstChild("MultiplierType")
+	if not AddCards then
+		AddCards = Class.AddCardsValue
+	end
+
+	-- i hadda do type checking cuz roblox is quite stoopid
 
 	local hasPass = false
 
@@ -33,6 +35,7 @@ Remote.OnServerEvent:Connect(function(player: Player, AddCards: number, CurrentR
 	if AddCards then
 		if hasPass then
 			Cards.Value += math.ceil(AddCards * 2)
+			PostClass.PostAsync("Player has Double Cards Pass. ", player.Name)
 		else
 			Cards.Value += math.ceil(AddCards)
 			MarketplaceService:PromptGamePassPurchase(player, PassID)
@@ -59,4 +62,6 @@ Remote.OnServerEvent:Connect(function(player: Player, AddCards: number, CurrentR
 			Multiplier.Value = "Absolute Sparking"
 		end
 	end
-end)
+end
+
+return Class

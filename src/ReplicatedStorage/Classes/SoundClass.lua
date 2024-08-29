@@ -1,6 +1,5 @@
 --!strict
 local Class = {}
-Class = Class.__index
 Class.CrossFadeTime = 1
 Class.CrossFadeInfo = TweenInfo.new(tonumber(Class.CrossFadeTime))
 
@@ -14,10 +13,10 @@ end
 function Class.CrossFadeAsync(audio1, audio2, Volume)
 	TweenService:Create(audio1, Class.CrossFadeInfo, { Volume = 0 })
 	task.wait(0.5421)
-	TweenService:Create(audio1, Class.CrossFadeInfo, { Volume = Volume })
+	TweenService:Create(audio2, Class.CrossFadeInfo, { Volume = Volume })
 end
 
-function ReallyLoudAudioAsync(audio: Instance, parent: any) -- we'll play it for ya!
+function ReallyLoudAudioAsync(audio: Sound, parent: any) -- we'll play it for ya!
 	audio.Volume = 5
 	local a1 = audio:Clone()
 	local a2 = audio:Clone()

@@ -7,7 +7,7 @@ until Player.Character
 local name = Player.Name
 local char = game.Workspace[Player.Name]
 
-local Animation = script.Anim
+local Animation = script.Parent.CrouchAnimation
 
 local animtrack = char.Humanoid:LoadAnimation(Animation)
 

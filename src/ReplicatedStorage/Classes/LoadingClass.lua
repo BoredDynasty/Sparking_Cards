@@ -11,10 +11,17 @@ local Frame = ReplicatedStorage.LoadingArea.Background
 local LoadingText = Frame.Loading
 local Indicator = LoadingText.dropshadow_16_20
 
-function Class.New(mapSize)
+function Class.New(mapSize, player: Player)
 	if not mapSize then
 		mapSize = 1.5
 	end
+
+	if not player:IsA("Players") then
+		player = Players:GetPlayerFromCharacter(player)
+	end
+
+	local f = Frame:Clone()
+	f.Parent = player.PlayerGui
 
 	TweenService:Create(Frame, TweenParams, { Position = UDim2.new(0.5, 0, 0.5, 0) })
 	TweenService:Create(Indicator, TweenParams, { ImageColor3 = Color3.fromHex("#ffff7f") })
@@ -24,6 +31,7 @@ function Class.New(mapSize)
 	TweenService:Create(Indicator, TweenParams, { ImageColor3 = Color3.fromHex("#55ff7f") })
 	task.wait(2)
 	TweenService:Create(Frame, TweenParams, { Position = UDim2.new(-2, 0, 0.5, 0) })
+	f:Destroy()
 end
 
 return Class

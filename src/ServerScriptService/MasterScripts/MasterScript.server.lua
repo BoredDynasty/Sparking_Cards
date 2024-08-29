@@ -7,13 +7,13 @@ local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local AnalyticsService = game:GetService("AnalyticsService")
 
-local MatchSettings = require(ReplicatedStorage.MatchSettings)
+local GlobalSettings = require(ReplicatedStorage.GlobalSettings)
 
 local RemoteFolder = ReplicatedStorage.RemoteEvents
 local CutsceneRemote = RemoteFolder.CutsceneRemote
 local PlayCardRemote = RemoteFolder.PlayCard
 
-local Attacks = { Fire = 9, Frost = 5, Plasma = 12, Water = 4 }
+local Attacks = GlobalSettings.ValidCards
 local Debounce = {}
 
 local function TakeDamage(victim, attack)
