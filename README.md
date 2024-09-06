@@ -1,23 +1,25 @@
 # Sparking Cards!
 
-> [!NOTE]
-> Currently in the beta stage now.
-> 
-> There are bugs almost everywhere!
+> [!WARNING]
+> Game is currently unplayable, I'm testing some things that'll be crucial for the game and me.
+
+> ehehehe~!
 
 > [!TIP]
 > The next update is the full release!
 
 ### Game Link
-www.roblox.com/games/6125133811/SPARKING-CARDS
+https://www.roblox.com/games/6125133811/SPARKING-CARDS
+## 1.  Plans
+   - DataStore Improvements
+   - Optimization Improvements
+   - FFA
+   - Cross Server Messaging
+   - Cross Server Leaderboards
+   - More Options
+   - Exploration
+   - > The exploration part is going to be a bonus area!
+   - SKill Based Matchmaking
+   - > that'll come after
 
-### Dynasty Needs Your Help! 🫵🏾
-
-Please tell *me*
-
-> If you can, reccomend me some things!
-> maybe give me an idea or two *ehehe*
-
-> Let me know on my Twitter!
-> 
-![Card Sparking Logo](https://github.com/user-attachments/assets/dc2d5337-7148-4843-acee-3e86b43e4bb3)
+  ![Transparent Sparking Cards Logp](https://github.com/user-attachments/assets/b27f3af9-3bd8-4433-845a-e8ac24502cb5)
