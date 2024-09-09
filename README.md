@@ -19,7 +19,7 @@ https://www.roblox.com/games/6125133811/SPARKING-CARDS
    - More Options
    - Exploration
    - > The exploration part is going to be a bonus area!
-   - SKill Based Matchmaking
+   - Skill Based Matchmaking
    - > that'll come after
 
   ![Transparent Sparking Cards Logp](https://github.com/user-attachments/assets/b27f3af9-3bd8-4433-845a-e8ac24502cb5)
