@@ -4,8 +4,12 @@ local Players = game:GetService("Players")
 local HTTPService = game:GetService("HttpService")
 
 local CollectionService = game:GetService("CollectionService")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
-local FunnelSessionID = HTTPService:GenerateGUID(false)
+local AnalyticsClass = require(ReplicatedStorage.Classes.AnalyticsClass)
+local PostClass = require(ReplicatedStorage.Classes.PostClass)
+
+local FunnelSessionID = PostClass.GenerateGUID(false)
 
 print("Funnel Analytics are enabled.")
 

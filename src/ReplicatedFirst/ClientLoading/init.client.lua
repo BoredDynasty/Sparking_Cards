@@ -1,6 +1,5 @@
 --!strict
---!nonstrict
-
+local ContentProvider = game:GetService("ContentProvider")
 local ReplicatedFirst = game:GetService("ReplicatedFirst")
 local StarterGui = game:GetService("StarterGui")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
@@ -9,6 +8,7 @@ local Players = game:GetService("Players")
 local TweenService = game:GetService("TweenService")
 
 local MathClass = require(ReplicatedStorage:WaitForChild("Classes").MathClass) -- Use waitforchild cuz everythings still loading
+local GlobalSettings = require(ReplicatedStorage.GlobalSettings) -- hopefully this would've loaded ehehehe~!
 
 local TweenParams = TweenInfo.new(2, Enum.EasingStyle.Sine, Enum.EasingDirection.Out)
 
@@ -25,11 +25,16 @@ local background = clone.Background
 local indicator = background.Loading.dropshadow_16_20
 local textIndicator = background.Loading
 
-local clone = loadingScreen:Clone()
-clone.Parent = Players.LocalPlayer.PlayerGui
-
 local GameSize = script.Parent:WaitForChild("ApproxGameSize").Value -- we will use this to determine the size of the game
 GameSize = MathClass.RoundUp(GameSize * 0.5)
+
+local preloads = {
+	GameSize,
+	loadingScreen,
+	clone,
+}
+
+ContentProvider:PreloadAsync(preloads)
 
 local function onGameLoaded()
 	StarterGui:SetCoreGuiEnabled(Enum.CoreGuiType.PlayerList, false)
@@ -56,8 +61,12 @@ UserInputService.WindowFocused:Connect(function()
 	TweenService:Create(indicator, TweenInfo.new(1), { ImageColor3 = Color3.fromHex("#ffff7f") }):Play()
 end)
 
-game.Loaded:Connect(function()
-	indicator.ImageColor3 = Color3.fromHex("#ffff7f")
-	task.wait(GameSize)
-	onGameLoaded()
-end)
+if GlobalSettings.IsStudio == false then
+	game.Loaded:Connect(function()
+		indicator.ImageColor3 = Color3.fromHex("#ffff7f")
+		task.wait(GameSize)
+		onGameLoaded()
+	end)
+else
+	clone:Destroy()
+end

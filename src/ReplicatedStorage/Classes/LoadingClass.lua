@@ -16,10 +16,6 @@ function Class.New(mapSize, player: Player)
 		mapSize = 1.5
 	end
 
-	if not player:IsA("Players") then
-		player = Players:GetPlayerFromCharacter(player)
-	end
-
 	local f = Frame:Clone()
 	f.Parent = player.PlayerGui
 

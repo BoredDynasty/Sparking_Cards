@@ -35,7 +35,7 @@ function Class.Noise(x, y, z) -- Returns Perlin noise
 	return math.noise(x, y, z)
 end
 
-function Class.pi(full: boolean) -- Returns the full version of "pi", if you don't want the full version of "pi" then it will return a truncated version.
+function Class.pi(full: boolean) -- Returns the full version of "pi", if you don't want the full version of "pi" then it will return a very truncated version.
 	if full == true then
 		return Class.Library.abs(tonumber(Class.Library.pi))
 	else
@@ -47,8 +47,16 @@ function Class.ArcSine(x) -- Returns an Arc Sine
 	return Class.Library.asin(x)
 end
 
-function Absolute(x) -- Returns an ABSOLUTE value
+function Class.Absolute(x) -- Returns an ABSOLUTE value
 	return Class.Library.abs(x)
+end
+
+function Class.Vector3One()
+	return Vector3.one
+end
+
+function Class.Vector3(X, Y, Z)
+	return Vector3.new(X, Y, Z)
 end
 
 return Class

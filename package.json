@@ -1,6 +1,8 @@
 {
   "dependencies": {
     "@docusaurus/core": "^3.5.2",
-    "@docusaurus/preset-classic": "^3.5.2"
+    "@docusaurus/preset-classic": "^3.5.2",
+    "axios": "^1.7.7",
+    "discord.js": "^14.16.1"
   }
 }

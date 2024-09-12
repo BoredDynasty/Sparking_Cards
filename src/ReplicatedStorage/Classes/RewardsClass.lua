@@ -8,15 +8,27 @@ local MarketplaceService = game:GetService("MarketplaceService")
 local Analytics = game:GetService("AnalyticsService")
 
 local PostClass = require(ReplicatedStorage.Classes.PostClass)
+local GlobalSettings = require(ReplicatedStorage.GlobalSettings)
+
 local PassID = 891181374
 
-function Class.NewReward(player: Player, AddCards: number, CurrentRank: string, CurrentMultiplier: string)
+function Class.NewReward(
+	player: Player,
+	AddCards: number,
+	CurrentRank: string,
+	CurrentMultiplier: string,
+	ExperiencePoints: number
+) -- Rewards the player
 	local LeaderstatsFolder: Folder = player:FindFirstChild("leaderstats")
 	local Cards: IntValue = LeaderstatsFolder:FindFirstChild("Cards")
 	local Rank: StringValue = LeaderstatsFolder:FindFirstChild("Rank")
 	local Multiplier: StringValue = LeaderstatsFolder:FindFirstChild("MultiplierType")
+	local Experience: NumberValue = LeaderstatsFolder:FindFirstChild("ExperiencePoints")
 	if not AddCards then
-		AddCards = Class.AddCardsValue
+		AddCards = GlobalSettings.DefaultAward
+	end
+	if not Experience then
+		ExperiencePoints = GlobalSettings.DefaultAward / 5
 	end
 
 	-- i hadda do type checking cuz roblox is quite stoopid

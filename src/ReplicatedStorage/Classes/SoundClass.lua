@@ -1,5 +1,6 @@
 --!strict
 local Class = {}
+Class.__index = Class
 Class.CrossFadeTime = 1
 Class.CrossFadeInfo = TweenInfo.new(tonumber(Class.CrossFadeTime))
 

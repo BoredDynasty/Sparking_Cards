@@ -12,7 +12,7 @@ type Pair<A, B> = {
 }
 
 Players.PlayerAdded:Connect(function(player)
-	for index, accessory in pairs(player) do
+	for index, accessory in pairs(player:GetDescendants()) do
 		if accessory:IsA("Accessory") then
 			accessory:AddTag("Accessory")
 			if accessory.Name == "Top" then -- still a work-in-progress
