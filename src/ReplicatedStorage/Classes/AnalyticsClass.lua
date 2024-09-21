@@ -9,9 +9,7 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local PostClass = require(ReplicatedStorage.Classes.PostClass)
 local DataClass = require(ReplicatedStorage.Classes.DataStoreClass)
 
-local GUID = PostClass.GenerateGUID(true)
-
-function Class.LogEconomyEvent(player: Player, type, amount, transaction)
+function Class.LogEconomyEvent(player: Player?, type, amount, transaction): string
 	if not player then
 		player = Players.LocalPlayer
 	end
@@ -27,7 +25,7 @@ function Class.LogEconomyEvent(player: Player, type, amount, transaction)
 	return "Log Sent"
 end
 
-function Class.LogCustomEvent(player: Player, name)
+function Class.LogCustomEvent(player: Player, name): string
 	if not player then
 		player = Players.LocalPlayer
 	end
@@ -36,8 +34,13 @@ function Class.LogCustomEvent(player: Player, name)
 	return "Log Sent"
 end
 
-function Class.LogOnboardingFunnelStepEvent(player: Player, name, step)
+function Class.LogOnboardingFunnelStepEvent(player: Player, name, step): string
 	Analytics:LogOnboardingFunnelStepEvent(player, step, name)
+	return "Log Sent"
+end
+
+function Class.LogProgressionEvent(player, pathName, progressionType: Enum.AnalyticsProgressionStatus, level, levelName): string
+	Analytics:LogProgressionEvent(player, pathName, progressionType, level, levelName)
 	return "Log Sent"
 end
 

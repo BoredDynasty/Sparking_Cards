@@ -24,18 +24,24 @@ local Humanoid = Character.Humanoid
 -- PlayerHud
 local PlayerHud = script.Parent.Parent.Parent.PlayerHud
 
-local playerProfileImage, _ =
+local playerProfileImage, ready =
 	Players:GetUserThumbnailAsync(player.UserId, Enum.ThumbnailType.HeadShot, Enum.ThumbnailSize.Size420x420)
-task.wait(9)
-PlayerHud.Player.PlayerImage.Image = playerProfileImage
-PlayerHud.Player:FindFirstChildOfClass("TextLabel").Text = player.DisplayName
 
-UserInputService.WindowFocusReleased:Connect(function()
-	TweenService:Create(PlayerHud.Player.Design.Radial, TweenInfo.new(1), { ImageColor3 = Color3.fromHex("#ff5353") })
-		:Play()
-end)
+if ready then
+	PlayerHud.Player.PlayerImage.Image = playerProfileImage
+	PlayerHud.Player:FindFirstChildOfClass("TextLabel").Text = player.DisplayName
 
-UserInputService.WindowFocused:Connect(function()
-	TweenService:Create(PlayerHud.Player.Design.Radial, TweenInfo.new(1), { ImageColor3 = Color3.fromHex("#55ff7f") })
-		:Play()
-end)
+	UserInputService.WindowFocusReleased:Connect(function()
+		TweenService
+			:Create(PlayerHud.Player.Design.Radial, TweenInfo.new(1), { ImageColor3 = Color3.fromHex("#ff5353") })
+			:Play()
+	end)
+
+	UserInputService.WindowFocused:Connect(function()
+		TweenService
+			:Create(PlayerHud.Player.Design.Radial, TweenInfo.new(1), { ImageColor3 = Color3.fromHex("#55ff7f") })
+			:Play()
+	end)
+else
+	print("dynasty fix the playerhud")
+end

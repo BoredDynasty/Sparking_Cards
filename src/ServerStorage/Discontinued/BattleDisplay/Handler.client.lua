@@ -1,3 +1,4 @@
+--!strict
 local ReplicateStorage = game.ReplicatedStorage
 
 local tweenDebounce = false
@@ -16,111 +17,21 @@ local TweeInfo = TweenInfo.new(0.5, Enum.EasingStyle.Quart, Enum.EasingDirection
 
 ChangeTurnsDisplay.MouseEnter:Connect(function()
 	sound:Play()
-	ChangeTurnsDisplay:TweenPosition(UDim2.new(0.471, 0,0.916, 0), TweeInfo)
+	ChangeTurnsDisplay:TweenPosition(UDim2.new(0.471, 0, 0.916, 0), TweeInfo)
 end)
 
 ChangeTurnsDisplay.MouseLeave:Connect(function()
-	
-	ChangeTurnsDisplay:TweenPosition(UDim2.new(0.471, 0,0.926, 0), TweeInfo)
+	ChangeTurnsDisplay:TweenPosition(UDim2.new(0.471, 0, 0.926, 0), TweeInfo)
 end)
-
 
 MainFrame.MouseEnter:Connect(function()
 	sound:Play()
-	MainFrame:TweenPosition(UDim2.new(0.017, 0,0.916, 0), TweeInfo)
+	MainFrame:TweenPosition(UDim2.new(0.017, 0, 0.916, 0), TweeInfo)
 end)
 
 MainFrame.MouseLeave:Connect(function()
-
-	MainFrame:TweenPosition(UDim2.new(0.017, 0,0.926, 0),TweeInfo)
+	MainFrame:TweenPosition(UDim2.new(0.017, 0, 0.926, 0), TweeInfo)
 end)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 -- Start the tween
 --[[
@@ -187,4 +98,3 @@ end)
 -- Make HealthDisplay display the PlayerHealth. Update it every 1 second. 
 
 --]]
-

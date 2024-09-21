@@ -3,10 +3,12 @@ local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local RunService = game:GetService("RunService")
 
+local GlobalSettings = require(ReplicatedStorage.GlobalSettings)
+
 Players.PlayerAdded:Connect(function(player)
 	player.Chatted:Connect(function(message)
 		if player.Name == "Dynablox1005" then
-			if RunService:IsStudio() then
+			if GlobalSettings.IsStudio == true then
 				print(string.format("STUDIO MODE \nChat the Colon key followed by a space to use loadstring.", "%q"))
 			end
 			local pattern = ": "

@@ -1,3 +1,4 @@
+--!strict
 local module = {}
 
 local ReplicatedStorage = game:GetService("ReplicatedStorage")

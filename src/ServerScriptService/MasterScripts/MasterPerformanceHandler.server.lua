@@ -1,5 +1,6 @@
 --!strict
 -- This script is also a command script!
+local CollectionService = game:GetService("CollectionService")
 local ContextActionService = game:GetService("ContextActionService")
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
@@ -24,6 +25,14 @@ end)
 Players.PlayerRemoving:Connect(function(player)
 	task.defer(player.Destroy, player)
 end)
+
+-- extra
+
+for index, textLabels in pairs(game:GetDescendants()) do -- imagine doing getdescedants on the game
+	if textLabels:IsA("TextSource") then
+		textLabels.FontFace = Font.fromName("Builder Extended" or "BuilderSans")
+	end
+end
 
 GlobalSettings.GrabPrivateServer()
 
@@ -95,6 +104,15 @@ task.spawn(function()
 			or game.Workspace.DistributedGameTime
 		Clone.Top.BillboardGui.FPS.Text = "Client FPS; " .. tostring(GetBenchmarks)
 	end)
+end)
+
+task.spawn(function()
+	for index, object in pairs(game:GetDescendants()) do
+		if object:IsA("GuiButton") then
+			object:AddTag("gui_button")
+			print("found " .. index .. " gui_buttons")
+		end
+	end
 end)
 
 DataStoreClass.StartBindToClose(GetBenchmarks)

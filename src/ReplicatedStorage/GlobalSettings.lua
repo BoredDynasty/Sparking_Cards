@@ -28,14 +28,17 @@ Class.Characters = {
 	["Edo"] = {
 		type = "non_main",
 		attribute = "side_character",
+		tag = "edo_character",
 	},
 	["Obsidian"] = {
 		type = "shop",
 		attribute = "shop_person",
+		tag = "obsidian_npc",
 	},
 	["Coach Mr. G"] = {
 		type = "main",
 		attribute = "coach_main",
+		tag = "mr_g_character",
 	},
 }
 
@@ -61,8 +64,8 @@ Class.CustomLines = { "Well now, let's get going!", "Heya.", "Heheh..." }
 --[=[
     Sets the Default Settings
 
-    @param MaxTime number -- The Max Round time
-    @param MaxChoosingTime number -- The Max time the player has to choose a card
+    @prop MaxTime number -- The Max Round time
+    @prop MaxChoosingTime number -- The Max time the player has to choose a card
 ]=]
 function Class.SetDefaultSettings(MaxTime: number, MaxChoosingTime: number) -- Sets The Default Values
 	Class.MaxChoosingTime = MaxChoosingTime
@@ -72,8 +75,8 @@ end
 --[=[
     Restores Default Settings
 
-    @param MaxTime number -- The Max Round time is now 240
-    @param MaxChoosingTime number -- The Max time the player has to choose a card is now 20
+    @Prop MaxTime number -- The Max Round time is now 240
+    @prop MaxChoosingTime number -- The Max time the player has to choose a card is now 20
 ]=]
 function Class.RestoreDefaultSettings()
 	Class.MaxTime = 240

@@ -42,12 +42,10 @@ local function onOutputMessage(message, messageType)
 					tonumber(_G.Red)
 				)
 			end
-			for _, player in pairs(Players:GetDescendants()) do
-				if player:IsA("Player") then
-					player:Kick(
-						"We've detected a substancial increase of Errors within the Developer Console; " .. errorCount
-					)
-				end
+			for index, player in pairs(Players:GetDescendants()) do
+				player:Kick(
+					"We've detected a substancial increase of Errors within the Developer Console; " .. errorCount
+				)
 			end
 		end
 	end

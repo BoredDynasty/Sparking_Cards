@@ -1,28 +1,23 @@
 --!strict
-local dayLength = 30
 
-local cycleTime = dayLength * 60
-local minutesInADay = 24 * 60
+local Lighting = game:GetService("Lighting")
+local Players = game:GetService("Players")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local RunService = game:GetService("RunService")
 
-local lighting = game:GetService("Lighting")
+local PostClass = require(ReplicatedStorage.Classes.PostClass)
 
-local startTime = tick() - (lighting:getMinutesAfterMidnight() / minutesInADay) * cycleTime
-local endTime = startTime + cycleTime
+PostClass.SetNewURL("http://worldtimeapi.org/api/timezone/America/New_York") -- We need to set a new URL so we can get the current time in the real world
+-- We'll also have it as new york for now.
+-- TODO Make this more precise
+local RequestedData = PostClass.RequestAsync()
 
-local timeRatio = minutesInADay / cycleTime
-
-if dayLength == 0 then
-	dayLength = 1
+function updateLighting()
+	local UnixTime = RequestedData.Data.unixtime
+	local formattedDate = DateTime
+		.fromUnixTimestamp(UnixTime) -- Our new data returns the unix timestamp.
+		:ToUniversalTime()
+	Lighting.ClockTime = tonumber(formattedDate)
 end
 
-repeat
-	local currentTime = tick()
-
-	if currentTime > endTime then
-		startTime = endTime
-		endTime = startTime + cycleTime
-	end
-
-	lighting:setMinutesAfterMidnight((currentTime - startTime) * timeRatio)
-	wait(1 / 15)
-until false
+RunService.Heartbeat:Connect(updateLighting)

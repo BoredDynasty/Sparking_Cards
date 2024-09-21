@@ -1,11 +1,4 @@
---[=[
-
-WindShake- High performance wind effect for leaves and foliage
-by: boatbomber, CloneTrooper1019
-
-Docs: https://devforum.roblox.com/t/wind-shake-high-performance-wind-effect-for-leaves-and-foliage/1039806/1
-
---]=]
+--!strict
 
 local CollectionService = game:GetService("CollectionService")
 local RunService = game:GetService("RunService")

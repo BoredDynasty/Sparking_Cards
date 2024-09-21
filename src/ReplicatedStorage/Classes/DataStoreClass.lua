@@ -292,12 +292,12 @@ local function saveAllData() -- Saves All Data
 	end
 
 	local success, err = pcall(function()
-		for i, v in pairs(Players:GetChildren()) do
-			CardsData:SetAsync(v.UserId, v.leaderstats.Cards.Value)
-			RankData:SetAsync(v.UserId, v.leaderstats.Rank.Value)
-			MultiplierType:SetAsync(v.UserId, v.leaderstats.MultiplierType.Value)
-			Abilities:SetAsync(v.UserId, v.leaderstats.MainAbility.Value)
-			ExperiencePoints:SetAsync(v.UserId, v.leaderstats.ExperiencePoints.Value)
+		for index, player in pairs(Players:GetChildren()) do
+			CardsData:SetAsync(player.UserId, player.leaderstats.Cards.Value)
+			RankData:SetAsync(player.UserId, player.leaderstats.Rank.Value)
+			MultiplierType:SetAsync(player.UserId, player.leaderstats.MultiplierType.Value)
+			Abilities:SetAsync(player.UserId, player.leaderstats.MainAbility.Value)
+			ExperiencePoints:SetAsync(player.UserId, player.leaderstats.ExperiencePoints.Value)
 		end
 	end)
 	if not success then

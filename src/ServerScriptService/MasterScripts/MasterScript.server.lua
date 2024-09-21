@@ -25,3 +25,4 @@ AnnounceRemote.Name = "AnnounceRemote"
 AnnounceRemote.Parent = ReplicatedStorage
 
 CardsClass:StartListening()
+VFXClass.SoundListener()

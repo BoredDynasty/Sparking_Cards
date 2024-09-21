@@ -51,37 +51,34 @@ function Class.PostAsync(title: string, description: string, extra: string, colo
 	local newDate = Date:FormatUniversalTime("LL", "en-us")
 
 	local data = {
-		["content"] = "Sparking Cards",
 		["embeds"] = {
 			{
 				["title"] = title,
-				["description"] = description .. extra,
-				["color"] = tonumber(color),
-				["tts"] = true,
-				["author"] = {
-					["name"] = "SPARKING CARDS | OfficialDynasty",
-					["url"] = "https://www.roblox.com/games/6125133811/SPARKING-CARDS",
-					["icon_url"] = "https://tr.rbxcdn.com/a23dfa5aa24d49c5347ffa1e76ebea14/150/150/Image/png",
-				},
-				["url"] = "https://www.roblox.com/games/6125133811/SPARKING-CARDS",
-				["image"] = {
-					["url"] = "https://tr.rbxcdn.com/a23dfa5aa24d49c5347ffa1e76ebea14/150/150/Image/png",
-				},
-				["thumbnail"] = {
-					["url"] = "https://tr.rbxcdn.com/9f49028a8916508c17ffa0e6251823b2/768/432/Image/png",
-				},
+				["description"] = description,
+				["url"] = "https://www.roblox.com/games/" .. game.PlaceId,
+				["color"] = color,
 				["footer"] = {
-					["text"] = "Text you want on the footer, its right at the bottom of the message",
-					["icon_url"] = "https://tr.rbxcdn.com/9f49028a8916508c17ffa0e6251823b2/768/432/Image/png",
+					["text"] = extra,
 				},
-				["timestamp"] = "The Current Date in {en-us} is | " .. newDate,
 			},
 		},
 	}
 
-	local finalData = HttpService:JSONEncode(data)
-	task.wait(0.01)
+	local finalData = HttpService:JSONEncode(data) -- Theres no need for a json encode
+	task.wait(1)
 	HttpService:PostAsync(Class.url, finalData)
+end
+
+function Class.RequestAsync(URL)
+	if not URL then
+		URL = Class.url
+	end
+
+	local Data = HttpService:GetAsync(URL)
+	Data = HttpService:JSONDecode(Data)
+
+	Class.RestoreURL()
+	return Data
 end
 
 function Class.GenerateGUID(curly: boolean) -- Returns an HTTP GUID

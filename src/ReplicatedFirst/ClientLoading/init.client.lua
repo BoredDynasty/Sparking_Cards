@@ -28,14 +28,6 @@ local textIndicator = background.Loading
 local GameSize = script.Parent:WaitForChild("ApproxGameSize").Value -- we will use this to determine the size of the game
 GameSize = MathClass.RoundUp(GameSize * 0.5)
 
-local preloads = {
-	GameSize,
-	loadingScreen,
-	clone,
-}
-
-ContentProvider:PreloadAsync(preloads)
-
 local function onGameLoaded()
 	StarterGui:SetCoreGuiEnabled(Enum.CoreGuiType.PlayerList, false)
 	StarterGui:SetCoreGuiEnabled(Enum.CoreGuiType.Chat, true)
