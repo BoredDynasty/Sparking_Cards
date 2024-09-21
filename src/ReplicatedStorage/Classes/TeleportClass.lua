@@ -21,7 +21,7 @@ function Class.TeleportAsync(place: number, player: Player)
 	PostClass.PostAsync("Sent Player To Remote Universe", "PlaceID / " .. place, " Normal")
 end
 
-function Class.TeleportParty(place: number, player: table)
+function Class.TeleportParty(place: number, player: table, matchID: string?)
 	TeleportService:TeleportPartyAsync(place, player)
 
 	PostClass.PostAsync("Sent Player To Remote Universe", "PlaceID / " .. place, " Party")
