@@ -9,6 +9,7 @@ local TweenService = game:GetService("TweenService")
 
 local MathClass = require(ReplicatedStorage:WaitForChild("Classes").MathClass) -- Use waitforchild cuz everythings still loading
 local GlobalSettings = require(ReplicatedStorage.GlobalSettings) -- hopefully this would've loaded ehehehe~!
+local UIEffectsClass = require(ReplicatedStorage.Classes:WaitForChild("UIEffectsClass"))
 
 local TweenParams = TweenInfo.new(2, Enum.EasingStyle.Sine, Enum.EasingDirection.Out)
 
@@ -37,7 +38,7 @@ local function onGameLoaded()
 	StarterGui:SetCoreGuiEnabled(Enum.CoreGuiType.Captures, true)
 	StarterGui:SetCoreGuiEnabled(Enum.CoreGuiType.SelfView, true)
 
-	TweenService:Create(indicator, TweenInfo.new(3), { ImageColor3 = Color3.fromHex("#ff4141") }):Play()
+	UIEffectsClass.changeColor("Green", indicator)
 	clone.Background.Loading.Text = "Loaded."
 	task.wait(1.5)
 	TweenService:Create(background, TweenParams, { Position = UDim2.new(0, 0, 2, 0) }):Play()
@@ -46,17 +47,16 @@ local function onGameLoaded()
 end
 
 UserInputService.WindowFocusReleased:Connect(function()
-	TweenService:Create(indicator, TweenInfo.new(1), { ImageColor3 = Color3.fromHex("#ff5353") }):Play()
+	UIEffectsClass.changeColor("Red", indicator)
 end)
 
 UserInputService.WindowFocused:Connect(function()
-	TweenService:Create(indicator, TweenInfo.new(1), { ImageColor3 = Color3.fromHex("#ffff7f") }):Play()
+	UIEffectsClass.changeColor("Yellow", indicator)
 end)
 
 if GlobalSettings.IsStudio == false then
 	game.Loaded:Connect(function()
-		indicator.ImageColor3 = Color3.fromHex("#ffff7f")
-		task.wait(GameSize)
+		UIEffectsClass.changeColor("Yellow", indicator)
 		onGameLoaded()
 	end)
 else

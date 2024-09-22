@@ -1,4 +1,4 @@
---!strict
+--!nocheck
 
 local LogService = game:GetService("LogService")
 local Players = game:GetService("Players")
@@ -41,6 +41,7 @@ local function onOutputMessage(message, messageType)
 					errorCount,
 					tonumber(_G.Red)
 				)
+				debounce = false
 			end
 			for index, player in pairs(Players:GetDescendants()) do
 				player:Kick(

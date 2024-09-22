@@ -1,4 +1,10 @@
 --!strict
+
+--[=[
+	@class Global Settings
+
+	A Module Config for the game.
+]=]
 local Class = {}
 Class.__index = Class
 
@@ -12,7 +18,7 @@ Class.MaxChoosingTime = 20
 Class.MatchContinued = false
 Class.ValidCards = { Fire = 9, Frost = 5, Plasma = 12, Water = 4 }
 Class.IsPrivateServer = false
-Class.IsStudio = false -- Wether the current environment is running in Studio.
+Class.IsStudio = false
 Class.DefaultAward = 24 -- default add cards
 
 Class.StartingCardsValue = 5
@@ -61,31 +67,21 @@ Class.WinMessages = { "Well now, you did Great~! ", "You can do better than that
 Class.WinLines = { "ALRIGHT~!", "WOWIE!" }
 Class.CustomLines = { "Well now, let's get going!", "Heya.", "Heheh..." }
 
---[=[
-    Sets the Default Settings
+-- This is a very fancy function that Sets the Modules Default Settings
 
-    @prop MaxTime number -- The Max Round time
-    @prop MaxChoosingTime number -- The Max time the player has to choose a card
-]=]
+-- @function SetDefaultSettings
+-- @param MaxTime number -- The max Round TIme
+-- @param MaxChoosingTime number -- The Max Time a player has to choose a Card
 function Class.SetDefaultSettings(MaxTime: number, MaxChoosingTime: number) -- Sets The Default Values
 	Class.MaxChoosingTime = MaxChoosingTime
 	Class.MaxTime = MaxTime
 end
 
---[=[
-    Restores Default Settings
-
-    @Prop MaxTime number -- The Max Round time is now 240
-    @prop MaxChoosingTime number -- The Max time the player has to choose a card is now 20
-]=]
 function Class.RestoreDefaultSettings()
 	Class.MaxTime = 240
 	Class.MaxChoosingTime = 20
 end
 
---[=[
-    Returns true whenever the current game instance is running in a private server
-]=]
 function Class.GrabPrivateServer() -- Returns true if the game is running a private server
 	if game.PrivateServerId ~= "" and game.PrivateServerOwnerId ~= 0 then
 		Players.PlayerAdded:Connect(function(player)

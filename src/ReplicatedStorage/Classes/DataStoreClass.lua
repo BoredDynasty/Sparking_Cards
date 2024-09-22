@@ -200,7 +200,7 @@ function Class.PlayerRemoving(player: Player)
 	local success, err = pcall(function() -- Saving DataStores may fail sometimes. Best to wrap em' in a pcall.
 		CardsData:SetAsync(player.UserId, player.leaderstats.Cards.Value)
 		RankData:SetAsync(player.UserId, player.leaderstats.Rank.Value)
-		MultiplierType:SetAsync(player.UserId, Players.leaderstats.MultiplierType.Value)
+		MultiplierType:SetAsync(player.UserId, player.leaderstats.MultiplierType.Value)
 		Abilities:SetAsync(player.UserId, player.leaderstats.MainAbility.Value)
 		ExperiencePoints:SetAsync(player.UserId, player.leaderstats.ExperiencePoints.Value)
 	end)

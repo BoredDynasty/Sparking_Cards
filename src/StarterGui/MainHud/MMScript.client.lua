@@ -1,9 +1,8 @@
 --!strict
 
-local blur = game.Lighting.Blur
+local blur = game.Lighting:FindFirstChildOfClass("BlurEffect")
 local settingsFrame = script.Parent.Settings
 local mainFrame = script.Parent.Frame
-local creditsFrame = script.Parent.CreditsFrame
 local emptyFrame = script.Parent.EmptyFrame
 
 local ContentProvider = game:GetService("ContentProvider")
@@ -22,6 +21,7 @@ local ContextActionService = game:GetService("ContextActionService")
 local HapticsService = game:GetService("HapticService")
 
 local GlobalSettings = require(ReplicatedStorage.GlobalSettings)
+local UIEffectsClass = require(ReplicatedStorage.Classes.UIEffectsClass)
 
 local tweenservice = game.TweenService
 local TInfoParams = TweenInfo.new(0.3, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut)
@@ -32,49 +32,8 @@ local Player = game.Players.LocalPlayer
 local Character = Player.Character or Player.CharacterAdded:Wait()
 local Camera = workspace.CurrentCamera
 
--- LoadingScreen.Visible = true
-
 local Settings = GlobalSettings.PlayerSettings
 local hidePlayers = false
---[[
-local function canPromptOptIn()
-	local success, canPrompt = pcall(function()
-		return NotificationService:CanPromptOptInAsync()
-	end)
-	return success and canPrompt
-end
-
-local canPrompt = canPromptOptIn()
-if canPrompt then
-	local success, errorMessage = pcall(function()
-		NotificationService:PromptOptIn()
-	end)
-end
---]]
-local function creditsFrameSequence()
-	tweenservice:Create(creditsFrame, TweenInfo.new(5), { BackgroundTransparency = 0 })
-	for i, v in pairs(creditsFrame:GetDescendants()) do
-		if v:IsA("TextLabel") then
-			tweenservice:Create(v, TweenInfo.new(5), { TextTransparency = 0 })
-		end
-	end
-	tweenservice:Create(creditsFrame.Image, TweenInfo.new(5), { ImageTransparency = 0 })
-end
-
-local function stopCreditsSequence()
-	tweenservice:Create(creditsFrame, TInfoParams, { BackgroundTransparency = 1 })
-	for i, v in pairs(creditsFrame:GetDescendants()) do
-		if v:IsA("TextLabel") then
-			tweenservice:Create(v, TInfoParams, { TextTransparency = 1 })
-		end
-	end
-	tweenservice:Create(creditsFrame.Image, TInfoParams, { ImageTransparency = 1 })
-	emptyFrame.Visible = true
-	tweenservice:Create(emptyFrame, TweenInfo.new(2), { BackgroundTransparency = 0 })
-	task.wait(5)
-	tweenservice:Create(emptyFrame, TweenInfo.new(2), { Position = UDim2.new(0, 0, -1, 0) })
-	mainFrame.Visible = true
-end
 
 local function PlayGame()
 	task.wait(0.1)
@@ -150,9 +109,6 @@ local function checkSettings()
 		game.Lighting.EnvironmentSpecularScale = 1
 		game.Lighting.ShadowSoftness = 0.2
 	end
-
-	if settingsFrame.TextBox.Text == Settings.D then
-	end
 end
 
 task.spawn(checkSettings)
@@ -163,8 +119,8 @@ if settingsFrame.TextBox.Text == Settings.C then
 	task.spawn(function()
 		while task.wait(0.5) do
 			if hidePlayers then
-				for _, player in pairs(game.Players:GetPlayers()) do
-					for _, playerModel in pairs(workspace:GetChildren()) do
+				for index, player in pairs(game.Players:GetPlayers()) do
+					for index, playerModel in pairs(workspace:GetChildren()) do
 						if player.Name == playerModel.Name then
 							if player.Name ~= game.Players.LocalPlayer.Name then
 								playerModel.Parent = ReplicatedStorage
@@ -173,8 +129,8 @@ if settingsFrame.TextBox.Text == Settings.C then
 					end
 				end
 			else
-				for _, player in pairs(game.Players:GetPlayers()) do
-					for _, playerModel in pairs(workspace:GetChildren()) do
+				for index, player in pairs(game.Players:GetPlayers()) do
+					for index, playerModel in pairs(workspace:GetChildren()) do
 						if player.Name == playerModel.Name then
 							if player.Name ~= game.Players.LocalPlayer.Name then
 								playerModel.Parent = game.Workspace

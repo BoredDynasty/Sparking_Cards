@@ -1,4 +1,4 @@
---!strict
+--!native
 local Axios = require("axios")
 
 local function messageSend()
