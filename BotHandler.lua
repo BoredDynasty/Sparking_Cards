@@ -12,4 +12,4 @@ client:on("messageCreate", function(message)
 	end
 end)
 
-client:run("MTI4MTc4ODYwMjYyNzM5MTU1OQ.GQe9jc.1lMIHl7Vf5xch6uPWXJaNe7VU2Csuk2NxIb-zM")
+client:run(${{ secrets.BOT_KEY }})
