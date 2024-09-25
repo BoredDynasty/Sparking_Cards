@@ -1,15 +1,13 @@
 # Sparking Cards!
 
-> [!WARNING]
-> Game is currently unplayable, I'm testing some things that'll be crucial for the game and me.
-
-> ehehehe~!
-
 > [!TIP]
 > The next update is the full release!
 
-### Game Link
-https://www.roblox.com/games/6125133811/SPARKING-CARDS
+> [!IMPORTANT]
+> Game is currently unplayable, I'm testing some things that'll be crucial for the game and me.
+
+> I'm starting to learn normal Lua now. Do you see those ``requires`` wrapped in strings? Those are packages and libraries, like *Discordia*.
+> [SPARKING CARDS!](https://www.roblox.com/games/6125133811/SPARKING-CARDS)
 ## 1.  Plans
    - DataStore Improvements
    - Optimization Improvements
