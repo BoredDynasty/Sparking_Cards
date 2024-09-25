@@ -198,11 +198,14 @@ end
 
 function Class.PlayerRemoving(player: Player)
 	local success, err = pcall(function() -- Saving DataStores may fail sometimes. Best to wrap em' in a pcall.
-		CardsData:SetAsync(player.UserId, player.leaderstats.Cards.Value)
-		RankData:SetAsync(player.UserId, player.leaderstats.Rank.Value)
-		MultiplierType:SetAsync(player.UserId, player.leaderstats.MultiplierType.Value)
-		Abilities:SetAsync(player.UserId, player.leaderstats.MainAbility.Value)
-		ExperiencePoints:SetAsync(player.UserId, player.leaderstats.ExperiencePoints.Value)
+		for index, values in pairs(player:WaitForChild("leaderstats"):GetDescendants()) do
+			if values:IsA("StringValue") or values:IsA("IntValue") or values:IsA("NumberValue") then
+				local store = values:GetAttribute("DataStore")
+				local name = values:GetAttribute("DataName")
+				store = loadstring(store) -- This should be a function.
+				store()
+			end
+		end
 	end)
 	if not success then
 		PostClass.PostAsync(
@@ -319,7 +322,7 @@ function Class.SetOutgoingKBPSLimit(limit)
 	NetworkServer:SetOutgoingKBPSLimit(900)
 end
 
-function Class.SetAsync(DatastoreName: string, player: Player, value: any) -- CASE SENSITIVE
+function Class:SetAsync(DatastoreName: string, player: Player, value: any) -- CASE SENSITIVE
 	local UnknownDataStore = DataStore:GetDataStore(DatastoreName)
 	local GotDataStore = false
 	local result
@@ -333,6 +336,10 @@ function Class.SetAsync(DatastoreName: string, player: Player, value: any) -- CA
 	end
 
 	return GotDataStore, result
+end
+
+function Class:GetAsync(datastore, scope: string?): DataStore
+	return DataStore:GetDataStore(datastore, scope)
 end
 
 function Class:getPlayerStats() -- Returns a players "leaderstats" folder
@@ -354,6 +361,14 @@ function Class.StartBindToClose(custom) -- If the game is being shutdown, it sav
 	else
 		print("Game is in Studio Mode.")
 	end
+end
+
+function Class:CreateStat(player: Player, stat: any, initialValue)
+	local data = Class:GetAsync(stat, player.UserId)
+	local any = Instance.new("StringValue", player:WaitForChild("leaderstats"))
+
+	any.Value = initialValue
+	data:SetAsync(player.UserId, any.Value)
 end
 
 return Class

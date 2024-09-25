@@ -1,3 +1,4 @@
+--!strict
 --!native
 local Axios = require("axios")
 
