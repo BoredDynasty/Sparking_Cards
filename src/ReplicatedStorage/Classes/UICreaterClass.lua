@@ -6,6 +6,10 @@ local RunService = game:GetService("RunService")
 
 local UIEffectsClass = require(ReplicatedStorage.Classes:WaitForChild("UIEffectsClass"))
 
+--- @class UICreatorClass
+--- @__index UICreatorClass
+---
+--- This Class allows for Creating UI packed inside a module.
 local Class = {}
 Class.__index = Class
 
@@ -16,9 +20,11 @@ export type __index = {
 local self
 
 -- The Dubious Dynasty
--- A Class for making UI.
 
-function Class.Constructor(): __index -- You must call the Constructor First
+--[=[
+	Constructor
+--]=]
+function Class.Constructor(): __index
 	self = setmetatable({}, Class)
 
 	self.baseFrameSize = UDim2.new(0, 450, 0, 600)
@@ -59,6 +65,18 @@ function Class.Constructor(): __index -- You must call the Constructor First
 	end
 end
 
+--[=[
+	Create a Basic Frame Element
+
+	@param backgroundColor -- The Background Color you want the frame to have
+	@field actions -- A table of buttons
+	@field actionsToBind -- The functions that happens when a player interacts with an action.
+	@param title -- The Frame Title
+	@param description -- The Description
+	@param description -- Another Description
+	@param visible -- The visibility of the frame
+	@return any
+--]=]
 function Class.CreateFrameElement(
 	backgroundColor,
 	actions: any,

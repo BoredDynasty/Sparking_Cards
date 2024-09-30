@@ -11,6 +11,7 @@ local TeleportRE = Instance.new("RemoteEvent", ReplicatedStorage)
 TeleportRE.Name = "TeleportRE"
 
 local queueTable = {}
+local matchInfo = {}
 
 local function teleport(player: Player, queue): ()
 	if not table.find(queueTable, player) then
@@ -19,6 +20,7 @@ local function teleport(player: Player, queue): ()
 		AnalyticsClass.LogCustomEvent(player, "Player entered a match")
 		DataStoreClass.SaveData(player) -- Gotta save before we leave
 		local matchID = PostClass.GenerateGUID(true)
+		table.insert(matchInfo, matchID)
 		TeleportClass.TeleportParty(0, queueTable) -- TODO add a place number lmao
 		task.wait(5)
 		table.remove(queueTable, table.find(queueTable, player))

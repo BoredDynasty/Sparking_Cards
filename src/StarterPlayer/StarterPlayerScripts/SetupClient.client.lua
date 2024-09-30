@@ -1,4 +1,4 @@
---!nocheck
+--!strict
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local TextChatService = game:GetService("TextChatService")
@@ -30,8 +30,8 @@ Players.PlayerAdded:Connect(function(player: Player)
 		local GloveRClone = GloveR:Clone()
 		local GloveLClone = GloveL:Clone()
 
-		local RightHand = character:FindFirstChild("Right Arm")
-		local LeftHand = character:WaitForChild("Left Arm")
+		local RightHand = character.RightArm
+		local LeftHand = character.LeftArm
 
 		GloveRClone.Parent = RightHand
 		GloveLClone.Parent = LeftHand
@@ -39,12 +39,10 @@ Players.PlayerAdded:Connect(function(player: Player)
 		att.Parent = GloveRClone
 		att.Part0 = GloveRClone
 		att.Part1 = RightHand
-		--att.C0.Rotation = CFrame.fromOrientation(0, 90, 90)
 
 		att2.Parent = GloveLClone
 		att2.Part0 = GloveLClone
 		att2.Part1 = LeftHand
-		--att2.C0.Rotation = CFrame.fromOrientation(0, -90, 90)
 	end)
 end)
 
@@ -59,4 +57,4 @@ local MainCursor = "rbxasset://SystemCursors/Arrow"
 
 Mouse.Icon = MainCursor
 
-NewChatRE.OnClientEvent:Connect()
+NewChatRE.OnClientEvent:Connect(chatMakeSystemMessage)

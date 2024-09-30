@@ -15,6 +15,7 @@ local AnalyticsClass = require(ReplicatedStorage.Classes.AnalyticsClass)
 local UserInputType = require(ReplicatedStorage.Classes.UserInputType)
 local DataStoreClass = require(ReplicatedStorage.Classes.DataStoreClass)
 local GlobalSettings = require(ReplicatedStorage.GlobalSettings)
+local UIEffectsClass = require(ReplicatedStorage.Classes.UIEffectsClass)
 
 Players.PlayerAdded:Connect(function(player)
 	player.CharacterRemoving:Connect(function(character)
@@ -29,7 +30,7 @@ end)
 -- extra
 
 for index, textLabels in pairs(game:GetDescendants()) do -- imagine doing getdescedants on the game
-	if textLabels:IsA("TextSource") then
+	if textLabels:IsA("TextLabel") then
 		textLabels.FontFace = Font.fromName("Builder Extended" or "BuilderSans")
 	end
 end
