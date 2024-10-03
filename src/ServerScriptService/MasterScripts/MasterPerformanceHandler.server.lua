@@ -1,4 +1,5 @@
---!strict
+--!nonstrict
+
 -- This script is also a command script!
 local CollectionService = game:GetService("CollectionService")
 local ContextActionService = game:GetService("ContextActionService")
@@ -35,22 +36,20 @@ for index, textLabels in pairs(game:GetDescendants()) do -- imagine doing getdes
 	end
 end
 
-GlobalSettings.GrabPrivateServer()
-
-local calculatedFPS
+local calculatedFPS = 0
 local startTime = os.clock()
 local X = 0.01
 local FPS_Counter = 0
 
-local function getServerUptime() -- Returns the Server Uptime
+local function getServerUptime(): any -- Returns the Server Uptime
 	local lastServerStart = Stats.Server.StartTime
 	local currentTime = tick()
 	local serverUptime = currentTime - lastServerStart
 
-	return serverUptime
+	return serverUptime, workspace.DistrubutedGameTime
 end
 
-local function GetBenchmarks() -- Returns Benchmarks, also sends thru a webhook
+local function GetBenchmarks(): number -- Returns Benchmarks, also sends thru a webhook
 	FPS_Counter += 1
 	if (os.clock() - startTime) >= X then
 		local fps = math.floor(FPS_Counter / (os.clock() - startTime))
@@ -91,13 +90,14 @@ if RunService:IsStudio() then
 		GetBenchmarks()
 	end)
 else
-	print("The game is not in Studio mode, benchmarks here are disabled.")
+	local str = "The game is not in Studio mode,\nbenchmarks here are disabled."
+	print(string.format(str, "%q"))
 end
 
 local Clone = ReplicatedStorage.Assets.Server:Clone()
 Clone.Parent = workspace
 
-local SteppedConnection
+local SteppedConnection = nil
 
 task.spawn(function()
 	SteppedConnection = RunService.Stepped:Connect(function(time, deltaTime)
@@ -105,15 +105,6 @@ task.spawn(function()
 			or game.Workspace.DistributedGameTime
 		Clone.Top.BillboardGui.FPS.Text = "Client FPS; " .. tostring(GetBenchmarks)
 	end)
-end)
-
-task.spawn(function()
-	for index, object in pairs(game:GetDescendants()) do
-		if object:IsA("GuiButton") then
-			object:AddTag("gui_button")
-			print("found " .. index .. " gui_buttons")
-		end
-	end
 end)
 
 DataStoreClass.StartBindToClose(GetBenchmarks)
