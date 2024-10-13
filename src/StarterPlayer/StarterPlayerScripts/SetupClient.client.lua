@@ -1,23 +1,11 @@
---!strict
+--!nocheck
+
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
-local TextChatService = game:GetService("TextChatService")
+local UserInputService = game:GetService("UserInputService")
 local Mouse = Players.LocalPlayer:GetMouse()
 
-local WindShake = require(script.Parent:WaitForChild("WindShake"))
-
-local NewChatRE: UnreliableRemoteEvent = ReplicatedStorage:WaitForChild("ChatMessageGlobal")
-
-WindShake:Init({
-	MatchWorkspaceWind = false,
-})
-
-WindShake:UpdateObjectSettings({
-
-	WindDirection = Vector3.new(1, 0.7, 0.5),
-	WindPower = 20,
-	WindSpeed = 1.5,
-})
+-- Gloves
 
 local GloveR = script.gloverightPlayer
 local GloveL = script.gloveleftPlayer
@@ -46,15 +34,24 @@ Players.PlayerAdded:Connect(function(player: Player)
 	end)
 end)
 
-local function chatMakeSystemMessage(message)
-	local channel = TextChatService:WaitForChild("RBXSystem")
-	channel:DisplaySystemMessage({
-		Text = message,
-	})
-end
+local player = Players.LocalPlayer
 
-local MainCursor = "rbxasset://SystemCursors/Arrow"
+UserInputService.InputBegan:Connect(function(input, gameProcessedEvent)
+	if gameProcessedEvent then
+		return
+	end
 
-Mouse.Icon = MainCursor
+	if input == Enum.KeyCode.LeftShift then
+		player.Character.Humanoid.WalkSpeed = 16
+	end
+end)
 
-NewChatRE.OnClientEvent:Connect(chatMakeSystemMessage)
+UserInputService.InputEnded:Connect(function(input, gameProcessedEvent)
+	if gameProcessedEvent then
+		return
+	end
+
+	if input == Enum.KeyCode.LeftShift then
+		player.Character.Humanoid.WalkSpeed = 14
+	end
+end)

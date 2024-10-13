@@ -97,11 +97,15 @@ for _, emoteButtons in HolderFrame.Circle:GetDescendants() do
 end
 
 UserInputService.InputBegan:Connect(function(input: InputObject, gameProcessedEvent: boolean)
-	if gameProcessedEvent == true then
+	if gameProcessedEvent then
 		return
 	end
 
 	if input == Enum.KeyCode.Tab then
-		HolderFrame.Visible = not HolderFrame.Visible
+		if HolderFrame.Visible == true then
+			HolderFrame.Visible = false
+		else
+			HolderFrame.Visible = true
+		end
 	end
 end)

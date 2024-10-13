@@ -8,6 +8,7 @@ local MultiplierType = DataStore:GetDataStore("Card Type")
 local Abilities = DataStore:GetDataStore("StoredAbilities")
 local ExperiencePoints = DataStore:GetDataStore("ExperiencePoints")
 local PDS = DataStore:GetDataStore("PositionDataStore")
+local HostServerData = DataStore:GetDataStore("HostServerData")
 
 local MessagingService = game:GetService("MessagingService")
 local Players = game:GetService("Players")
