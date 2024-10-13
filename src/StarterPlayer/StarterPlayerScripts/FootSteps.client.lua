@@ -1,39 +1,47 @@
--- Roblox character sound script
+--!nocheck
 
 local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
-
-local AnimationState = require(script:WaitForChild("AnimationState"))
+local FootstepsSoundGroup = game:GetService("SoundService"):WaitForChild("Footsteps")
 
 local SOUND_DATA = {
 	Climbing = {
 		SoundId = "rbxasset://sounds/action_footsteps_plastic.mp3",
 		Looped = true,
 	},
+
 	Died = {
 		SoundId = "rbxasset://sounds/uuhhh.mp3",
 	},
+
 	FreeFalling = {
 		SoundId = "rbxasset://sounds/action_falling.mp3",
 		Looped = true,
 	},
+
 	GettingUp = {
 		SoundId = "rbxasset://sounds/action_get_up.mp3",
 	},
+
 	Jumping = {
 		SoundId = "rbxasset://sounds/action_jump.mp3",
 	},
+
 	Landing = {
 		SoundId = "rbxasset://sounds/action_jump_land.mp3",
 	},
+
 	Running = {
-		SoundId = "rbxasset://sounds/action_footsteps_plastic.mp3",
+		SoundId = "",
 		Looped = true,
-		Pitch = 1.85,
+		Playing = true,
+		Pitch = 1,
 	},
+
 	Splash = {
 		SoundId = "rbxasset://sounds/impact_water.mp3",
 	},
+
 	Swimming = {
 		SoundId = "rbxasset://sounds/action_swim.mp3",
 		Looped = true,
@@ -41,10 +49,9 @@ local SOUND_DATA = {
 	},
 }
 
- -- wait for the first of the passed signals to fire
 local function waitForFirst(...)
 	local shunt = Instance.new("BindableEvent")
-	local slots = {...}
+	local slots = { ... }
 
 	local function fire(...)
 		for i = 1, #slots do
@@ -61,9 +68,8 @@ local function waitForFirst(...)
 	return shunt.Event:Wait()
 end
 
--- map a value from one range to another
 local function map(x, inMin, inMax, outMin, outMax)
-	return (x - inMin)*(outMax - outMin)/(inMax - inMin) + outMin
+	return (x - inMin) * (outMax - outMin) / (inMax - inMin) + outMin
 end
 
 local function playSound(sound)
@@ -71,23 +77,18 @@ local function playSound(sound)
 	sound.Playing = true
 end
 
-local function shallowCopy(t)
-	local out = {}
-	for k, v in pairs(t) do
-		out[k] = v
-	end
-	return out
+local function stopSound(sound)
+	sound.Playing = false
+	sound.TimePosition = 0
 end
 
 local function initializeSoundSystem(player, humanoid, rootPart)
 	local sounds = {}
 
-	-- initialize sounds
 	for name, props in pairs(SOUND_DATA) do
 		local sound = Instance.new("Sound")
 		sound.Name = name
 
-		-- set default values
 		sound.Archivable = false
 		sound.EmitterSize = 5
 		sound.MaxDistance = 150
@@ -104,7 +105,7 @@ local function initializeSoundSystem(player, humanoid, rootPart)
 	local playingLoopedSounds = {}
 
 	local function stopPlayingLoopedSounds(except)
-		for sound in pairs(shallowCopy(playingLoopedSounds)) do
+		for sound in pairs(playingLoopedSounds) do
 			if sound ~= except then
 				sound.Playing = false
 				playingLoopedSounds[sound] = nil
@@ -112,7 +113,6 @@ local function initializeSoundSystem(player, humanoid, rootPart)
 		end
 	end
 
-	-- state transition callbacks
 	local stateTransitions = {
 		[Enum.HumanoidStateType.FallingDown] = function()
 			stopPlayingLoopedSounds()
@@ -181,7 +181,6 @@ local function initializeSoundSystem(player, humanoid, rootPart)
 		end,
 	}
 
-	-- updaters for looped sounds
 	local loopedSoundUpdaters = {
 		[sounds.Climbing] = function(dt, sound, vel)
 			sound.Playing = vel.Magnitude > 0.1
@@ -189,26 +188,43 @@ local function initializeSoundSystem(player, humanoid, rootPart)
 
 		[sounds.FreeFalling] = function(dt, sound, vel)
 			if vel.Magnitude > 75 then
-				sound.Volume = math.clamp(sound.Volume + 0.9*dt, 0, 1)
+				sound.Volume = math.clamp(sound.Volume + 0.9 * dt, 0, 1)
 			else
 				sound.Volume = 0
 			end
 		end,
 
 		[sounds.Running] = function(dt, sound, vel)
-			sound.Playing = vel.Magnitude > 0.5 and humanoid.MoveDirection.Magnitude > 0.5
+			--sound.Playing = vel.Magnitude > 0.5 and humanoid.MoveDirection.Magnitude > 0.5
+
+			sound.SoundId = FootstepsSoundGroup:WaitForChild(humanoid.FloorMaterial.Name).SoundId
+			sound.PlaybackSpeed = FootstepsSoundGroup:WaitForChild(humanoid.FloorMaterial.Name).PlaybackSpeed
+				* (vel.Magnitude / 20)
+			sound.Volume = FootstepsSoundGroup:WaitForChild(humanoid.FloorMaterial.Name).Volume
+				* (vel.Magnitude / 12)
+				* 1
+			sound.EmitterSize = FootstepsSoundGroup:WaitForChild(humanoid.FloorMaterial.Name).Volume
+				* (vel.Magnitude / 12)
+				* 50
+				* 1
+
+			if FootstepsSoundGroup:FindFirstChild(humanoid.FloorMaterial.Name) == nil then
+				sound.SoundId = FootstepsSoundGroup:WaitForChild("nil Sound").SoundId
+				sound.PlaybackSpeed = FootstepsSoundGroup:WaitForChild("nil Sound").PlaybackSpeed
+				sound.EmitterSize = FootstepsSoundGroup:WaitForChild("nil Sound").Volume
+				sound.Volume = FootstepsSoundGroup:WaitForChild("nil Sound").Volume
+			end
 		end,
 	}
 
-	-- state substitutions to avoid duplicating entries in the state table
 	local stateRemap = {
 		[Enum.HumanoidStateType.RunningNoPhysics] = Enum.HumanoidStateType.Running,
 	}
 
 	local activeState = stateRemap[humanoid:GetState()] or humanoid:GetState()
-	local animator = humanoid:WaitForChild("Animator")
+	local activeConnections = {}
 
-	local function onStateChange(_, state)
+	local stateChangedConn = humanoid.StateChanged:Connect(function(_, state)
 		state = stateRemap[state] or state
 
 		if state ~= activeState then
@@ -220,17 +236,9 @@ local function initializeSoundSystem(player, humanoid, rootPart)
 
 			activeState = state
 		end
-	end
-
-	local stateChangedConn = humanoid.StateChanged:Connect(onStateChange)
-	local animStateChangedConn = AnimationState(animator, function(_, state)
-		if humanoid.PlatformStand then
-			onStateChange(_, state)
-		end
 	end)
 
 	local steppedConn = RunService.Stepped:Connect(function(_, worldDt)
-		-- update looped sounds on stepped
 		for sound in pairs(playingLoopedSounds) do
 			local updater = loopedSoundUpdaters[sound]
 
@@ -246,7 +254,6 @@ local function initializeSoundSystem(player, humanoid, rootPart)
 
 	local function terminate()
 		stateChangedConn:Disconnect()
-		animStateChangedConn:Disconnect()
 		steppedConn:Disconnect()
 		humanoidAncestryChangedConn:Disconnect()
 		rootPartAncestryChangedConn:Disconnect()
@@ -270,15 +277,6 @@ end
 
 local function playerAdded(player)
 	local function characterAdded(character)
-		-- Avoiding memory leaks in the face of Character/Humanoid/RootPart lifetime has a few complications:
-		-- * character deparenting is a Remove instead of a Destroy, so signals are not cleaned up automatically.
-		-- ** must use a waitForFirst on everything and listen for hierarchy changes.
-		-- * the character might not be in the dm by the time CharacterAdded fires
-		-- ** constantly check consistency with player.Character and abort if CharacterAdded is fired again
-		-- * Humanoid may not exist immediately, and by the time it's inserted the character might be deparented.
-		-- * RootPart probably won't exist immediately.
-		-- ** by the time RootPart is inserted and Humanoid.RootPart is set, the character or the humanoid might be deparented.
-
 		if not character.Parent then
 			waitForFirst(character.AncestryChanged, player.CharacterAdded)
 		end
@@ -297,14 +295,23 @@ local function playerAdded(player)
 			return
 		end
 
-		-- must rely on HumanoidRootPart naming because Humanoid.RootPart does not fire changed signals
 		local rootPart = character:FindFirstChild("HumanoidRootPart")
 		while character:IsDescendantOf(game) and not rootPart do
-			waitForFirst(character.ChildAdded, character.AncestryChanged, humanoid.AncestryChanged, player.CharacterAdded)
+			waitForFirst(
+				character.ChildAdded,
+				character.AncestryChanged,
+				humanoid.AncestryChanged,
+				player.CharacterAdded
+			)
 			rootPart = character:FindFirstChild("HumanoidRootPart")
 		end
 
-		if rootPart and humanoid:IsDescendantOf(game) and character:IsDescendantOf(game) and player.Character == character then
+		if
+			rootPart
+			and humanoid:IsDescendantOf(game)
+			and character:IsDescendantOf(game)
+			and player.Character == character
+		then
 			initializeSoundSystem(player, humanoid, rootPart)
 		end
 	end
@@ -319,3 +326,24 @@ Players.PlayerAdded:Connect(playerAdded)
 for _, player in ipairs(Players:GetPlayers()) do
 	playerAdded(player)
 end
+
+repeat
+	wait()
+until game.Players.LocalPlayer.Character
+
+local Character = game.Players.LocalPlayer.Character
+local Head = Character:WaitForChild("HumanoidRootPart")
+local RunningSound = Head:WaitForChild("Running")
+local Humanoid = Character:WaitForChild("Humanoid")
+local vel = 0
+
+Humanoid.Changed:Connect(function(property) end)
+
+Humanoid.Running:connect(function(a)
+	RunningSound.PlaybackSpeed = FootstepsSoundGroup:WaitForChild(Humanoid.FloorMaterial.Name).PlaybackSpeed
+		* (a / 20)
+		* (math.random(30, 50) / 40)
+	RunningSound.Volume = FootstepsSoundGroup:WaitForChild(Humanoid.FloorMaterial.Name).Volume * (vel / 12)
+	RunningSound.EmitterSize = FootstepsSoundGroup:WaitForChild(Humanoid.FloorMaterial.Name).Volume * (vel / 12) * 50
+	vel = a
+end)

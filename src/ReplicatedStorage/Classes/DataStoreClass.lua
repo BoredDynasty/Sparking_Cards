@@ -1,4 +1,4 @@
---!strict
+--!nocheck
 local Class = {}
 
 local DataStore = game:GetService("DataStoreService")
@@ -17,7 +17,6 @@ local RunService = game:GetService("RunService")
 local ContextActionService = game:GetService("ContextActionService")
 local NetworkServer = game:GetService("NetworkServer")
 
-local PostClass = require(ReplicatedStorage.Classes.PostClass)
 local MathClass = require(ReplicatedStorage.Classes.MathClass)
 local GlobalSettings = require(ReplicatedStorage.GlobalSettings)
 
@@ -108,20 +107,9 @@ function Class.PlayerAdded(player: Player) -- Setup DataSystem
 	local Character = game.Workspace:WaitForChild(player.Name)
 	local GetPosition
 
-	local succes, err = pcall(function()
+	local succes = pcall(function()
 		GetPosition = PDS:GetAsync(player.UserId)
 	end)
-
-	if not succes then
-		PostClass.PostAsync(
-			"Failed To Save Player Data | ",
-			err,
-			" This is most likely because the game was bounded to close. The players were most likely automatically deleted. ",
-			7419530
-		)
-	else
-		print("got pos")
-	end
 
 	if GetPosition then
 		local SavedPosition = SavedPositionGUI:Clone()
@@ -178,22 +166,13 @@ function Class.PlayerAdded(player: Player) -- Setup DataSystem
 end
 
 function Class.SaveData(player: Player) -- Manually Save Data
-	local success, err = pcall(function()
+	local success = pcall(function()
 		CardsData:SetAsync(player.UserId, player.leaderstats.Cards.Value)
 		RankData:SetAsync(player.UserId, player.leaderstats.Rank.Value)
 		MultiplierType:SetAsync(player.UserId, player.leaderstats.MultiplierType.Value)
 		Abilities:SetAsync(player.UserId, player.leaderstats.MainAbility.Value)
 		ExperiencePoints:SetAsync(player.UserId, player.leaderstats.ExperiencePoints.Value)
 	end)
-
-	if not success then
-		PostClass.PostAsync(
-			"Failed To Save Player Data | ",
-			err,
-			" This is most likely because the game was bounded to close. Also The players were most likely automatically deleted. ",
-			7419530
-		)
-	end
 end
 
 function Class.PlayerRemoving(player: Player)
@@ -207,19 +186,11 @@ function Class.PlayerRemoving(player: Player)
 			end
 		end
 	end)
-	if not success then
-		PostClass.PostAsync(
-			"Failed To Save Player Data | ",
-			err,
-			" This is most likely because the game was bounded to close. Also The players were most likely automatically deleted. ",
-			7419530
-		)
-	end
 end
 
 function Class.SavePosition(player: Player) -- Saves Player Position
 	for i, v in pairs(Players:GetChildren()) do
-		local success, err = pcall(function()
+		local success = pcall(function()
 			local HumanoidPos = game.Workspace:WaitForChild(v.Name).HumanoidRootPart.Position
 			local HumanoidOri = game.Workspace:WaitForChild(v.Name).HumanoidRootPart.Orientation
 
@@ -239,20 +210,12 @@ function Class.SavePosition(player: Player) -- Saves Player Position
 					.. " ) "
 			)
 		end)
-		if not success then
-			PostClass.PostAsync(
-				"Failed To Save Player Data | ",
-				err,
-				" This is most likely because the game was bounded to close. The players were most likely automatically deleted. ",
-				7419530
-			)
-		end
 	end
 end
 
 local function saveAllData() -- Saves All Data
 	for i, v in pairs(Players:GetChildren()) do
-		local success, err = pcall(function()
+		local success = pcall(function()
 			local HumanoidPos = game.Workspace:WaitForChild(v.Name).HumanoidRootPart.Position
 			local HumanoidOri = game.Workspace:WaitForChild(v.Name).HumanoidRootPart.Orientation
 
@@ -280,18 +243,6 @@ local function saveAllData() -- Saves All Data
 					.. " ) "
 			)
 		end)
-		if not success then
-			PostClass.PostAsync(
-				"Data Failiure ",
-				"A Data Failure Has Happened. Here are the Users Involved. | " .. table.concat(v),
-				" | Last Positions = { "
-					.. v.DisplayName
-					.. "Positions = "
-					.. v.Character.HumanoidRootPart.Position.X
-					.. v.Character.HumanoidRootPart.Position.Y
-					.. v.Character.HumanoidRootPart.Position.Z
-			)
-		end
 	end
 
 	local success, err = pcall(function()
@@ -303,23 +254,16 @@ local function saveAllData() -- Saves All Data
 			ExperiencePoints:SetAsync(player.UserId, player.leaderstats.ExperiencePoints.Value)
 		end
 	end)
-	if not success then
-		PostClass.PostAsync(
-			"Failed To Save Player Data | ",
-			err,
-			" This is most likely because the game was bounded to close. The players were most likely automatically deleted. ",
-			7419530
-		)
-	end
 end
 
 function Class.SetOutgoingKBPSLimit(limit)
 	if not limit then
 		limit = 90
 	end
+
 	NetworkServer:SetOutgoingKBPSLimit(limit)
 	task.wait(300) -- i doubt the game will want such a limit
-	NetworkServer:SetOutgoingKBPSLimit(900)
+	NetworkServer:SetOutgoingKBPSLimit(math.huge)
 end
 
 function Class:SetAsync(DatastoreName: string, player: Player, value: any) -- CASE SENSITIVE

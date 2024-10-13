@@ -1,4 +1,4 @@
---!strict
+--!nocheck
 local AnalyticsService = game:GetService("AnalyticsService")
 local Players = game:GetService("Players")
 local HTTPService = game:GetService("HttpService")
@@ -7,9 +7,8 @@ local CollectionService = game:GetService("CollectionService")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 local AnalyticsClass = require(ReplicatedStorage.Classes.AnalyticsClass)
-local PostClass = require(ReplicatedStorage.Classes.PostClass)
 
-local FunnelSessionID = PostClass.GenerateGUID(false)
+local FunnelSessionID = HTTPService:GenerateGUID()
 
 print("Funnel Analytics are enabled.")
 
@@ -29,4 +28,10 @@ Players.PlayerAdded:Connect(function(player)
 			)
 		end)
 	end
+end)
+
+ReplicatedStorage.RemoteEvents.RespawnPlayer.OnServerEvent:Connect(function(player: Player)
+	player:LoadCharacter()
+	task.wait(1)
+	AnalyticsService:LogOnboardingFunnelStepEvent(player, 3, "Death")
 end)

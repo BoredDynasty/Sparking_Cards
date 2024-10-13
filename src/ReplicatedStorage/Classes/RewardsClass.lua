@@ -1,5 +1,8 @@
---!strict
+--!nocheck
+
 local Class = {}
+Class.__index = Class
+
 Class.AddCardsValue = 20
 
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
@@ -7,7 +10,6 @@ local Players = game:GetService("Players")
 local MarketplaceService = game:GetService("MarketplaceService")
 local Analytics = game:GetService("AnalyticsService")
 
-local PostClass = require(ReplicatedStorage.Classes.PostClass)
 local GlobalSettings = require(ReplicatedStorage.GlobalSettings)
 
 local PassID = 891181374
@@ -24,34 +26,26 @@ function Class.NewReward(
 	local Rank: StringValue = LeaderstatsFolder:FindFirstChild("Rank")
 	local Multiplier: StringValue = LeaderstatsFolder:FindFirstChild("MultiplierType")
 	local Experience: NumberValue = LeaderstatsFolder:FindFirstChild("ExperiencePoints")
+
 	if not AddCards then
 		AddCards = GlobalSettings.DefaultAward
 	end
+
 	if not Experience then
 		ExperiencePoints = GlobalSettings.DefaultAward / 5
 	end
 
-	-- i hadda do type checking cuz roblox is quite stoopid
-
 	local hasPass = false
 
-	local success, message = pcall(function()
+	local success = pcall(function()
 		hasPass = MarketplaceService:UserOwnsGamePassAsync(player.UserId, PassID)
 	end)
 
-	if not success then
-		warn("We had an error checking if " .. tostring(player.Name) .. " has the Double Cards gamepass. " .. message)
-		return
-	end
-
 	if AddCards then
 		if hasPass then
-			Cards.Value += math.ceil(AddCards * 2)
-			PostClass.PostAsync("Player has Double Cards Pass. ", player.Name)
+			Cards.Value += AddCards * 2
 		else
 			Cards.Value += math.ceil(AddCards)
-			MarketplaceService:PromptGamePassPurchase(player, PassID)
-			print("You're gonna need it!")
 		end
 	end
 

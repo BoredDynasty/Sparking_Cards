@@ -6,7 +6,6 @@ local Players = game:GetService("Players")
 local Analytics = game:GetService("AnalyticsService")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
-local PostClass = require(ReplicatedStorage.Classes.PostClass)
 local DataClass = require(ReplicatedStorage.Classes.DataStoreClass)
 
 function Class.LogEconomyEvent(player: Player?, type, amount, transaction): string
@@ -31,16 +30,25 @@ function Class.LogCustomEvent(player: Player, name): string
 	end
 
 	Analytics:LogCustomEvent(player, name, 1)
+
 	return "Log Sent"
 end
 
 function Class.LogOnboardingFunnelStepEvent(player: Player, name, step): string
 	Analytics:LogOnboardingFunnelStepEvent(player, step, name)
+
 	return "Log Sent"
 end
 
-function Class.LogProgressionEvent(player, pathName, progressionType: Enum.AnalyticsProgressionStatus, level, levelName): string
+function Class.LogProgressionEvent(
+	player,
+	pathName,
+	progressionType: Enum.AnalyticsProgressionStatus,
+	level,
+	levelName
+): string
 	Analytics:LogProgressionEvent(player, pathName, progressionType, level, levelName)
+
 	return "Log Sent"
 end
 

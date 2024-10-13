@@ -16,7 +16,6 @@ local MathClass = require(ReplicatedStorage.Classes.MathClass)
 
 local AwardableTag = CollectionService:GetTagged("Awardable")
 local TutorialTag = CollectionService:GetTagged("Tutorial")
-local MovingGuiElementTag = CollectionService:GetTagged("AnimatedMovingElement")
 
 for _, Awardable in pairs(AwardableTag) do
 	local AwardablePart = Awardable
@@ -68,38 +67,4 @@ for _, Tutorial in pairs(TutorialTag) do
 			F.Visible = false
 		end)
 	end)
-end
---[[
-for _, animatedElement in pairs(MovingGuiElementTag) do
-	local animated = animatedElement
-	local tween = TweenService:Create(
-		animated,
-		TweenInfo.new(5, Enum.EasingStyle.Circular, Enum.EasingDirection.InOut, math.huge, true, 0),
-		{
-			Position = UDim2.new(
-				MathClass.Random(animated.Position.X - 4, animatedElement.Position.X),
-				MathClass.Random(animated.Position.Y - 4, animatedElement.Position.Y)
-			),
-		}
-	)
-	local stopAllAnimationsEvent = Instance.new("UnreliableRemoteEvent", ReplicatedStorage.RemoteEvents)
-	stopAllAnimationsEvent.Name = "StopCurrentUIAnimations"
-
-	local function stopAllAnimations()
-		tween:Stop()
-	end
-	stopAllAnimationsEvent.OnServerEvent:Connect(stopAllAnimations)
-end
---]]
-
-for index, humanoid in pairs(CollectionService:GetTagged("Dancing")) do
-	if humanoid:IsA("Humanoid") then
-		local animation: Animation = script.Parent:WaitForChild("Animation")
-		local dance = humanoid:LoadAnimation(animation)
-		dance:Play()
-		task.spawn(function()
-			task.wait(5)
-			dance:Play()
-		end)
-	end
 end

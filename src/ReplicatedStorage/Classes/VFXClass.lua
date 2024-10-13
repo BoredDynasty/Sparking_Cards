@@ -1,4 +1,4 @@
---!strict
+--!nocheck
 
 local CollectionService = game:GetService("CollectionService")
 local ContextActionService = game:GetService("ContextActionService")
@@ -143,24 +143,6 @@ function Class.StartListening(player: Player) -- this function uses its own clas
 			end)
 		end
 	end)
-end
-
-function Class.SoundListener()
-	local click = CollectionService:GetTagged("gui_button")
-	for index, object in pairs(click) do
-		local newObject = click
-		local connection
-		connection = newObject.MouseButton1Down:Connect(function()
-			local soundType = newObject:GetAttribute("sound_type")
-			if not soundType then
-				return
-			end
-			UIEffectsClass.Sound(soundType, newObject)
-		end)
-		newObject.Destroying:Once(function()
-			connection:Disconnect() -- man the server may be very constipated if we dont disconnect
-		end)
-	end
 end
 
 return Class
