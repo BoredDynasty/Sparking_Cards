@@ -20,7 +20,7 @@
 >
 > Oh and one more thing, once I learn how to make cutscenes, abilities, and a good Match Making system, this game will quickly start to finish up.
 
-
+[SPARKING CARDS!](https://www.roblox.com/games/6125133811/SPARKING-CARDS)
 
 ### Beta Phase
 
@@ -36,7 +36,7 @@
 | Map Improvements 
 | Game Progress <font color="#ffff7f">~34%</font>.
 
-Early Alpha 5
+- Early Alpha 5
 
 > Early Alpha 
 | Changed some fonts to the "Builder" font. 
@@ -51,7 +51,7 @@ Early Alpha 5
 | New Main Menu 
 | Fixed UI Scaling
 
-Early Alpha 4
+- Early Alpha 4
 
 > Early Alpha
 | Made everything more convenient for the Developer
@@ -64,7 +64,7 @@ Early Alpha 4
 > | Fixed UI Scaling
 > | Other Subtle Changes
 
-Early Alpha 3
+- Early Alpha 3
 
 > Early Alpha
 > | Added New Map
@@ -80,7 +80,7 @@ Early Alpha 3
 > | Loading Screen
 > | New Lighting
 
-Early Alpha 2
+- Early Alpha 2
 
 > Early Alpha
 > | New Framework Place
@@ -94,7 +94,7 @@ Early Alpha 2
 > | New Mouse Cursor (I know it's not ideal but what else do I have? i actually have alot lol.)
 > | A little more Terrain Blending |
 
-Early Alpha 1
+- Early Alpha 1
 
 > Early Alpha
 > | New Lobby
@@ -108,4 +108,4 @@ Early Alpha 1
 > | Added Ranks
 > | Added Funky Features (Emphasis on ("Features")
 
-[SPARKING CARDS!](https://www.roblox.com/games/6125133811/SPARKING-CARDS)
+> No update logs before that.
