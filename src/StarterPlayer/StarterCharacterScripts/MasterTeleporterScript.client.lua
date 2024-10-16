@@ -3,7 +3,6 @@ local CollectionService = game:GetService("CollectionService")
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
-local UIEffectsClass = require(ReplicatedStorage.Classes.UIEffectsClass)
 local LoadingClass = require(ReplicatedStorage.Classes.LoadingClass)
 
 local player = Players.LocalPlayer

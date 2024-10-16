@@ -6,8 +6,6 @@ local HTTPService = game:GetService("HttpService")
 local CollectionService = game:GetService("CollectionService")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
-local AnalyticsClass = require(ReplicatedStorage.Classes.AnalyticsClass)
-
 local FunnelSessionID = HTTPService:GenerateGUID()
 
 print("Funnel Analytics are enabled.")

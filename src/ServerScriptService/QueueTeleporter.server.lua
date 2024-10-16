@@ -1,4 +1,4 @@
---!nonstrict
+--!nocheck
 
 local CollectionService = game:GetService("CollectionService")
 local DataStoreService = game:GetService("DataStoreService")

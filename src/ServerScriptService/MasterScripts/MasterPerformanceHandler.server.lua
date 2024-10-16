@@ -1,4 +1,4 @@
---!strict
+--!nocheck
 -- This script is also a command script!
 local CollectionService = game:GetService("CollectionService")
 local ContextActionService = game:GetService("ContextActionService")
@@ -10,10 +10,7 @@ local ServerStorage = game:GetService("ServerStorage")
 local UserInputService = game:GetService("UserInputService")
 local Stats = game:GetService("Stats")
 
-local UserInputType = require(ReplicatedStorage.Classes.UserInputType)
 local DataStoreClass = require(ReplicatedStorage.Classes.DataStoreClass)
-local GlobalSettings = require(ReplicatedStorage.GlobalSettings)
-local UIEffectsClass = require(ReplicatedStorage.Classes.UIEffectsClass)
 
 Players.PlayerAdded:Connect(function(player)
 	player.CharacterRemoving:Connect(function(character)

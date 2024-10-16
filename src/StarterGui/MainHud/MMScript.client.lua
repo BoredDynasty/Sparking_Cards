@@ -21,7 +21,6 @@ local ContextActionService = game:GetService("ContextActionService")
 local HapticsService = game:GetService("HapticService")
 
 local GlobalSettings = require(ReplicatedStorage.GlobalSettings)
-local UIEffectsClass = require(ReplicatedStorage.Classes.UIEffectsClass)
 
 local tweenservice = game.TweenService
 local TInfoParams = TweenInfo.new(0.3, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut)

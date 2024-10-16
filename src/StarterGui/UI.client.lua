@@ -11,7 +11,6 @@ local TweenService = game:GetService("TweenService")
 local UserInputService = game:GetService("UserInputService")
 local MarketPlaceService = game:GetService("MarketplaceService")
 
-local GlobalSettings = require(ReplicatedStorage.GlobalSettings)
 local UIEffectsClass = require(ReplicatedStorage.Classes.UIEffectsClass)
 
 local player = Players.LocalPlayer
@@ -59,27 +58,27 @@ local playingAnimation = nil
 
 local function playanim(AnimationID)
 	if Character ~= nil and Humanoid ~= nil then
-		local AnimationID = "rbxassetid://" .. tostring(AnimationID)
-		local oldanim = Character:FindFirstChild("LocalAnimation")
+		local anim = "rbxassetid://" .. tostring(AnimationID)
+		local oldnim = Character:FindFirstChild("LocalAnimation")
 		Humanoid.WalkSpeed = 0
 
 		if playingAnimation ~= nil then
 			playingAnimation:Stop()
 		end
 
-		if oldanim ~= nil then
-			if oldanim.AnimationId == AnimationID then
-				oldanim:Destroy()
+		if oldnim ~= nil then
+			if oldnim.AnimationId == anim then
+				oldnim:Destroy()
 				Humanoid.WalkSpeed = 14
 
 				return
 			end
-			oldanim:Destroy()
+			oldnim:Destroy()
 		end
 
 		local animation = Instance.new("Animation", Character)
 		animation.Name = "LocalAnimation"
-		animation.AnimationId = AnimationID
+		animation.AnimationId = anim
 		playingAnimation = Humanoid:LoadAnimation(animation)
 		playingAnimation:Play()
 		Humanoid.WalkSpeed = 0

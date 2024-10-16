@@ -1,4 +1,4 @@
---!strict
+--!nocheck
 
 -- // Services
 
@@ -12,7 +12,6 @@ local TweenService = game:GetService("TweenService")
 -- // Variables
 
 local AwardClass = require(ReplicatedStorage.Classes.RewardsClass)
-local MathClass = require(ReplicatedStorage.Classes.MathClass)
 
 local AwardableTag = CollectionService:GetTagged("Awardable")
 local TutorialTag = CollectionService:GetTagged("Tutorial")

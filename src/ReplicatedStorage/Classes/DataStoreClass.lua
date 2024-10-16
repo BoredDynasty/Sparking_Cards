@@ -1,4 +1,5 @@
 --!nocheck
+
 local Class = {}
 
 local DataStore = game:GetService("DataStoreService")
@@ -108,7 +109,7 @@ function Class.PlayerAdded(player: Player) -- Setup DataSystem
 	local Character = game.Workspace:WaitForChild(player.Name)
 	local GetPosition
 
-	local succes = pcall(function()
+	pcall(function()
 		GetPosition = PDS:GetAsync(player.UserId)
 	end)
 
@@ -166,8 +167,8 @@ function Class.PlayerAdded(player: Player) -- Setup DataSystem
 	end)
 end
 
-function Class.SaveData(player: Player) -- Manually Save Data
-	local success = pcall(function()
+local function saveData(player)
+	pcall(function()
 		CardsData:SetAsync(player.UserId, player.leaderstats.Cards.Value)
 		RankData:SetAsync(player.UserId, player.leaderstats.Rank.Value)
 		MultiplierType:SetAsync(player.UserId, player.leaderstats.MultiplierType.Value)
@@ -176,22 +177,17 @@ function Class.SaveData(player: Player) -- Manually Save Data
 	end)
 end
 
+function Class.SaveData(player: Player) -- Manually Save Data
+	saveData(player)
+end
+
 function Class.PlayerRemoving(player: Player)
-	local success, err = pcall(function() -- Saving DataStores may fail sometimes. Best to wrap em' in a pcall.
-		for index, values in pairs(player:WaitForChild("leaderstats"):GetDescendants()) do
-			if values:IsA("StringValue") or values:IsA("IntValue") or values:IsA("NumberValue") then
-				local store = values:GetAttribute("DataStore")
-				local name = values:GetAttribute("DataName")
-				store = loadstring(store) -- This should be a function.
-				store()
-			end
-		end
-	end)
+	saveData(player)
 end
 
 function Class.SavePosition(player: Player) -- Saves Player Position
 	for i, v in pairs(Players:GetChildren()) do
-		local success = pcall(function()
+		pcall(function()
 			local HumanoidPos = game.Workspace:WaitForChild(v.Name).HumanoidRootPart.Position
 			local HumanoidOri = game.Workspace:WaitForChild(v.Name).HumanoidRootPart.Orientation
 
@@ -216,7 +212,7 @@ end
 
 local function saveAllData() -- Saves All Data
 	for i, v in pairs(Players:GetChildren()) do
-		local success = pcall(function()
+		pcall(function()
 			local HumanoidPos = game.Workspace:WaitForChild(v.Name).HumanoidRootPart.Position
 			local HumanoidOri = game.Workspace:WaitForChild(v.Name).HumanoidRootPart.Orientation
 
@@ -246,13 +242,9 @@ local function saveAllData() -- Saves All Data
 		end)
 	end
 
-	local success, err = pcall(function()
-		for index, player in pairs(Players:GetChildren()) do
-			CardsData:SetAsync(player.UserId, player.leaderstats.Cards.Value)
-			RankData:SetAsync(player.UserId, player.leaderstats.Rank.Value)
-			MultiplierType:SetAsync(player.UserId, player.leaderstats.MultiplierType.Value)
-			Abilities:SetAsync(player.UserId, player.leaderstats.MainAbility.Value)
-			ExperiencePoints:SetAsync(player.UserId, player.leaderstats.ExperiencePoints.Value)
+	pcall(function()
+		for _, player in pairs(Players:GetChildren()) do
+			saveData(player)
 		end
 	end)
 end

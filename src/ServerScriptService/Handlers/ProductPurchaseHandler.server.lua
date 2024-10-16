@@ -44,9 +44,9 @@ productFunctions[1904591683] = function(receipt, player)
 			Enum.AnalyticsEconomyTransactionType.IAP.Name,
 			"50_Cards"
 		)
-
-		return true -- indicate a successful purchase
 	end
+
+	return true -- indicate a successful purchase
 end
 
 productFunctions[1906572512] = function(receipt, player)

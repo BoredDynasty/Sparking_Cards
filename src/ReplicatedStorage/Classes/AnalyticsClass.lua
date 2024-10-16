@@ -6,9 +6,7 @@ local Players = game:GetService("Players")
 local Analytics = game:GetService("AnalyticsService")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
-local DataClass = require(ReplicatedStorage.Classes.DataStoreClass)
-
-function Class.LogEconomyEvent(player: Player?, type, amount, transaction): string
+function Class.LogEconomyEvent(player, type, amount, transaction): string
 	if not player then
 		player = Players.LocalPlayer
 	end

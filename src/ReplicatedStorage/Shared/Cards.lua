@@ -30,10 +30,14 @@ function Class:StartListening() --  starts listening
 				if not player then
 					return
 				end
+				DataStoreClass.SaveData(player)
+
 				local AwardedCards = Tagged:GetAttribute("Amount")
+
 				if not AwardedCards then
 					AwardedCards = GlobalSettings.DefaultAward
 				end
+
 				RewardsClass.NewReward(player, AwardedCards, nil, nil, AwardedCards)
 				AnalyticsClass.LogEconomyEvent(
 					player,
