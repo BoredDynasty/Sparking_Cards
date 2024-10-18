@@ -13,6 +13,11 @@ local TweenParams = UIEffectsClass:newTweenInfo(0.35, "Sine", "In", 1, false, 0)
 local Gui = ReplicatedStorage.LoadingArea
 local Frame = Gui.Background
 
+--[=[
+	Creates a new Loading Screen
+	@param mapSize number
+	@param player Player
+--]=]
 function Class.New(mapSize, player: Player)
 	if not mapSize then
 		mapSize = 1.5

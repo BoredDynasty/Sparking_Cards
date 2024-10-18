@@ -1,6 +1,6 @@
---!strict
 local UserInputService = game:GetService("UserInputService")
 
+---@class UserInput
 local UserInput = {}
 
 local inputTypeString
@@ -15,6 +15,9 @@ elseif UserInputService.GamepadEnabled then
 	inputTypeString = "Gamepad"
 end
 
+---@tag Grabs the clients input type *by* their input type.
+---@return string
+---@return Enum.UserInputType
 function UserInput.getInputType()
 	local lastInputEnum = UserInputService:GetLastInputType()
 

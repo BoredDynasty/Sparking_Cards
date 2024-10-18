@@ -1,5 +1,6 @@
 --!nocheck
 
+---@class Class
 local Class = {}
 
 local CollectionService = game:GetService("CollectionService")
@@ -15,6 +16,7 @@ local GlobalSettings = require(ReplicatedStorage.GlobalSettings)
 local MainTag = "Cards"
 local Tag = CollectionService:GetTagged(MainTag)
 
+---@tag Starts Listening to Instances that have the tag 'Cards'
 function Class:StartListening() --  starts listening
 	for index, tagged in pairs(Tag) do
 		if index < 1 then

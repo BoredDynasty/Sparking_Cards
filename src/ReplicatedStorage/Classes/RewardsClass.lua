@@ -1,9 +1,10 @@
 --!nocheck
 
-local Class = {}
-Class.__index = Class
+---@class Rewards
+local Rewards = {}
+Rewards.__index = Rewards
 
-Class.AddCardsValue = 20
+Rewards.AddCardsValue = 20
 
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Players = game:GetService("Players")
@@ -14,13 +15,21 @@ local GlobalSettings = require(ReplicatedStorage.GlobalSettings)
 
 local PassID = 891181374
 
-function Class.NewReward(
+--[=[
+	Creates a new Reward for a player.
+	@param player Player
+	@param AddCards number
+	@param CurrentRank string
+	@param CurrentMultiplier string
+	@param ExperiencePoints number
+--]=]
+function Rewards.NewReward(
 	player: Player,
 	AddCards: number,
 	CurrentRank: string,
 	CurrentMultiplier: string,
 	ExperiencePoints: number
-) -- Rewards the player
+)
 	local LeaderstatsFolder: Folder = player:FindFirstChild("leaderstats")
 	local Cards: IntValue = LeaderstatsFolder:FindFirstChild("Cards")
 	local Rank: StringValue = LeaderstatsFolder:FindFirstChild("Rank")
@@ -70,4 +79,4 @@ function Class.NewReward(
 	end
 end
 
-return Class
+return Rewards

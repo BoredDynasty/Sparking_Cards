@@ -67,22 +67,28 @@ Class.WinMessages = { "Well now, you did Great~! ", "You can do better than that
 Class.WinLines = { "ALRIGHT~!", "WOWIE!" }
 Class.CustomLines = { "Well now, let's get going!", "Heya.", "Heheh..." }
 
--- This is a very fancy function that Sets the Modules Default Settings
-
--- @function SetDefaultSettings
--- @param MaxTime number -- The max Round TIme
--- @param MaxChoosingTime number -- The Max Time a player has to choose a Card
+--[=[
+	@function SetDefaultSettings
+	@param MaxTime number -- The max Round TIme
+	@param MaxChoosingTime number -- The Max Time a player has to choose a Card
+--]=]
 function Class.SetDefaultSettings(MaxTime: number, MaxChoosingTime: number) -- Sets The Default Values
 	Class.MaxChoosingTime = MaxChoosingTime
 	Class.MaxTime = MaxTime
 end
 
+--[=[
+	@tag Restores Default Settings
+--]=]
 function Class.RestoreDefaultSettings()
 	Class.MaxTime = 240
 	Class.MaxChoosingTime = 20
 end
 
-function Class.GrabPrivateServer() -- Returns true if the game is running a private server
+--[=[
+	@tag Returns true if the game is running a private server
+--]=]
+function Class.GrabPrivateServer()
 	if game.PrivateServerId ~= "" and game.PrivateServerOwnerId ~= 0 then
 		Players.PlayerAdded:Connect(function(player)
 			if player.UserId == game.PrivateServerOwnerId then

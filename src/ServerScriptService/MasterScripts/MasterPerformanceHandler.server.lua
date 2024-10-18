@@ -22,14 +22,13 @@ Players.PlayerRemoving:Connect(function(player)
 	task.defer(player.Destroy, player)
 end)
 
--- extra
-
 local calculatedFPS
 local startTime = os.clock()
 local X = 0.01
 local FPS_Counter = 0
 
-local function getServerUptime() -- Returns the Server Uptime
+---@return number? The Server Uptime
+local function getServerUptime()
 	local lastServerStart = Stats.Server.StartTime
 	local currentTime = tick()
 	local serverUptime = currentTime - lastServerStart

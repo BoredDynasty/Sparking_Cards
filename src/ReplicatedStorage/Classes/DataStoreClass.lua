@@ -1,15 +1,18 @@
 --!nocheck
+---@diagnostic disable-next-line: duplicate-doc-class
+---@class DataStore
+local DataStore = {}
+---@__index DataStore
+DataStore.__index = DataStore
 
-local Class = {}
-
-local DataStore = game:GetService("DataStoreService")
-local CardsData = DataStore:GetDataStore("Cards")
-local RankData = DataStore:GetDataStore("Rank")
-local MultiplierType = DataStore:GetDataStore("Card Type")
-local Abilities = DataStore:GetDataStore("StoredAbilities")
-local ExperiencePoints = DataStore:GetDataStore("ExperiencePoints")
-local PDS = DataStore:GetDataStore("PositionDataStore")
-local HostServerData = DataStore:GetDataStore("HostServerData")
+local DataStoreService = game:GetService("DataStoreService")
+local CardsData = DataStoreService:GetDataStore("Cards")
+local RankData = DataStoreService:GetDataStore("Rank")
+local MultiplierType = DataStoreService:GetDataStore("Card Type")
+local Abilities = DataStoreService:GetDataStore("StoredAbilities")
+local ExperiencePoints = DataStoreService:GetDataStore("ExperiencePoints")
+local PDS = DataStoreService:GetDataStore("PositionDataStore")
+local HostServerData = DataStoreService:GetDataStore("HostServerData")
 
 local MessagingService = game:GetService("MessagingService")
 local Players = game:GetService("Players")
@@ -19,14 +22,7 @@ local RunService = game:GetService("RunService")
 local ContextActionService = game:GetService("ContextActionService")
 local NetworkServer = game:GetService("NetworkServer")
 
-local MathClass = require(ReplicatedStorage.Classes.MathClass)
 local GlobalSettings = require(ReplicatedStorage.GlobalSettings)
-
-local GiftRemote = ReplicatedStorage.RemoteEvents.GiftPlayer
-
-local AuraTypes = {
-	AbsoluteSparking = ReplicatedStorage.AuraTypes.AbsoluteSparking,
-}
 
 local SavedPositionGUI = ReplicatedStorage.Assets:WaitForChild("ScreenGui")
 local Actions = {
@@ -56,7 +52,13 @@ Abilities
 
 local BillBoardGui = ReplicatedStorage.Assets:WaitForChild("BillboardGui")
 
-function Class.PlayerAdded(player: Player) -- Setup DataSystem
+--[=[
+	Starts up the Data System when a new player joins.
+
+	@within DataStore
+	@param player Player
+--]=]
+function DataStore.PlayerAdded(player: Player) -- Setup DataSystem
 	local leaderstats = Instance.new("Folder", player)
 	leaderstats.Name = "leaderstats"
 
@@ -99,13 +101,6 @@ function Class.PlayerAdded(player: Player) -- Setup DataSystem
 	EXP.Value = ExperiencePoints:GetAsync(player.UserId) or GlobalSettings.StartingExperienceValue
 	ExperiencePoints:SetAsync(player.UserId, EXP.Value)
 
-	--if Multiplier.Value == "Absolute Sparking" then
-	--local Aura = AuraTypes.AbsoluteSparking:Clone()
-	--for i, v in pairs(Aura:GetDescendants()) do
-	--v.Parent = player.Character:FindFirstChild("Torso")
-	--end
-	--end
-
 	local Character = game.Workspace:WaitForChild(player.Name)
 	local GetPosition
 
@@ -130,41 +125,6 @@ function Class.PlayerAdded(player: Player) -- Setup DataSystem
 			SavedPosition.Enabled = false
 		end)
 	end
-
-	task.spawn(function()
-		local Clone = BillBoardGui:Clone()
-		Clone.Parent = player.Character:WaitForChild("Head")
-		task.wait(1)
-		Clone.Frame.Info.Text = player.DisplayName .. " / " .. tostring(Rank.Value)
-
-		Rank.Changed:Connect(function(value: string)
-			task.wait(1)
-			RankData:SetAsync(player.UserId, value)
-			Clone.Frame.Info.Text = player.DisplayName
-				.. " / "
-				.. tostring(value)
-				.. " / "
-				.. tostring(Multiplier.Value)
-		end)
-
-		Cards.Changed:Connect(function(value: number)
-			task.wait(1)
-			RankData:SetAsync(player.UserId, value)
-		end)
-
-		Multiplier.Changed:Connect(function(value: string)
-			MultiplierType:SetAsync(player.UserId, value)
-			Clone.Frame.Info.Text = player.DisplayName .. " / " .. tostring(Rank.Value) .. " / " .. tostring(value)
-		end)
-
-		Ability.Changed:Connect(function(value)
-			Abilities:SetAsync(player.UserId, value)
-		end)
-
-		EXP.Changed:Connect(function(value)
-			ExperiencePoints:SetAsync(player.UserId, value)
-		end)
-	end)
 end
 
 local function saveData(player)
@@ -175,17 +135,28 @@ local function saveData(player)
 		Abilities:SetAsync(player.UserId, player.leaderstats.MainAbility.Value)
 		ExperiencePoints:SetAsync(player.UserId, player.leaderstats.ExperiencePoints.Value)
 	end)
+	return "Saved!"
 end
 
-function Class.SaveData(player: Player) -- Manually Save Data
+--[=[
+	@function SaveData
+
+	@within DataStore
+	@param player Player
+--]=]
+function DataStore.SaveData(player: Player) -- Manually Save Data
 	saveData(player)
 end
 
-function Class.PlayerRemoving(player: Player)
+function DataStore.PlayerRemoving(player: Player)
 	saveData(player)
 end
 
-function Class.SavePosition(player: Player) -- Saves Player Position
+--[=[
+	@function SavePostion
+	@param player Player
+--]=]
+function DataStore.SavePosition(player: Player) -- Saves Player Position
 	for i, v in pairs(Players:GetChildren()) do
 		pcall(function()
 			local HumanoidPos = game.Workspace:WaitForChild(v.Name).HumanoidRootPart.Position
@@ -218,25 +189,25 @@ local function saveAllData() -- Saves All Data
 
 			PDS:SetAsync(v.UserId, {
 				{
-					MathClass.RoundDown(HumanoidPos.X),
-					MathClass.RoundDown(HumanoidPos.Y),
-					MathClass.RoundDown(HumanoidPos.Z),
+					math.floor(HumanoidPos.X),
+					math.floor(HumanoidPos.Y),
+					math.floor(HumanoidPos.Z),
 				},
 				{
-					MathClass.RoundDown(HumanoidOri.X),
-					MathClass.RoundDown(HumanoidOri.Y),
-					MathClass.RoundDown(HumanoidOri.Z),
+					math.floor(HumanoidOri.X),
+					math.floor(HumanoidOri.Y),
+					math.floor(HumanoidOri.Z),
 				},
 			})
 			print(
 				"Saved "
 					.. v.DisplayName
 					.. "'s Position: ("
-					.. MathClass.RoundDown(HumanoidPos.X)
+					.. math.floor(HumanoidPos.X)
 					.. " , "
-					.. MathClass.RoundDown(HumanoidPos.Y)
+					.. math.floor(HumanoidPos.Y)
 					.. " , "
-					.. MathClass.RoundDown(HumanoidPos.Z)
+					.. math.floor(HumanoidPos.Z)
 					.. " ) "
 			)
 		end)
@@ -249,18 +220,15 @@ local function saveAllData() -- Saves All Data
 	end)
 end
 
-function Class.SetOutgoingKBPSLimit(limit)
-	if not limit then
-		limit = 90
-	end
-
-	NetworkServer:SetOutgoingKBPSLimit(limit)
-	task.wait(300) -- i doubt the game will want such a limit
-	NetworkServer:SetOutgoingKBPSLimit(math.huge)
-end
-
-function Class:SetAsync(DatastoreName: string, player: Player, value: any) -- CASE SENSITIVE
-	local UnknownDataStore = DataStore:GetDataStore(DatastoreName)
+---@function SetAsync
+---
+---@within DataStore
+---@param DatastoreName string
+---@param player Player
+---@param value any
+---@return boolean, string
+function DataStore:SetAsync(DatastoreName: string, player: Player, value: any) -- CASE SENSITIVE
+	local UnknownDataStore = DataStoreService:GetDataStore(DatastoreName)
 	local GotDataStore = false
 	local result
 
@@ -275,19 +243,39 @@ function Class:SetAsync(DatastoreName: string, player: Player, value: any) -- CA
 	return GotDataStore, result
 end
 
-function Class:GetAsync(datastore, scope: string?): DataStore
-	return DataStore:GetDataStore(datastore, scope)
+---@function GetAsync
+---
+---@within DataStore
+---@param datastore any
+---@param scope string?
+---@return DataStore
+function DataStore:GetAsync(datastore, scope: string?): DataStore
+	return DataStoreService:GetDataStore(datastore, scope)
 end
 
-function Class:getPlayerStats() -- Returns a players "leaderstats" folder
+---@function getPlayerStats
+---
+---@within DataStore
+---@return Folder?
+function DataStore:getPlayerStats() -- Returns a players "leaderstats" folder
 	return Players.LocalPlayer:WaitForChild("leaderstats")
 end
 
-function Class.BindSaveButton() -- Listens whenever a player presses a certain button or key, then saves all thier data
+--[=[
+	@function BindSaveButton
+
+	@within DataStore
+--]=]
+function DataStore.BindSaveButton() -- Listens whenever a player presses a certain button or key, then saves all thier data
 	ContextActionService:BindAction("Save", saveAllData, true, Enum.KeyCode.Escape, Enum.KeyCode.ButtonR3)
 end
 
-function Class.StartBindToClose(custom) -- If the game is being shutdown, it saves all player data. This cannot work in the Studio.
+--[=[
+	@function StartBindToClose
+	@within DataStore
+	@param custom any
+--]=]
+function DataStore.StartBindToClose(custom) -- If the game is being shutdown, it saves all player data. This cannot work in the Studio.
 	if not RunService:IsStudio() then
 		if not custom then
 			game:BindToClose(saveAllData)
@@ -300,12 +288,18 @@ function Class.StartBindToClose(custom) -- If the game is being shutdown, it sav
 	end
 end
 
-function Class:CreateStat(player: Player, stat: any, initialValue)
-	local data = Class:GetAsync(stat, player.UserId)
+--[=[
+	@within DataStore
+	@param player Player
+	@param stat any
+	@param initialValue any
+--]=]
+function DataStore:CreateStat(player: Player, stat: any, initialValue)
+	local data = DataStoreService:GetAsync(stat, player.UserId)
 	local any = Instance.new("StringValue", player:WaitForChild("leaderstats"))
 
 	any.Value = initialValue
 	data:SetAsync(player.UserId, any.Value)
 end
 
-return Class
+return DataStore

@@ -1,9 +1,17 @@
-title = "Sparking Cards"  # From Git
+title = "Sparking Cards!"  # From Git
 gitRepoUrl = "https://github.com/BoredDynasty/Sparking_Cards" # From Git
+gitSourceBranch = "main"
 
 [docusaurus]
 onBrokenLinks = "throw"
 onBrokenMarkdownLinks = "warn"
+
+organizationName = "Dynasty_Studios"
+projectName = "Sparking Cards!"
+
+[home]
+enabled = true
+includeReadme = true # Optional.
 
 [footer]
 style = "dark"

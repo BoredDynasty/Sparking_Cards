@@ -1,12 +1,13 @@
 --!strict
 
-local Class = {}
+---@class Analytic
+local Analytic = {}
 
 local Players = game:GetService("Players")
 local Analytics = game:GetService("AnalyticsService")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
-function Class.LogEconomyEvent(player, type, amount, transaction): string
+function Analytic.LogEconomyEvent(player, type, amount, transaction): string
 	if not player then
 		player = Players.LocalPlayer
 	end
@@ -22,7 +23,7 @@ function Class.LogEconomyEvent(player, type, amount, transaction): string
 	return "Log Sent"
 end
 
-function Class.LogCustomEvent(player: Player, name): string
+function Analytic.LogCustomEvent(player: Player, name): string
 	if not player then
 		player = Players.LocalPlayer
 	end
@@ -32,13 +33,13 @@ function Class.LogCustomEvent(player: Player, name): string
 	return "Log Sent"
 end
 
-function Class.LogOnboardingFunnelStepEvent(player: Player, name, step): string
+function Analytic.LogOnboardingFunnelStepEvent(player: Player, name, step): string
 	Analytics:LogOnboardingFunnelStepEvent(player, step, name)
 
 	return "Log Sent"
 end
 
-function Class.LogProgressionEvent(
+function Analytic.LogProgressionEvent(
 	player,
 	pathName,
 	progressionType: Enum.AnalyticsProgressionStatus,
@@ -50,4 +51,4 @@ function Class.LogProgressionEvent(
 	return "Log Sent"
 end
 
-return Class
+return Analytic
