@@ -1,1 +1,1099 @@
-{"name":"Sparking Cards","className":"DataModel","filePaths":["default.project.json"],"children":[{"name":"Chat","className":"Chat"},{"name":"ReplicatedFirst","className":"ReplicatedFirst","children":[{"name":"ClientLoading","className":"LocalScript","filePaths":["src/ReplicatedFirst\\ClientLoading\\init.client.lua"],"children":[{"name":"Loading","className":"ScreenGui","filePaths":["src/ReplicatedFirst\\ClientLoading\\Loading\\init.meta.json"],"children":[{"name":"Background","className":"Frame","filePaths":["src/ReplicatedFirst\\ClientLoading\\Loading\\Background\\init.meta.json"],"children":[{"name":"Loading","className":"TextLabel","filePaths":["src/ReplicatedFirst\\ClientLoading\\Loading\\Background\\Loading\\init.meta.json"],"children":[{"name":"dropshadow_16_20","className":"ImageLabel","filePaths":["src/ReplicatedFirst\\ClientLoading\\Loading\\Background\\Loading\\dropshadow_16_20\\init.meta.json"],"children":[{"name":"LocalScript","className":"LocalScript","filePaths":["src/ReplicatedFirst\\ClientLoading\\Loading\\Background\\Loading\\dropshadow_16_20\\LocalScript.client.lua"]}]}]}]}]}]}]},{"name":"ReplicatedStorage","className":"ReplicatedStorage","children":[{"name":"Assets","className":"Folder","filePaths":["src/ReplicatedStorage\\Assets\\init.meta.json"],"children":[{"name":"BillboardGui","className":"BillboardGui","filePaths":["src/ReplicatedStorage\\Assets\\BillboardGui\\init.meta.json"],"children":[{"name":"Frame","className":"Frame","filePaths":["src/ReplicatedStorage\\Assets\\BillboardGui\\Frame\\init.meta.json"],"children":[{"name":"Info","className":"TextLabel","filePaths":["src/ReplicatedStorage\\Assets\\BillboardGui\\Frame\\Info\\init.meta.json"]}]}]},{"name":"Interactables","className":"Folder","filePaths":["src/ReplicatedStorage\\Assets\\Interactables\\init.meta.json"],"children":[{"name":"Forcefield","className":"UnionOperation","filePaths":["src/ReplicatedStorage\\Assets\\Interactables\\Forcefield\\init.meta.json"]}]},{"name":"NPC","className":"Folder","filePaths":["src/ReplicatedStorage\\Assets\\NPC\\init.meta.json"],"children":[{"name":"DialoguePerson","className":"Model","filePaths":["src/ReplicatedStorage\\Assets\\NPC\\DialoguePerson\\init.meta.json"],"children":[{"name":"Script","className":"Script","filePaths":["src/ReplicatedStorage\\Assets\\NPC\\DialoguePerson\\Script.server.lua","src/ReplicatedStorage\\Assets\\NPC\\DialoguePerson\\Script.meta.json"]}]},{"name":"QuestPerson","className":"Model","filePaths":["src/ReplicatedStorage\\Assets\\NPC\\QuestPerson\\init.meta.json"]}]},{"name":"Racing","className":"Folder","filePaths":["src/ReplicatedStorage\\Assets\\Racing\\init.meta.json"]},{"name":"VFX","className":"Folder","filePaths":["src/ReplicatedStorage\\Assets\\VFX\\init.meta.json"]}]},{"name":"Classes","className":"Folder","filePaths":["src/ReplicatedStorage\\Classes\\init.meta.json"],"children":[{"name":"AnalyticsClass","className":"ModuleScript","filePaths":["src/ReplicatedStorage\\Classes\\AnalyticsClass.lua"]},{"name":"DataStoreClass","className":"ModuleScript","filePaths":["src/ReplicatedStorage\\Classes\\DataStoreClass.lua"]},{"name":"LoadingClass","className":"ModuleScript","filePaths":["src/ReplicatedStorage\\Classes\\LoadingClass.lua"]},{"name":"RewardsClass","className":"ModuleScript","filePaths":["src/ReplicatedStorage\\Classes\\RewardsClass.lua"]},{"name":"UserInputType","className":"ModuleScript","filePaths":["src/ReplicatedStorage\\Classes\\UserInputType.lua"]}]},{"name":"GlobalSettings","className":"ModuleScript","filePaths":["src/ReplicatedStorage\\GlobalSettings.lua"]},{"name":"Shared","className":"Folder","children":[{"name":"Cards","className":"ModuleScript","filePaths":["src/ReplicatedStorage\\Shared\\Cards.lua"]}]}]},{"name":"ServerScriptService","className":"ServerScriptService","children":[{"name":"DataStore","className":"Script","filePaths":["src/ServerScriptService\\DataStore.server.lua"]},{"name":"Handlers","className":"Folder","filePaths":["src/ServerScriptService\\Handlers\\init.meta.json"],"children":[{"name":"ProductPurchaseHandler","className":"Script","filePaths":["src/ServerScriptService\\Handlers\\ProductPurchaseHandler.server.lua"]},{"name":"Tag","className":"Script","filePaths":["src/ServerScriptService\\Handlers\\Tag.server.lua"]}]},{"name":"MasterScripts","className":"Folder","children":[{"name":"MasterPerformanceHandler","className":"Script","filePaths":["src/ServerScriptService\\MasterScripts\\MasterPerformanceHandler.server.lua"]}]},{"name":"QueueTeleporter","className":"Script","filePaths":["src/ServerScriptService\\QueueTeleporter.server.lua"]},{"name":"ServerAnalytics","className":"Folder","filePaths":["src/ServerScriptService\\ServerAnalytics\\init.meta.json"],"children":[{"name":"Analytics","className":"Script","filePaths":["src/ServerScriptService\\ServerAnalytics\\Analytics.server.lua"]}]},{"name":"Testing","className":"Folder","filePaths":["src/ServerScriptService\\Testing\\init.meta.json"],"children":[{"name":"BadgeAwarder","className":"Script","filePaths":["src/ServerScriptService\\Testing\\BadgeAwarder.server.lua"]}]}]},{"name":"ServerStorage","className":"ServerStorage","children":[{"name":"Discontinued","className":"Folder","filePaths":["src/ServerStorage\\Discontinued\\init.meta.json"]},{"name":"FutureUpdateThings","className":"Folder","filePaths":["src/ServerStorage\\FutureUpdateThings\\init.meta.json"],"children":[{"name":"CutsceneHandler2","className":"LocalScript","filePaths":["src/ServerStorage\\FutureUpdateThings\\CutsceneHandler2.client.lua"]},{"name":"TheTrain","className":"Folder","filePaths":["src/ServerStorage\\FutureUpdateThings\\TheTrain\\init.meta.json"],"children":[{"name":"Test","className":"Model","filePaths":["src/ServerStorage\\FutureUpdateThings\\TheTrain\\Test\\init.meta.json"],"children":[{"name":"VehicleSeat","className":"VehicleSeat","filePaths":["src/ServerStorage\\FutureUpdateThings\\TheTrain\\Test\\VehicleSeat\\init.meta.json"],"children":[{"name":"Script","className":"Script","filePaths":["src/ServerStorage\\FutureUpdateThings\\TheTrain\\Test\\VehicleSeat\\Script.server.lua"]}]}]}]}]},{"name":"_VSP_Frozen_Objects","className":"Folder","filePaths":["src/ServerStorage\\_VSP_Frozen_Objects\\init.meta.json"],"children":[{"name":"!!! [VSP] READ ⚠","className":"Script","filePaths":["src/ServerStorage\\_VSP_Frozen_Objects\\!!! [VSP] READ ⚠.server.lua"]}]}]},{"name":"StarterGui","className":"StarterGui","children":[{"name":"DynamicUI","className":"Folder","filePaths":["src/StarterGui\\DynamicUI\\init.meta.json"],"children":[{"name":"BuyCards","className":"ScreenGui","filePaths":["src/StarterGui\\DynamicUI\\BuyCards\\init.meta.json"]}]},{"name":"EmoteGUI","className":"ScreenGui","filePaths":["src/StarterGui\\EmoteGUI\\init.meta.json"],"children":[{"name":"HolderFrame","className":"Frame","filePaths":["src/StarterGui\\EmoteGUI\\HolderFrame\\init.meta.json"],"children":[{"name":"Circle","className":"ImageLabel","filePaths":["src/StarterGui\\EmoteGUI\\HolderFrame\\Circle\\init.meta.json"]}]}]},{"name":"MainHud","className":"ScreenGui","filePaths":["src/StarterGui\\MainHud\\init.meta.json"],"children":[{"name":"Frame","className":"Frame","filePaths":["src/StarterGui\\MainHud\\Frame\\init.meta.json"],"children":[{"name":"PlayButton","className":"TextButton","filePaths":["src/StarterGui\\MainHud\\Frame\\PlayButton\\init.meta.json"],"children":[{"name":"LocalScript","className":"LocalScript","filePaths":["src/StarterGui\\MainHud\\Frame\\PlayButton\\LocalScript.client.lua"]}]}]},{"name":"LoadingScript","className":"LocalScript","filePaths":["src/StarterGui\\MainHud\\LoadingScript.client.lua"]},{"name":"MMScript","className":"LocalScript","filePaths":["src/StarterGui\\MainHud\\MMScript.client.lua","src/StarterGui\\MainHud\\MMScript.meta.json"]},{"name":"ModuleDependant","className":"LocalScript","filePaths":["src/StarterGui\\MainHud\\ModuleDependant\\init.client.lua"],"children":[{"name":"SpriteClip","className":"ModuleScript","filePaths":["src/StarterGui\\MainHud\\ModuleDependant\\SpriteClip.lua"]}]}]},{"name":"PlayerHud","className":"ScreenGui","filePaths":["src/StarterGui\\PlayerHud\\init.meta.json"]},{"name":"ToolTip","className":"ScreenGui","filePaths":["src/StarterGui\\ToolTip\\init.meta.json"]},{"name":"UI","className":"LocalScript","filePaths":["src/StarterGui\\UI.client.lua"]}]},{"name":"StarterPack","className":"StarterPack"},{"name":"StarterPlayer","className":"StarterPlayer","children":[{"name":"StarterCharacterScripts","className":"StarterCharacterScripts","children":[{"name":"MasterTeleporterScript","className":"LocalScript","filePaths":["src/StarterPlayer/StarterCharacterScripts\\MasterTeleporterScript.client.lua"]}]},{"name":"StarterPlayerScripts","className":"StarterPlayerScripts","children":[{"name":"FootSteps","className":"LocalScript","filePaths":["src/StarterPlayer/StarterPlayerScripts\\FootSteps.client.lua"]},{"name":"SetupClient","className":"LocalScript","filePaths":["src/StarterPlayer/StarterPlayerScripts\\SetupClient.client.lua","src/StarterPlayer/StarterPlayerScripts\\SetupClient.meta.json"]},{"name":"SunFlare","className":"LocalScript","filePaths":["src/StarterPlayer/StarterPlayerScripts\\SunFlare.client.lua"]}]}]},{"name":"Workspace","className":"Workspace","children":[{"name":"CardTypes","className":"Folder","filePaths":["src/Workspace\\CardTypes\\init.meta.json"],"children":[{"name":"Award","className":"MeshPart","filePaths":["src/Workspace\\CardTypes\\Award\\init.meta.json"],"children":[{"name":"Client","className":"LocalScript","filePaths":["src/Workspace\\CardTypes\\Award\\Client.client.lua"]},{"name":"Handler","className":"Script","filePaths":["src/Workspace\\CardTypes\\Award\\Handler.server.lua"]}]}]},{"name":"Interactable","className":"Folder","filePaths":["src/Workspace\\Interactable\\init.meta.json"],"children":[{"name":"DialogueTrigger","className":"Part","filePaths":["src/Workspace\\Interactable\\DialogueTrigger\\init.meta.json"],"children":[{"name":"Mobile","className":"LocalScript","filePaths":["src/Workspace\\Interactable\\DialogueTrigger\\Mobile.client.lua"]},{"name":"Script","className":"Script","filePaths":["src/Workspace\\Interactable\\DialogueTrigger\\Script.server.lua"]}]},{"name":"RankUpTrigger","className":"Part","filePaths":["src/Workspace\\Interactable\\RankUpTrigger\\init.meta.json"],"children":[{"name":"LocalScript","className":"LocalScript","filePaths":["src/Workspace\\Interactable\\RankUpTrigger\\LocalScript.client.lua"]},{"name":"RankSender","className":"LocalScript","filePaths":["src/Workspace\\Interactable\\RankUpTrigger\\RankSender.client.lua"]},{"name":"Script","className":"Script","filePaths":["src/Workspace\\Interactable\\RankUpTrigger\\Script.server.lua"]}]},{"name":"TheMoon","className":"Part","filePaths":["src/Workspace\\Interactable\\TheMoon\\init.meta.json"],"children":[{"name":"LocalScript","className":"LocalScript","filePaths":["src/Workspace\\Interactable\\TheMoon\\LocalScript.client.lua"]},{"name":"Script","className":"Script","filePaths":["src/Workspace\\Interactable\\TheMoon\\Script.server.lua","src/Workspace\\Interactable\\TheMoon\\Script.meta.json"]}]},{"name":"WarningTrigger","className":"Part","filePaths":["src/Workspace\\Interactable\\WarningTrigger\\init.meta.json"],"children":[{"name":"LocalScript","className":"LocalScript","filePaths":["src/Workspace\\Interactable\\WarningTrigger\\LocalScript.client.lua"]},{"name":"Script","className":"Script","filePaths":["src/Workspace\\Interactable\\WarningTrigger\\Script.server.lua"]}]}]},{"name":"Maps","className":"Folder","filePaths":["src/Workspace\\Maps\\init.meta.json"],"children":[{"name":"TheRoad","className":"Folder","filePaths":["src/Workspace\\Maps\\TheRoad\\init.meta.json"],"children":[{"name":"Blockers","className":"Folder","filePaths":["src/Workspace\\Maps\\TheRoad\\Blockers\\init.meta.json"],"children":[{"name":"Forcefield","className":"Part","filePaths":["src/Workspace\\Maps\\TheRoad\\Blockers\\Forcefield\\init.meta.json"]}]}]}]},{"name":"Queue","className":"Model","filePaths":["src/Workspace\\Queue\\init.meta.json"],"children":[{"name":"Handler","className":"Script","filePaths":["src/Workspace\\Queue\\Handler.server.lua"]},{"name":"Overhead","className":"Part","filePaths":["src/Workspace\\Queue\\Overhead\\init.meta.json"],"children":[{"name":"BillboardGui","className":"BillboardGui","filePaths":["src/Workspace\\Queue\\Overhead\\BillboardGui\\init.meta.json"],"children":[{"name":"Frame","className":"Frame","filePaths":["src/Workspace\\Queue\\Overhead\\BillboardGui\\Frame\\init.meta.json"],"children":[{"name":"Time","className":"TextLabel","filePaths":["src/Workspace\\Queue\\Overhead\\BillboardGui\\Frame\\Time\\init.meta.json"]}]}]}]}]},{"name":"Scripts","className":"Folder","children":[{"name":"Animations","className":"Script","filePaths":["src/Workspace\\Scripts\\Animations.server.lua"]}]},{"name":"Subway","className":"Folder","filePaths":["src/Workspace\\Subway\\init.meta.json"],"children":[{"name":"Bins","className":"Folder","filePaths":["src/Workspace\\Subway\\Bins\\init.meta.json"],"children":[{"name":"CrateSmall","className":"Model","filePaths":["src/Workspace\\Subway\\Bins\\CrateSmall\\init.meta.json"],"children":[{"name":"Part","className":"Part","filePaths":["src/Workspace\\Subway\\Bins\\CrateSmall\\Part\\init.meta.json"],"children":[{"name":"EC_Crate_Small_A_Lid","className":"MeshPart","filePaths":["src/Workspace\\Subway\\Bins\\CrateSmall\\Part\\EC_Crate_Small_A_Lid\\init.meta.json"],"children":[{"name":"Script","className":"Script","filePaths":["src/Workspace\\Subway\\Bins\\CrateSmall\\Part\\EC_Crate_Small_A_Lid\\Script.server.lua"]}]}]}]}]},{"name":"Other","className":"Folder","filePaths":["src/Workspace\\Subway\\Other\\init.meta.json"],"children":[{"name":"Bloxy Cola Vending Machine [Open Pls!]","className":"Model","filePaths":["src/Workspace\\Subway\\Other\\Bloxy Cola Vending Machine [Open Pls!]\\init.meta.json"],"children":[{"name":"Logo","className":"Model","filePaths":["src/Workspace\\Subway\\Other\\Bloxy Cola Vending Machine [Open Pls!]\\Logo\\init.meta.json"],"children":[{"name":"Logo","className":"UnionOperation","filePaths":["src/Workspace\\Subway\\Other\\Bloxy Cola Vending Machine [Open Pls!]\\Logo\\Logo\\init.meta.json"],"children":[{"name":"Sound","className":"Sound","filePaths":["src/Workspace\\Subway\\Other\\Bloxy Cola Vending Machine [Open Pls!]\\Logo\\Logo\\Sound\\init.meta.json"],"children":[{"name":"Script","className":"Script","filePaths":["src/Workspace\\Subway\\Other\\Bloxy Cola Vending Machine [Open Pls!]\\Logo\\Logo\\Sound\\Script.server.lua"]}]}]}]},{"name":"Pad","className":"Model","filePaths":["src/Workspace\\Subway\\Other\\Bloxy Cola Vending Machine [Open Pls!]\\Pad\\init.meta.json"],"children":[{"name":"Click","className":"Part","filePaths":["src/Workspace\\Subway\\Other\\Bloxy Cola Vending Machine [Open Pls!]\\Pad\\Click\\init.meta.json"],"children":[{"name":"ClickDetector","className":"ClickDetector","filePaths":["src/Workspace\\Subway\\Other\\Bloxy Cola Vending Machine [Open Pls!]\\Pad\\Click\\ClickDetector\\init.meta.json"],"children":[{"name":"Script","className":"Script","filePaths":["src/Workspace\\Subway\\Other\\Bloxy Cola Vending Machine [Open Pls!]\\Pad\\Click\\ClickDetector\\Script.server.lua"]}]}]}]},{"name":"Way","className":"Model","filePaths":["src/Workspace\\Subway\\Other\\Bloxy Cola Vending Machine [Open Pls!]\\Way\\init.meta.json"],"children":[{"name":"Union","className":"UnionOperation","filePaths":["src/Workspace\\Subway\\Other\\Bloxy Cola Vending Machine [Open Pls!]\\Way\\Union\\init.meta.json"],"children":[{"name":"Script","className":"Script","filePaths":["src/Workspace\\Subway\\Other\\Bloxy Cola Vending Machine [Open Pls!]\\Way\\Union\\Script.server.lua"]}]}]}]}]},{"name":"SpawnLocation","className":"SpawnLocation","filePaths":["src/Workspace\\Subway\\SpawnLocation\\init.meta.json"]},{"name":"Trims","className":"Folder","filePaths":["src/Workspace\\Subway\\Trims\\init.meta.json"],"children":[{"name":"Forcefield","className":"Part","filePaths":["src/Workspace\\Subway\\Trims\\Forcefield\\init.meta.json"]}]},{"name":"Vents","className":"Folder","filePaths":["src/Workspace\\Subway\\Vents\\init.meta.json"],"children":[{"name":"TestingAreaVent","className":"Model","filePaths":["src/Workspace\\Subway\\Vents\\TestingAreaVent\\init.meta.json"],"children":[{"name":"Frame","className":"Part","filePaths":["src/Workspace\\Subway\\Vents\\TestingAreaVent\\Frame\\init.meta.json"]}]},{"name":"TheRoadVent","className":"Model","filePaths":["src/Workspace\\Subway\\Vents\\TheRoadVent\\init.meta.json"],"children":[{"name":"Frame","className":"Part","filePaths":["src/Workspace\\Subway\\Vents\\TheRoadVent\\Frame\\init.meta.json"],"children":[{"name":"Script","className":"Script","filePaths":["src/Workspace\\Subway\\Vents\\TheRoadVent\\Frame\\Script.server.lua"]}]}]}]}]},{"name":"Testing","className":"Folder","filePaths":["src/Workspace\\Testing\\init.meta.json"],"children":[{"name":"LeavePart","className":"Part","filePaths":["src/Workspace\\Testing\\LeavePart\\init.meta.json"]},{"name":"QueuePart","className":"Part","filePaths":["src/Workspace\\Testing\\QueuePart\\init.meta.json"]}]},{"name":"testingAreaSpawn","className":"Part","filePaths":["src/Workspace\\testingAreaSpawn\\init.meta.json"]}]}]}
+{
+    "name": "Sparking Cards",
+    "className": "DataModel",
+    "filePaths": [
+        "default.project.json"
+    ],
+    "children": [
+        {
+            "name": "Chat",
+            "className": "Chat"
+        },
+        {
+            "name": "ReplicatedFirst",
+            "className": "ReplicatedFirst",
+            "children": [
+                {
+                    "name": "ClientLoading",
+                    "className": "LocalScript",
+                    "filePaths": [
+                        "src/ReplicatedFirst\\ClientLoading\\init.client.lua"
+                    ],
+                    "children": [
+                        {
+                            "name": "Loading",
+                            "className": "ScreenGui",
+                            "filePaths": [
+                                "src/ReplicatedFirst\\ClientLoading\\Loading\\init.meta.json"
+                            ],
+                            "children": [
+                                {
+                                    "name": "Background",
+                                    "className": "Frame",
+                                    "filePaths": [
+                                        "src/ReplicatedFirst\\ClientLoading\\Loading\\Background\\init.meta.json"
+                                    ],
+                                    "children": [
+                                        {
+                                            "name": "Loading",
+                                            "className": "TextLabel",
+                                            "filePaths": [
+                                                "src/ReplicatedFirst\\ClientLoading\\Loading\\Background\\Loading\\init.meta.json"
+                                            ],
+                                            "children": [
+                                                {
+                                                    "name": "dropshadow_16_20",
+                                                    "className": "ImageLabel",
+                                                    "filePaths": [
+                                                        "src/ReplicatedFirst\\ClientLoading\\Loading\\Background\\Loading\\dropshadow_16_20\\init.meta.json"
+                                                    ],
+                                                    "children": [
+                                                        {
+                                                            "name": "LocalScript",
+                                                            "className": "LocalScript",
+                                                            "filePaths": [
+                                                                "src/ReplicatedFirst\\ClientLoading\\Loading\\Background\\Loading\\dropshadow_16_20\\LocalScript.client.lua"
+                                                            ]
+                                                        }
+                                                    ]
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "ReplicatedStorage",
+            "className": "ReplicatedStorage",
+            "children": [
+                {
+                    "name": "Assets",
+                    "className": "Folder",
+                    "filePaths": [
+                        "src/ReplicatedStorage\\Assets\\init.meta.json"
+                    ],
+                    "children": [
+                        {
+                            "name": "BillboardGui",
+                            "className": "BillboardGui",
+                            "filePaths": [
+                                "src/ReplicatedStorage\\Assets\\BillboardGui\\init.meta.json"
+                            ],
+                            "children": [
+                                {
+                                    "name": "Frame",
+                                    "className": "Frame",
+                                    "filePaths": [
+                                        "src/ReplicatedStorage\\Assets\\BillboardGui\\Frame\\init.meta.json"
+                                    ],
+                                    "children": [
+                                        {
+                                            "name": "Info",
+                                            "className": "TextLabel",
+                                            "filePaths": [
+                                                "src/ReplicatedStorage\\Assets\\BillboardGui\\Frame\\Info\\init.meta.json"
+                                            ]
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "name": "Interactables",
+                            "className": "Folder",
+                            "filePaths": [
+                                "src/ReplicatedStorage\\Assets\\Interactables\\init.meta.json"
+                            ],
+                            "children": [
+                                {
+                                    "name": "Forcefield",
+                                    "className": "UnionOperation",
+                                    "filePaths": [
+                                        "src/ReplicatedStorage\\Assets\\Interactables\\Forcefield\\init.meta.json"
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "name": "NPC",
+                            "className": "Folder",
+                            "filePaths": [
+                                "src/ReplicatedStorage\\Assets\\NPC\\init.meta.json"
+                            ],
+                            "children": [
+                                {
+                                    "name": "DialoguePerson",
+                                    "className": "Model",
+                                    "filePaths": [
+                                        "src/ReplicatedStorage\\Assets\\NPC\\DialoguePerson\\init.meta.json"
+                                    ],
+                                    "children": [
+                                        {
+                                            "name": "Script",
+                                            "className": "Script",
+                                            "filePaths": [
+                                                "src/ReplicatedStorage\\Assets\\NPC\\DialoguePerson\\Script.server.lua",
+                                                "src/ReplicatedStorage\\Assets\\NPC\\DialoguePerson\\Script.meta.json"
+                                            ]
+                                        }
+                                    ]
+                                },
+                                {
+                                    "name": "QuestPerson",
+                                    "className": "Model",
+                                    "filePaths": [
+                                        "src/ReplicatedStorage\\Assets\\NPC\\QuestPerson\\init.meta.json"
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "name": "Racing",
+                            "className": "Folder",
+                            "filePaths": [
+                                "src/ReplicatedStorage\\Assets\\Racing\\init.meta.json"
+                            ]
+                        },
+                        {
+                            "name": "VFX",
+                            "className": "Folder",
+                            "filePaths": [
+                                "src/ReplicatedStorage\\Assets\\VFX\\init.meta.json"
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "name": "Classes",
+                    "className": "Folder",
+                    "filePaths": [
+                        "src/ReplicatedStorage\\Classes\\init.meta.json"
+                    ],
+                    "children": [
+                        {
+                            "name": "AnalyticsClass",
+                            "className": "ModuleScript",
+                            "filePaths": [
+                                "src/ReplicatedStorage\\Classes\\AnalyticsClass.lua"
+                            ]
+                        },
+                        {
+                            "name": "DataStoreClass",
+                            "className": "ModuleScript",
+                            "filePaths": [
+                                "src/ReplicatedStorage\\Classes\\DataStoreClass.lua"
+                            ]
+                        },
+                        {
+                            "name": "LoadingClass",
+                            "className": "ModuleScript",
+                            "filePaths": [
+                                "src/ReplicatedStorage\\Classes\\LoadingClass.lua"
+                            ]
+                        },
+                        {
+                            "name": "RewardsClass",
+                            "className": "ModuleScript",
+                            "filePaths": [
+                                "src/ReplicatedStorage\\Classes\\RewardsClass.lua"
+                            ]
+                        },
+                        {
+                            "name": "UserInputType",
+                            "className": "ModuleScript",
+                            "filePaths": [
+                                "src/ReplicatedStorage\\Classes\\UserInputType.lua"
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "name": "GlobalSettings",
+                    "className": "ModuleScript",
+                    "filePaths": [
+                        "src/ReplicatedStorage\\GlobalSettings.lua"
+                    ]
+                },
+                {
+                    "name": "Shared",
+                    "className": "Folder",
+                    "children": [
+                        {
+                            "name": "Cards",
+                            "className": "ModuleScript",
+                            "filePaths": [
+                                "src/ReplicatedStorage\\Shared\\Cards.lua"
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "ServerScriptService",
+            "className": "ServerScriptService",
+            "children": [
+                {
+                    "name": "DataStore",
+                    "className": "Script",
+                    "filePaths": [
+                        "src/ServerScriptService\\DataStore.server.lua"
+                    ]
+                },
+                {
+                    "name": "Handlers",
+                    "className": "Folder",
+                    "filePaths": [
+                        "src/ServerScriptService\\Handlers\\init.meta.json"
+                    ],
+                    "children": [
+                        {
+                            "name": "ProductPurchaseHandler",
+                            "className": "Script",
+                            "filePaths": [
+                                "src/ServerScriptService\\Handlers\\ProductPurchaseHandler.server.lua"
+                            ]
+                        },
+                        {
+                            "name": "Tag",
+                            "className": "Script",
+                            "filePaths": [
+                                "src/ServerScriptService\\Handlers\\Tag.server.lua"
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "name": "MasterScripts",
+                    "className": "Folder",
+                    "children": [
+                        {
+                            "name": "MasterPerformanceHandler",
+                            "className": "Script",
+                            "filePaths": [
+                                "src/ServerScriptService\\MasterScripts\\MasterPerformanceHandler.server.lua"
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "name": "QueueTeleporter",
+                    "className": "Script",
+                    "filePaths": [
+                        "src/ServerScriptService\\QueueTeleporter.server.lua"
+                    ]
+                },
+                {
+                    "name": "ServerAnalytics",
+                    "className": "Folder",
+                    "filePaths": [
+                        "src/ServerScriptService\\ServerAnalytics\\init.meta.json"
+                    ],
+                    "children": [
+                        {
+                            "name": "Analytics",
+                            "className": "Script",
+                            "filePaths": [
+                                "src/ServerScriptService\\ServerAnalytics\\Analytics.server.lua"
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "name": "Testing",
+                    "className": "Folder",
+                    "filePaths": [
+                        "src/ServerScriptService\\Testing\\init.meta.json"
+                    ],
+                    "children": [
+                        {
+                            "name": "BadgeAwarder",
+                            "className": "Script",
+                            "filePaths": [
+                                "src/ServerScriptService\\Testing\\BadgeAwarder.server.lua"
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "ServerStorage",
+            "className": "ServerStorage",
+            "children": [
+                {
+                    "name": "Discontinued",
+                    "className": "Folder",
+                    "filePaths": [
+                        "src/ServerStorage\\Discontinued\\init.meta.json"
+                    ]
+                },
+                {
+                    "name": "FutureUpdateThings",
+                    "className": "Folder",
+                    "filePaths": [
+                        "src/ServerStorage\\FutureUpdateThings\\init.meta.json"
+                    ],
+                    "children": [
+                        {
+                            "name": "CutsceneHandler2",
+                            "className": "LocalScript",
+                            "filePaths": [
+                                "src/ServerStorage\\FutureUpdateThings\\CutsceneHandler2.client.lua"
+                            ]
+                        },
+                        {
+                            "name": "TheTrain",
+                            "className": "Folder",
+                            "filePaths": [
+                                "src/ServerStorage\\FutureUpdateThings\\TheTrain\\init.meta.json"
+                            ],
+                            "children": [
+                                {
+                                    "name": "Test",
+                                    "className": "Model",
+                                    "filePaths": [
+                                        "src/ServerStorage\\FutureUpdateThings\\TheTrain\\Test\\init.meta.json"
+                                    ],
+                                    "children": [
+                                        {
+                                            "name": "VehicleSeat",
+                                            "className": "VehicleSeat",
+                                            "filePaths": [
+                                                "src/ServerStorage\\FutureUpdateThings\\TheTrain\\Test\\VehicleSeat\\init.meta.json"
+                                            ],
+                                            "children": [
+                                                {
+                                                    "name": "Script",
+                                                    "className": "Script",
+                                                    "filePaths": [
+                                                        "src/ServerStorage\\FutureUpdateThings\\TheTrain\\Test\\VehicleSeat\\Script.server.lua"
+                                                    ]
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "name": "_VSP_Frozen_Objects",
+                    "className": "Folder",
+                    "filePaths": [
+                        "src/ServerStorage\\_VSP_Frozen_Objects\\init.meta.json"
+                    ],
+                    "children": [
+                        {
+                            "name": "!!! [VSP] READ ⚠",
+                            "className": "Script",
+                            "filePaths": [
+                                "src/ServerStorage\\_VSP_Frozen_Objects\\!!! [VSP] READ ⚠.server.lua"
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "StarterGui",
+            "className": "StarterGui",
+            "children": [
+                {
+                    "name": "DynamicUI",
+                    "className": "Folder",
+                    "filePaths": [
+                        "src/StarterGui\\DynamicUI\\init.meta.json"
+                    ],
+                    "children": [
+                        {
+                            "name": "BuyCards",
+                            "className": "ScreenGui",
+                            "filePaths": [
+                                "src/StarterGui\\DynamicUI\\BuyCards\\init.meta.json"
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "name": "EmoteGUI",
+                    "className": "ScreenGui",
+                    "filePaths": [
+                        "src/StarterGui\\EmoteGUI\\init.meta.json"
+                    ],
+                    "children": [
+                        {
+                            "name": "HolderFrame",
+                            "className": "Frame",
+                            "filePaths": [
+                                "src/StarterGui\\EmoteGUI\\HolderFrame\\init.meta.json"
+                            ],
+                            "children": [
+                                {
+                                    "name": "Circle",
+                                    "className": "ImageLabel",
+                                    "filePaths": [
+                                        "src/StarterGui\\EmoteGUI\\HolderFrame\\Circle\\init.meta.json"
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "name": "MainHud",
+                    "className": "ScreenGui",
+                    "filePaths": [
+                        "src/StarterGui\\MainHud\\init.meta.json"
+                    ],
+                    "children": [
+                        {
+                            "name": "Frame",
+                            "className": "Frame",
+                            "filePaths": [
+                                "src/StarterGui\\MainHud\\Frame\\init.meta.json"
+                            ],
+                            "children": [
+                                {
+                                    "name": "PlayButton",
+                                    "className": "TextButton",
+                                    "filePaths": [
+                                        "src/StarterGui\\MainHud\\Frame\\PlayButton\\init.meta.json"
+                                    ],
+                                    "children": [
+                                        {
+                                            "name": "LocalScript",
+                                            "className": "LocalScript",
+                                            "filePaths": [
+                                                "src/StarterGui\\MainHud\\Frame\\PlayButton\\LocalScript.client.lua"
+                                            ]
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "name": "LoadingScript",
+                            "className": "LocalScript",
+                            "filePaths": [
+                                "src/StarterGui\\MainHud\\LoadingScript.client.lua"
+                            ]
+                        },
+                        {
+                            "name": "MMScript",
+                            "className": "LocalScript",
+                            "filePaths": [
+                                "src/StarterGui\\MainHud\\MMScript.client.lua",
+                                "src/StarterGui\\MainHud\\MMScript.meta.json"
+                            ]
+                        },
+                        {
+                            "name": "ModuleDependant",
+                            "className": "LocalScript",
+                            "filePaths": [
+                                "src/StarterGui\\MainHud\\ModuleDependant\\init.client.lua"
+                            ],
+                            "children": [
+                                {
+                                    "name": "SpriteClip",
+                                    "className": "ModuleScript",
+                                    "filePaths": [
+                                        "src/StarterGui\\MainHud\\ModuleDependant\\SpriteClip.lua"
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "name": "PlayerHud",
+                    "className": "ScreenGui",
+                    "filePaths": [
+                        "src/StarterGui\\PlayerHud\\init.meta.json"
+                    ]
+                },
+                {
+                    "name": "ToolTip",
+                    "className": "ScreenGui",
+                    "filePaths": [
+                        "src/StarterGui\\ToolTip\\init.meta.json"
+                    ]
+                },
+                {
+                    "name": "UI",
+                    "className": "LocalScript",
+                    "filePaths": [
+                        "src/StarterGui\\UI.client.lua"
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "StarterPack",
+            "className": "StarterPack"
+        },
+        {
+            "name": "StarterPlayer",
+            "className": "StarterPlayer",
+            "children": [
+                {
+                    "name": "StarterCharacterScripts",
+                    "className": "StarterCharacterScripts",
+                    "children": [
+                        {
+                            "name": "MasterTeleporterScript",
+                            "className": "LocalScript",
+                            "filePaths": [
+                                "src/StarterPlayer/StarterCharacterScripts\\MasterTeleporterScript.client.lua"
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "name": "StarterPlayerScripts",
+                    "className": "StarterPlayerScripts",
+                    "children": [
+                        {
+                            "name": "FootSteps",
+                            "className": "LocalScript",
+                            "filePaths": [
+                                "src/StarterPlayer/StarterPlayerScripts\\FootSteps.client.lua"
+                            ]
+                        },
+                        {
+                            "name": "SetupClient",
+                            "className": "LocalScript",
+                            "filePaths": [
+                                "src/StarterPlayer/StarterPlayerScripts\\SetupClient.client.lua",
+                                "src/StarterPlayer/StarterPlayerScripts\\SetupClient.meta.json"
+                            ]
+                        },
+                        {
+                            "name": "SunFlare",
+                            "className": "LocalScript",
+                            "filePaths": [
+                                "src/StarterPlayer/StarterPlayerScripts\\SunFlare.client.lua"
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Workspace",
+            "className": "Workspace",
+            "children": [
+                {
+                    "name": "CardTypes",
+                    "className": "Folder",
+                    "filePaths": [
+                        "src/Workspace\\CardTypes\\init.meta.json"
+                    ],
+                    "children": [
+                        {
+                            "name": "Award",
+                            "className": "MeshPart",
+                            "filePaths": [
+                                "src/Workspace\\CardTypes\\Award\\init.meta.json"
+                            ],
+                            "children": [
+                                {
+                                    "name": "Client",
+                                    "className": "LocalScript",
+                                    "filePaths": [
+                                        "src/Workspace\\CardTypes\\Award\\Client.client.lua"
+                                    ]
+                                },
+                                {
+                                    "name": "Handler",
+                                    "className": "Script",
+                                    "filePaths": [
+                                        "src/Workspace\\CardTypes\\Award\\Handler.server.lua"
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "name": "Interactable",
+                    "className": "Folder",
+                    "filePaths": [
+                        "src/Workspace\\Interactable\\init.meta.json"
+                    ],
+                    "children": [
+                        {
+                            "name": "DialogueTrigger",
+                            "className": "Part",
+                            "filePaths": [
+                                "src/Workspace\\Interactable\\DialogueTrigger\\init.meta.json"
+                            ],
+                            "children": [
+                                {
+                                    "name": "Mobile",
+                                    "className": "LocalScript",
+                                    "filePaths": [
+                                        "src/Workspace\\Interactable\\DialogueTrigger\\Mobile.client.lua"
+                                    ]
+                                },
+                                {
+                                    "name": "Script",
+                                    "className": "Script",
+                                    "filePaths": [
+                                        "src/Workspace\\Interactable\\DialogueTrigger\\Script.server.lua"
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "name": "RankUpTrigger",
+                            "className": "Part",
+                            "filePaths": [
+                                "src/Workspace\\Interactable\\RankUpTrigger\\init.meta.json"
+                            ],
+                            "children": [
+                                {
+                                    "name": "LocalScript",
+                                    "className": "LocalScript",
+                                    "filePaths": [
+                                        "src/Workspace\\Interactable\\RankUpTrigger\\LocalScript.client.lua"
+                                    ]
+                                },
+                                {
+                                    "name": "RankSender",
+                                    "className": "LocalScript",
+                                    "filePaths": [
+                                        "src/Workspace\\Interactable\\RankUpTrigger\\RankSender.client.lua"
+                                    ]
+                                },
+                                {
+                                    "name": "Script",
+                                    "className": "Script",
+                                    "filePaths": [
+                                        "src/Workspace\\Interactable\\RankUpTrigger\\Script.server.lua"
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "name": "TheMoon",
+                            "className": "Part",
+                            "filePaths": [
+                                "src/Workspace\\Interactable\\TheMoon\\init.meta.json"
+                            ],
+                            "children": [
+                                {
+                                    "name": "LocalScript",
+                                    "className": "LocalScript",
+                                    "filePaths": [
+                                        "src/Workspace\\Interactable\\TheMoon\\LocalScript.client.lua"
+                                    ]
+                                },
+                                {
+                                    "name": "Script",
+                                    "className": "Script",
+                                    "filePaths": [
+                                        "src/Workspace\\Interactable\\TheMoon\\Script.server.lua",
+                                        "src/Workspace\\Interactable\\TheMoon\\Script.meta.json"
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "name": "WarningTrigger",
+                            "className": "Part",
+                            "filePaths": [
+                                "src/Workspace\\Interactable\\WarningTrigger\\init.meta.json"
+                            ],
+                            "children": [
+                                {
+                                    "name": "LocalScript",
+                                    "className": "LocalScript",
+                                    "filePaths": [
+                                        "src/Workspace\\Interactable\\WarningTrigger\\LocalScript.client.lua"
+                                    ]
+                                },
+                                {
+                                    "name": "Script",
+                                    "className": "Script",
+                                    "filePaths": [
+                                        "src/Workspace\\Interactable\\WarningTrigger\\Script.server.lua"
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "name": "Maps",
+                    "className": "Folder",
+                    "filePaths": [
+                        "src/Workspace\\Maps\\init.meta.json"
+                    ],
+                    "children": [
+                        {
+                            "name": "TheRoad",
+                            "className": "Folder",
+                            "filePaths": [
+                                "src/Workspace\\Maps\\TheRoad\\init.meta.json"
+                            ],
+                            "children": [
+                                {
+                                    "name": "Blockers",
+                                    "className": "Folder",
+                                    "filePaths": [
+                                        "src/Workspace\\Maps\\TheRoad\\Blockers\\init.meta.json"
+                                    ],
+                                    "children": [
+                                        {
+                                            "name": "Forcefield",
+                                            "className": "Part",
+                                            "filePaths": [
+                                                "src/Workspace\\Maps\\TheRoad\\Blockers\\Forcefield\\init.meta.json"
+                                            ]
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "name": "Queue",
+                    "className": "Model",
+                    "filePaths": [
+                        "src/Workspace\\Queue\\init.meta.json"
+                    ],
+                    "children": [
+                        {
+                            "name": "Handler",
+                            "className": "Script",
+                            "filePaths": [
+                                "src/Workspace\\Queue\\Handler.server.lua"
+                            ]
+                        },
+                        {
+                            "name": "Overhead",
+                            "className": "Part",
+                            "filePaths": [
+                                "src/Workspace\\Queue\\Overhead\\init.meta.json"
+                            ],
+                            "children": [
+                                {
+                                    "name": "BillboardGui",
+                                    "className": "BillboardGui",
+                                    "filePaths": [
+                                        "src/Workspace\\Queue\\Overhead\\BillboardGui\\init.meta.json"
+                                    ],
+                                    "children": [
+                                        {
+                                            "name": "Frame",
+                                            "className": "Frame",
+                                            "filePaths": [
+                                                "src/Workspace\\Queue\\Overhead\\BillboardGui\\Frame\\init.meta.json"
+                                            ],
+                                            "children": [
+                                                {
+                                                    "name": "Time",
+                                                    "className": "TextLabel",
+                                                    "filePaths": [
+                                                        "src/Workspace\\Queue\\Overhead\\BillboardGui\\Frame\\Time\\init.meta.json"
+                                                    ]
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "name": "Scripts",
+                    "className": "Folder",
+                    "children": [
+                        {
+                            "name": "Animations",
+                            "className": "Script",
+                            "filePaths": [
+                                "src/Workspace\\Scripts\\Animations.server.lua"
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "name": "Subway",
+                    "className": "Folder",
+                    "filePaths": [
+                        "src/Workspace\\Subway\\init.meta.json"
+                    ],
+                    "children": [
+                        {
+                            "name": "Bins",
+                            "className": "Folder",
+                            "filePaths": [
+                                "src/Workspace\\Subway\\Bins\\init.meta.json"
+                            ],
+                            "children": [
+                                {
+                                    "name": "CrateSmall",
+                                    "className": "Model",
+                                    "filePaths": [
+                                        "src/Workspace\\Subway\\Bins\\CrateSmall\\init.meta.json"
+                                    ],
+                                    "children": [
+                                        {
+                                            "name": "Part",
+                                            "className": "Part",
+                                            "filePaths": [
+                                                "src/Workspace\\Subway\\Bins\\CrateSmall\\Part\\init.meta.json"
+                                            ],
+                                            "children": [
+                                                {
+                                                    "name": "EC_Crate_Small_A_Lid",
+                                                    "className": "MeshPart",
+                                                    "filePaths": [
+                                                        "src/Workspace\\Subway\\Bins\\CrateSmall\\Part\\EC_Crate_Small_A_Lid\\init.meta.json"
+                                                    ],
+                                                    "children": [
+                                                        {
+                                                            "name": "Script",
+                                                            "className": "Script",
+                                                            "filePaths": [
+                                                                "src/Workspace\\Subway\\Bins\\CrateSmall\\Part\\EC_Crate_Small_A_Lid\\Script.server.lua"
+                                                            ]
+                                                        }
+                                                    ]
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "name": "Other",
+                            "className": "Folder",
+                            "filePaths": [
+                                "src/Workspace\\Subway\\Other\\init.meta.json"
+                            ],
+                            "children": [
+                                {
+                                    "name": "Bloxy Cola Vending Machine [Open Pls!]",
+                                    "className": "Model",
+                                    "filePaths": [
+                                        "src/Workspace\\Subway\\Other\\Bloxy Cola Vending Machine [Open Pls!]\\init.meta.json"
+                                    ],
+                                    "children": [
+                                        {
+                                            "name": "Logo",
+                                            "className": "Model",
+                                            "filePaths": [
+                                                "src/Workspace\\Subway\\Other\\Bloxy Cola Vending Machine [Open Pls!]\\Logo\\init.meta.json"
+                                            ],
+                                            "children": [
+                                                {
+                                                    "name": "Logo",
+                                                    "className": "UnionOperation",
+                                                    "filePaths": [
+                                                        "src/Workspace\\Subway\\Other\\Bloxy Cola Vending Machine [Open Pls!]\\Logo\\Logo\\init.meta.json"
+                                                    ],
+                                                    "children": [
+                                                        {
+                                                            "name": "Sound",
+                                                            "className": "Sound",
+                                                            "filePaths": [
+                                                                "src/Workspace\\Subway\\Other\\Bloxy Cola Vending Machine [Open Pls!]\\Logo\\Logo\\Sound\\init.meta.json"
+                                                            ],
+                                                            "children": [
+                                                                {
+                                                                    "name": "Script",
+                                                                    "className": "Script",
+                                                                    "filePaths": [
+                                                                        "src/Workspace\\Subway\\Other\\Bloxy Cola Vending Machine [Open Pls!]\\Logo\\Logo\\Sound\\Script.server.lua"
+                                                                    ]
+                                                                }
+                                                            ]
+                                                        }
+                                                    ]
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            "name": "Pad",
+                                            "className": "Model",
+                                            "filePaths": [
+                                                "src/Workspace\\Subway\\Other\\Bloxy Cola Vending Machine [Open Pls!]\\Pad\\init.meta.json"
+                                            ],
+                                            "children": [
+                                                {
+                                                    "name": "Click",
+                                                    "className": "Part",
+                                                    "filePaths": [
+                                                        "src/Workspace\\Subway\\Other\\Bloxy Cola Vending Machine [Open Pls!]\\Pad\\Click\\init.meta.json"
+                                                    ],
+                                                    "children": [
+                                                        {
+                                                            "name": "ClickDetector",
+                                                            "className": "ClickDetector",
+                                                            "filePaths": [
+                                                                "src/Workspace\\Subway\\Other\\Bloxy Cola Vending Machine [Open Pls!]\\Pad\\Click\\ClickDetector\\init.meta.json"
+                                                            ],
+                                                            "children": [
+                                                                {
+                                                                    "name": "Script",
+                                                                    "className": "Script",
+                                                                    "filePaths": [
+                                                                        "src/Workspace\\Subway\\Other\\Bloxy Cola Vending Machine [Open Pls!]\\Pad\\Click\\ClickDetector\\Script.server.lua"
+                                                                    ]
+                                                                }
+                                                            ]
+                                                        }
+                                                    ]
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            "name": "Way",
+                                            "className": "Model",
+                                            "filePaths": [
+                                                "src/Workspace\\Subway\\Other\\Bloxy Cola Vending Machine [Open Pls!]\\Way\\init.meta.json"
+                                            ],
+                                            "children": [
+                                                {
+                                                    "name": "Union",
+                                                    "className": "UnionOperation",
+                                                    "filePaths": [
+                                                        "src/Workspace\\Subway\\Other\\Bloxy Cola Vending Machine [Open Pls!]\\Way\\Union\\init.meta.json"
+                                                    ],
+                                                    "children": [
+                                                        {
+                                                            "name": "Script",
+                                                            "className": "Script",
+                                                            "filePaths": [
+                                                                "src/Workspace\\Subway\\Other\\Bloxy Cola Vending Machine [Open Pls!]\\Way\\Union\\Script.server.lua"
+                                                            ]
+                                                        }
+                                                    ]
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "name": "SpawnLocation",
+                            "className": "SpawnLocation",
+                            "filePaths": [
+                                "src/Workspace\\Subway\\SpawnLocation\\init.meta.json"
+                            ]
+                        },
+                        {
+                            "name": "Trims",
+                            "className": "Folder",
+                            "filePaths": [
+                                "src/Workspace\\Subway\\Trims\\init.meta.json"
+                            ],
+                            "children": [
+                                {
+                                    "name": "Forcefield",
+                                    "className": "Part",
+                                    "filePaths": [
+                                        "src/Workspace\\Subway\\Trims\\Forcefield\\init.meta.json"
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "name": "Vents",
+                            "className": "Folder",
+                            "filePaths": [
+                                "src/Workspace\\Subway\\Vents\\init.meta.json"
+                            ],
+                            "children": [
+                                {
+                                    "name": "TestingAreaVent",
+                                    "className": "Model",
+                                    "filePaths": [
+                                        "src/Workspace\\Subway\\Vents\\TestingAreaVent\\init.meta.json"
+                                    ],
+                                    "children": [
+                                        {
+                                            "name": "Frame",
+                                            "className": "Part",
+                                            "filePaths": [
+                                                "src/Workspace\\Subway\\Vents\\TestingAreaVent\\Frame\\init.meta.json"
+                                            ]
+                                        }
+                                    ]
+                                },
+                                {
+                                    "name": "TheRoadVent",
+                                    "className": "Model",
+                                    "filePaths": [
+                                        "src/Workspace\\Subway\\Vents\\TheRoadVent\\init.meta.json"
+                                    ],
+                                    "children": [
+                                        {
+                                            "name": "Frame",
+                                            "className": "Part",
+                                            "filePaths": [
+                                                "src/Workspace\\Subway\\Vents\\TheRoadVent\\Frame\\init.meta.json"
+                                            ],
+                                            "children": [
+                                                {
+                                                    "name": "Script",
+                                                    "className": "Script",
+                                                    "filePaths": [
+                                                        "src/Workspace\\Subway\\Vents\\TheRoadVent\\Frame\\Script.server.lua"
+                                                    ]
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "name": "Testing",
+                    "className": "Folder",
+                    "filePaths": [
+                        "src/Workspace\\Testing\\init.meta.json"
+                    ],
+                    "children": [
+                        {
+                            "name": "LeavePart",
+                            "className": "Part",
+                            "filePaths": [
+                                "src/Workspace\\Testing\\LeavePart\\init.meta.json"
+                            ]
+                        },
+                        {
+                            "name": "QueuePart",
+                            "className": "Part",
+                            "filePaths": [
+                                "src/Workspace\\Testing\\QueuePart\\init.meta.json"
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "name": "testingAreaSpawn",
+                    "className": "Part",
+                    "filePaths": [
+                        "src/Workspace\\testingAreaSpawn\\init.meta.json"
+                    ]
+                }
+            ]
+        }
+    ]
+}

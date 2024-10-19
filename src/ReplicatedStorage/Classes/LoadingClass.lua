@@ -41,6 +41,8 @@ function Class.New(mapSize, player: Player)
 	UIEffectsClass.Sound("ScreenTransition")
 	UIEffectsClass:Zoom(false)
 	f:Destroy()
+
+	return mapSize
 end
 
 return Class

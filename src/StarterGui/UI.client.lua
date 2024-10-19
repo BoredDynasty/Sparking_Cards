@@ -2,16 +2,13 @@
 
 print(script.Name)
 
-local CollectionService = game:GetService("CollectionService")
-local ContextActionService = game:GetService("ContextActionService")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Players = game:GetService("Players")
-local StarterGui = game:GetService("StarterGui")
-local TweenService = game:GetService("TweenService")
 local UserInputService = game:GetService("UserInputService")
 local MarketPlaceService = game:GetService("MarketplaceService")
 
 local UIEffectsClass = require(ReplicatedStorage.Classes.UIEffectsClass)
+local Camera = require(ReplicatedStorage.Modules.Camera)
 
 local player = Players.LocalPlayer
 local Character = player.Character or player.CharacterAdded:Wait()
@@ -95,7 +92,7 @@ for _, emoteButtons in HolderFrame.Circle:GetDescendants() do
 	end
 end
 
-UserInputService.InputBegan:Connect(function(input: InputObject, gameProcessedEvent: boolean)
+UserInputService.InputBegan:Connect(function(input, gameProcessedEvent)
 	if gameProcessedEvent then
 		return
 	end
@@ -108,3 +105,37 @@ UserInputService.InputBegan:Connect(function(input: InputObject, gameProcessedEv
 		end
 	end
 end)
+
+-- Main Menu
+local function mainHud(keypoints: {})
+	local MainHudGui = player.PlayerGui.MainHud
+	local Canvas = MainHudGui.CanvasGroup
+	local Frame = Canvas:FindFirstChild("Frame")
+	UIEffectsClass.Sound("MainMenu")
+
+	Canvas.GroupTransparency = 0
+
+	Camera.Constructor(player)
+	local connection = Camera:Cinematic(keypoints, UIEffectsClass:newTweenInfo(5, "Sine", "InOut", 0, false, 0))
+	local function continueGameplay()
+		UIEffectsClass:changeVisibility(Canvas, false)
+		connection:Disconnect()
+		connection = nil
+		Camera:Restore()
+		UIEffectsClass.Sound("MainMenu", true)
+	end
+	local function queueMatch()
+		ReplicatedStorage.RemoteEvents.JoinQueueEvent:FireServer("GameMode1")
+		Frame.Match:FindFirstChild("TextLabel").Text = "Finding"
+		Frame.Match:FindFirstChild("TextLabel").Interactable = false
+	end
+	Frame.PlayButton.MouseButton1Down:Connect(continueGameplay)
+	Frame.Match.MouseButton1Down:Connect(queueMatch)
+end
+
+local cameraKeypoints = {
+	CFrame.new(-1747.191, 290.218, 6212.644),
+	CFrame.new(-1623.229, 280.407, 6208.965),
+}
+
+mainHud(cameraKeypoints)

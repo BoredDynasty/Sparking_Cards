@@ -1,4 +1,4 @@
---!nocheck
+--!nonsrict
 local ContentProvider = game:GetService("ContentProvider")
 local ReplicatedFirst = game:GetService("ReplicatedFirst")
 local StarterGui = game:GetService("StarterGui")
@@ -7,8 +7,7 @@ local UserInputService = game:GetService("UserInputService")
 local Players = game:GetService("Players")
 local TweenService = game:GetService("TweenService")
 
-local MathClass = require(ReplicatedStorage:WaitForChild("Classes").MathClass) -- Use waitforchild cuz everythings still loading
-local GlobalSettings = require(ReplicatedStorage.GlobalSettings) -- hopefully this would've loaded ehehehe~!
+local GlobalSettings = require(ReplicatedStorage:WaitForChild("GlobalSettings")) -- hopefully this would've loaded ehehehe~!
 local UIEffectsClass = require(ReplicatedStorage.Classes:WaitForChild("UIEffectsClass"))
 
 local TweenParams = TweenInfo.new(2, Enum.EasingStyle.Sine, Enum.EasingDirection.Out)
@@ -27,7 +26,7 @@ local indicator = background.Loading.dropshadow_16_20
 local textIndicator = background.Loading
 
 local GameSize = script.Parent:WaitForChild("ApproxGameSize").Value -- we will use this to determine the size of the game
-GameSize = MathClass.RoundUp(GameSize * 0.5)
+GameSize = math.floor(GameSize * 0.5)
 
 local function onGameLoaded()
 	StarterGui:SetCoreGuiEnabled(Enum.CoreGuiType.PlayerList, false)
