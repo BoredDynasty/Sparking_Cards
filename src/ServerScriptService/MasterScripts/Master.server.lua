@@ -7,6 +7,8 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local RunService = game:GetService("RunService")
 local Stats = game:GetService("Stats")
 
+_G.sigma = true
+
 local DataStoreClass = require(ReplicatedStorage.Classes.DataStoreClass)
 local AnalyticsClass = require(ReplicatedStorage.Classes.AnalyticsClass)
 
