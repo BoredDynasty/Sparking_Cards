@@ -6,6 +6,10 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local UserInputService = game:GetService("UserInputService")
 local Mouse = Players.LocalPlayer:GetMouse()
 
+local places = {
+	["Match"] = 90845913624517,
+}
+
 -- Gloves
 
 local GloveR = script.gloverightPlayer
@@ -13,25 +17,12 @@ local GloveL = script.gloveleftPlayer
 
 Players.PlayerAdded:Connect(function(player: Player)
 	player.CharacterAdded:Connect(function(character: Model)
-		local att = Instance.new("WeldConstraint")
-		local att2 = Instance.new("WeldConstraint")
-
-		local GloveRClone = GloveR:Clone()
-		local GloveLClone = GloveL:Clone()
-
-		local RightHand = character.RightArm
-		local LeftHand = character.LeftArm
-
-		GloveRClone.Parent = RightHand
-		GloveLClone.Parent = LeftHand
-
-		att.Parent = GloveRClone
-		att.Part0 = GloveRClone
-		att.Part1 = RightHand
-
-		att2.Parent = GloveLClone
-		att2.Part0 = GloveLClone
-		att2.Part1 = LeftHand
+		--
+	end)
+	player.Chatted:Connect(function(message)
+		if message == "@match" then
+			ReplicatedStorage.RemoteEvents.JoinQueueEvent:InvokeServer({ player }, places["Match"])
+		end
 	end)
 end)
 

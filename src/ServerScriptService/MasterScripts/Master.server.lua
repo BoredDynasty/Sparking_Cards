@@ -5,12 +5,15 @@ local MarketplaceService = game:GetService("MarketplaceService")
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local RunService = game:GetService("RunService")
+local ServerStorage = game:GetService("ServerStorage")
 local Stats = game:GetService("Stats")
 
 _G.sigma = true
 
 local DataStoreClass = require(ReplicatedStorage.Classes.DataStoreClass)
 local AnalyticsClass = require(ReplicatedStorage.Classes.AnalyticsClass)
+local SafeTeleporter = require(ReplicatedStorage.Modules.SafeTeleporter)
+local UIEffectsClass = require(ReplicatedStorage.Classes.UIEffectsClass)
 
 local productFunctions = {}
 
@@ -20,8 +23,26 @@ local ContributerBadge = 2817914035578656
 print("Economic Analytics are enabled.")
 print("Custom Analytics are enabled.")
 
+local function chatted(player: Player)
+	player.CharacterAdded:Connect(function(character)
+		player.Chatted:Connect(function(message)
+			local talkingTime = #message / 3
+			local faces = ServerStorage.Assets.Faces -- // Not sure why I added this var
+			local head = character:FindFirstChild("Head")
+			local defaultFace = head.FaceDecals.Mouth
+			head.FaceDecals.Mouth.Texture = "rbxassetid://3256217481" -- Mouth
+			UIEffectsClass.Sound("DialogText")
+			task.wait(talkingTime)
+			defaultFace.Texture = defaultFace.Texture
+		end)
+	end)
+end
+
 Players.PlayerAdded:Connect(function(player)
-	DataStoreClass.PlayerAdded(player)
+	local experience = DataStoreClass.PlayerAdded(player)
+	AnalyticsClass.LogCustomEvent(player, "ExperiencePoints")
+	chatted(player)
+
 	player.CharacterRemoving:Connect(function(character)
 		task.defer(character.Destroy, character)
 	end)
@@ -92,7 +113,20 @@ local function processReceipt(receiptInfo)
 	return Enum.ProductPurchaseDecision.NotProcessedYet
 end
 
+local function teleport(players: { Player }, place: number): any
+	for i, player: Player in players do
+		local matchUI = player.PlayerGui.DynamicUI.MatchMakingUI
+		UIEffectsClass.Sound("Favorite")
+		UIEffectsClass.changeVisibility(matchUI.CanvasGroup, true)
+	end
+	SafeTeleporter.Teleport(players, place)
+	print("Teleporting to " .. place)
+
+	return "Teleporting to " .. place
+end
+
 -- Set the callback; this can only be done once by one server-side script
 MarketplaceService.ProcessReceipt = processReceipt
 
 DataStoreClass.StartBindToClose(DataStoreClass.StartBindToClose)
+ReplicatedStorage.RemoteEvents.JoinQueueEvent.OnServerInvoke(teleport)

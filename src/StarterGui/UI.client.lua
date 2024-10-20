@@ -107,7 +107,7 @@ UserInputService.InputBegan:Connect(function(input, gameProcessedEvent)
 end)
 
 -- Main Menu
-local function mainHud(keypoints: {})
+local function mainHud()
 	local MainHudGui = player.PlayerGui.MainHud
 	local Canvas = MainHudGui.CanvasGroup
 	local Frame = Canvas:FindFirstChild("Frame")
@@ -115,17 +115,13 @@ local function mainHud(keypoints: {})
 
 	Canvas.GroupTransparency = 0
 
-	Camera.Constructor(player)
-	local connection = Camera:Cinematic(keypoints, UIEffectsClass:newTweenInfo(5, "Sine", "InOut", 0, false, 0))
 	local function continueGameplay()
-		UIEffectsClass:changeVisibility(Canvas, false)
-		connection:Disconnect()
-		connection = nil
-		Camera:Restore()
+		UIEffectsClass:changeVisibility(Canvas, false, Frame)
 		UIEffectsClass.Sound("MainMenu", true)
 	end
 	local function queueMatch()
-		ReplicatedStorage.RemoteEvents.JoinQueueEvent:FireServer("GameMode1")
+		local p = { player }
+		ReplicatedStorage.RemoteEvents.JoinQueueEvent:FireServer(p)
 		Frame.Match:FindFirstChild("TextLabel").Text = "Finding"
 		Frame.Match:FindFirstChild("TextLabel").Interactable = false
 	end
@@ -133,9 +129,4 @@ local function mainHud(keypoints: {})
 	Frame.Match.MouseButton1Down:Connect(queueMatch)
 end
 
-local cameraKeypoints = {
-	CFrame.new(-1747.191, 290.218, 6212.644),
-	CFrame.new(-1623.229, 280.407, 6208.965),
-}
-
-mainHud(cameraKeypoints)
+mainHud()

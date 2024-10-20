@@ -1,7 +1,7 @@
 --!strict
 
 --[=[
-	@class Global Settings
+	@class Class
 
 	A Module Config for the game.
 ]=]
