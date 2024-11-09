@@ -146,7 +146,7 @@ local function onPlayerAdded(player)
 	AnalyticsClass.LogCustomEvent(player, "ExperiencePoints")
 	chatted(player)
 	addDecorations(player)
-
+	player.Character.Animate.walk.WalkAnim.AnimationId = "http://www.roblox.com/asset/?id=14512867805"
 	player.CharacterRemoving:Connect(function(character)
 		task.defer(character.Destroy, character)
 	end)

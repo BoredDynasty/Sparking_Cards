@@ -29,7 +29,7 @@ for _, Awardable in pairs(AwardableTag) do
 	end)
 end
 
-for _, Tutorial in pairs(TutorialTag) do
+for _, Tutorial: BasePart in pairs(TutorialTag) do
 	local TutorialPart = Tutorial
 
 	TutorialPart.Touched:Once(function(hit)

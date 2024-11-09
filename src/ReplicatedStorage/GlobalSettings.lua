@@ -1,36 +1,34 @@
 --!strict
 
 --[=[
-	@class Class
+	@class Global
 
 	A Module Config for the game.
 ]=]
-local Class = {}
-Class.__index = Class
+local Global = {}
+Global.__index = Global
 
 local Players = game:GetService("Players")
-local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local RunService = game:GetService("RunService")
 
-Class.IntermissionTime = math.random(20, 30) -- Randomized 20 , 30
-Class.MaxTime = 240 -- max gametime
-Class.MaxChoosingTime = 20
-Class.MatchContinued = false
-Class.ValidCards = { Fire = 9, Frost = 5, Plasma = 12, Water = 4 }
-Class.IsPrivateServer = false
-Class.IsStudio = false
-Class.DefaultAward = 24 -- default add cards
+Global.IntermissionTime = math.random(20, 30) -- Randomized 20 , 30
+Global.MaxTime = 240 -- max gametime
+Global.MaxChoosingTime = 20
+Global.MatchContinued = false
+Global.ValidCards = { Fire = 9, Frost = 5, Plasma = 12, Water = 4 }
+Global.IsPrivateServer = false
+Global.IsStudio = false
+Global.DefaultAward = 24 -- default add cards
 
-Class.StartingCardsValue = 5
-Class.StartingRankValue = "Bronze I"
-Class.StartingMultiplierValue = "Untitled"
-Class.StartingAbilityValue = "Charge"
-Class.StartingExperienceValue = 0
+Global.StartingCardsValue = 5
+Global.StartingRankValue = "Bronze I"
+Global.StartingMultiplierValue = "Untitled"
+Global.StartingAbilityValue = "Charge"
+Global.StartingExperienceValue = 0
 
-Class.PlayerSettings =
+Global.PlayerSettings =
 	{ A = "Light Mode", B = "Dark Mode", C = "Hide Players", D = "Notifications", E = "Remove All Light Beams" }
-
-Class.Characters = {
+Global.Characters = {
 	["Edo"] = {
 		type = "non_main",
 		attribute = "side_character",
@@ -47,8 +45,7 @@ Class.Characters = {
 		tag = "mr_g_character",
 	},
 }
-
-Class.ValidWeapons = {
+Global.ValidWeapons = {
 	["Charge"] = {
 		type = "base",
 	},
@@ -62,46 +59,31 @@ Class.ValidWeapons = {
 		type = "super",
 	},
 }
-
-Class.WinMessages = { "Well now, you did Great~! ", "You can do better than that right?", "OMG~!", "Ehehehehe~!" }
-Class.WinLines = { "ALRIGHT~!", "WOWIE!" }
-Class.CustomLines = { "Well now, let's get going!", "Heya.", "Heheh..." }
-
---[=[
-	@function SetDefaultSettings
-	@param MaxTime number -- The max Round TIme
-	@param MaxChoosingTime number -- The Max Time a player has to choose a Card
---]=]
-function Class.SetDefaultSettings(MaxTime: number, MaxChoosingTime: number) -- Sets The Default Values
-	Class.MaxChoosingTime = MaxChoosingTime
-	Class.MaxTime = MaxTime
+Global.WinMessages = { "Well now, you did Great~! ", "You can do better than that right?", "OMG~!", "Ehehehehe~!" }
+Global.WinLines = { "ALRIGHT~!", "WOWIE!" }
+Global.CustomLines = { "Well now, let's get going!", "Heya.", "Heheh..." }
+function Global.SetDefaultSettings(MaxTime: number, MaxChoosingTime: number) -- Sets The Default Values
+	Global.MaxChoosingTime = MaxChoosingTime
+	Global.MaxTime = MaxTime
 end
-
---[=[
-	@tag Restores Default Settings
---]=]
-function Class.RestoreDefaultSettings()
-	Class.MaxTime = 240
-	Class.MaxChoosingTime = 20
+function Global.RestoreDefaultSettings()
+	Global.MaxTime = 240
+	Global.MaxChoosingTime = 20
 end
-
---[=[
-	@tag Returns true if the game is running a private server
---]=]
-function Class.GrabPrivateServer()
+function Global.GrabPrivateServer()
 	if game.PrivateServerId ~= "" and game.PrivateServerOwnerId ~= 0 then
 		Players.PlayerAdded:Connect(function(player)
 			if player.UserId == game.PrivateServerOwnerId then
-				Class.IsPrivateServer = true
+				Global.IsPrivateServer = true
 			else
-				Class.IsPrivateServer = false
+				Global.IsPrivateServer = false
 			end
 		end)
 	end
 end
 
 if RunService:IsStudio() then
-	Class.IsStudio = true
+	Global.IsStudio = true
 end
 
-return Class
+return Global
