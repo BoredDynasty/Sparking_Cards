@@ -2,8 +2,10 @@
 
 print(script.Name)
 
+local CollectionService = game:GetService("CollectionService")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Players = game:GetService("Players")
+local TweenService = game:GetService("TweenService")
 local UserInputService = game:GetService("UserInputService")
 local MarketPlaceService = game:GetService("MarketplaceService")
 
@@ -147,3 +149,46 @@ local function mainHud()
 end
 
 mainHud()
+
+-- Fast Travel
+local FastTravelRE = ReplicatedStorage.RemoteEvents.FastTravel
+
+local FastTravelGui = player.PlayerGui.PlaceSwitch
+
+local travelAreas = {
+	["Main"] = game.JobId,
+	["Exploring"] = 18213010529,
+}
+
+local function fastTravel(part: BasePart)
+	local from: string? = part:GetAttribute("From")
+	TweenService:Create(FastTravelGui.CanvasGroup, TweenInfo.new(0.5), { GroupTransparency = 0 }):Play()
+	local searchText = FastTravelGui.CanvasGroup.Frame.Search.Text
+	local dismissTime = 5
+	local str =
+		[[Are you sure you want to go to <font color="#55ff7f">Exploring Area?</font>?<br></br><font color="#335fff">Click here to fast travel.</font><br></br> Dismissing in [ time ]...]]
+	task.spawn(function()
+		repeat
+			task.wait(1)
+			local dismissString = string.gsub(str, "[ time ]", dismissTime)
+		until dismissTime == 0
+		if dismissTime == 0 then
+			return
+		end
+	end)
+	if FastTravelGui.CanvasGroup.GroupTransparency == 0 then
+		UIEffectsClass.Sound("PowerUp")
+		Mouse.Button1Down:Once(function()
+			UIEffectsClass.Sound("Favorite")
+			FastTravelRE:FireServer(from, travelAreas, FastTravelGui)
+		end)
+	end
+end
+
+for _, travelPart: BasePart in CollectionService:GetTagged("LeavePlace") do
+	travelPart.TouchEnded:Connect(function(otherPart)
+		if otherPart then
+			fastTravel(otherPart)
+		end
+	end)
+end

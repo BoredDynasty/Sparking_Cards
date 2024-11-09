@@ -15,6 +15,8 @@ local AnalyticsClass = require(ReplicatedStorage.Classes.AnalyticsClass)
 local SafeTeleporter = require(ReplicatedStorage.Modules.SafeTeleporter)
 local UIEffectsClass = require(ReplicatedStorage.Classes.UIEffectsClass)
 
+local FastTravelRE = ReplicatedStorage.RemoteEvents.FastTravel
+
 local productFunctions = {}
 
 local Contributers = { Dynasty = 1626161479 }
@@ -152,6 +154,10 @@ local function onPlayerAdded(player)
 	end)
 end
 
+local function FastTravel(player, from: string, travelAreas: {}, FastTravelGui: ScreenGui?)
+	return SafeTeleporter.Teleport({player}, travelAreas[2])
+end
+
 local function onPlayerRemoving(player)
 	DataStoreClass.PlayerRemoving(player)
 	task.defer(player.Destroy, player)
@@ -161,5 +167,6 @@ end
 MarketplaceService.ProcessReceipt = processReceipt
 DataStoreClass.StartBindToClose(DataStoreClass.StartBindToClose)
 ReplicatedStorage.RemoteEvents.JoinQueueEvent.OnServerInvoke(teleport)
+FastTravelRE.OnServerEvent:Connect(FastTravel)
 Players.PlayerAdded:Connect(onPlayerAdded)
 Players.PlayerRemoving:Connect(onPlayerRemoving)
