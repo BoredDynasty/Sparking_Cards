@@ -1,7 +1,6 @@
 --!nonsrict
 
 local ReplicatedFirst = game:GetService("ReplicatedFirst")
-local RunService = game:GetService("RunService")
 local StarterGui = game:GetService("StarterGui")
 local Players = game:GetService("Players")
 local TweenService = game:GetService("TweenService")
@@ -37,6 +36,6 @@ local function onGameLoaded()
 	clone:Destroy()
 end
 
-game.Loaded:Connect(function()
+game.Loaded:Once(function()
 	onGameLoaded()
 end)

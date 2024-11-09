@@ -9,6 +9,7 @@ local MarketPlaceService = game:GetService("MarketplaceService")
 
 local UIEffectsClass = require(ReplicatedStorage.Classes.UIEffectsClass)
 local Camera = require(ReplicatedStorage.Modules.Camera)
+local SoundManager = require(ReplicatedStorage.Modules.SoundManager)
 
 local player = Players.LocalPlayer
 local Character = player.Character or player.CharacterAdded:Wait()
@@ -20,8 +21,15 @@ local PlayerHud = player.PlayerGui.PlayerHud
 local playerProfileImage =
 	Players:GetUserThumbnailAsync(player.UserId, Enum.ThumbnailType.HeadShot, Enum.ThumbnailSize.Size420x420)
 
-PlayerHud.Player.PlayerImage.Image = playerProfileImage
-PlayerHud.Player:FindFirstChildOfClass("TextLabel").Text = player.DisplayName
+local DialogRemote = ReplicatedStorage.RemoteEvents.NewDialogue
+
+task.spawn(function()
+	while true do
+		task.wait(25)
+		PlayerHud.Player.PlayerImage.Image = playerProfileImage
+		PlayerHud.Player.TextLabel.Text = player.DisplayName
+	end
+end)
 
 UserInputService.WindowFocusReleased:Connect(function()
 	UIEffectsClass.changeColor("Red", PlayerHud.Player.Design.Radial)
@@ -34,6 +42,15 @@ UserInputService.WindowFocused:Connect(function()
 	UIEffectsClass:Zoom(false)
 	UIEffectsClass:BlurEffect(true)
 end)
+
+local function newDialog(dialog)
+	UIEffectsClass.TypeWriterEffect(dialog, PlayerHud.Player.TextLabel)
+	UIEffectsClass.changeColor("Blue", PlayerHud.Player.Design.Radial)
+	task.wait(10)
+	UIEffectsClass.changeColor("Green", PlayerHud.Player.Design.Radial)
+end
+
+DialogRemote.OnClientEvent:Connect(newDialog)
 
 -- Gamepasses
 
@@ -121,7 +138,7 @@ local function mainHud()
 	end
 	local function queueMatch()
 		local p = { player }
-		ReplicatedStorage.RemoteEvents.JoinQueueEvent:FireServer(p)
+		ReplicatedStorage.RemoteEvents.JoinQueueEvent:InvokeServer(p)
 		Frame.Match:FindFirstChild("TextLabel").Text = "Finding"
 		Frame.Match:FindFirstChild("TextLabel").Interactable = false
 	end

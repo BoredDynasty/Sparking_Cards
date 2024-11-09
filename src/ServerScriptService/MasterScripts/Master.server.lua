@@ -38,20 +38,36 @@ local function chatted(player: Player)
 	end)
 end
 
-Players.PlayerAdded:Connect(function(player)
-	local experience = DataStoreClass.PlayerAdded(player)
-	AnalyticsClass.LogCustomEvent(player, "ExperiencePoints")
-	chatted(player)
+local function addDecorations(player: Player)
+	player.CharacterAdded:Connect(function(character)
+		local torso = character:FindFirstChild("Torso") :: BasePart
+		local humanoidRootPart = character:FindFirstChild("HumanoidRootPart")
 
-	player.CharacterRemoving:Connect(function(character)
-		task.defer(character.Destroy, character)
+		local namePlate = ReplicatedStorage.Assets.NamePlate
+		local newNamePlate: BillboardGui = namePlate:Clone()
+		newNamePlate.Parent = character
+		newNamePlate.Adornee = character
+		newNamePlate.CanvasGroup.Frame:FindFirstChild("Name").Text = "@" .. player.DisplayName
+		newNamePlate.CanvasGroup.Frame.Description.Text = player.leaderstats.Rank.Value
+
+		local part = ReplicatedStorage.Assets:FindFirstChild("CardBackItem")
+
+		local partClone = part:Clone()
+		partClone.Anchored = false
+		partClone.CanCollide = false
+
+		local weld = Instance.new("WeldConstraint")
+		weld.Part0 = torso
+		weld.Part1 = partClone
+		weld.Parent = partClone
+
+		local offset = CFrame.new(0, 0, 2)
+		partClone.CFrame = torso.CFrame * offset
+		partClone.CFrame = partClone.CFrame * CFrame.fromOrientation(-90, 0, 0)
+
+		partClone.Parent = character
 	end)
-end)
-
-Players.PlayerRemoving:Connect(function(player)
-	DataStoreClass.PlayerRemoving(player)
-	task.defer(player.Destroy, player)
-end)
+end
 
 -- This product Id gives the player more cards (cards as in money)
 productFunctions[1904591683] = function(receipt, player)
@@ -125,8 +141,25 @@ local function teleport(players: { Player }, place: number): any
 	return "Teleporting to " .. place
 end
 
+local function onPlayerAdded(player)
+	local experience = DataStoreClass.PlayerAdded(player)
+	AnalyticsClass.LogCustomEvent(player, "ExperiencePoints")
+	chatted(player)
+	addDecorations(player)
+
+	player.CharacterRemoving:Connect(function(character)
+		task.defer(character.Destroy, character)
+	end)
+end
+
+local function onPlayerRemoving(player)
+	DataStoreClass.PlayerRemoving(player)
+	task.defer(player.Destroy, player)
+end
+
 -- Set the callback; this can only be done once by one server-side script
 MarketplaceService.ProcessReceipt = processReceipt
-
 DataStoreClass.StartBindToClose(DataStoreClass.StartBindToClose)
 ReplicatedStorage.RemoteEvents.JoinQueueEvent.OnServerInvoke(teleport)
+Players.PlayerAdded:Connect(onPlayerAdded)
+Players.PlayerRemoving:Connect(onPlayerRemoving)
