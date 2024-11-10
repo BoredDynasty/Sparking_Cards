@@ -1,6 +1,5 @@
---!nonsrict
-
 local ReplicatedFirst = game:GetService("ReplicatedFirst")
+local RunService = game:GetService("RunService")
 local StarterGui = game:GetService("StarterGui")
 local Players = game:GetService("Players")
 local TweenService = game:GetService("TweenService")
@@ -19,6 +18,12 @@ local background = clone.Background
 
 local indicator = background.Loading.dropshadow_16_20
 local textIndicator = background.Loading
+local str = "Connecting to [ ID ]..."
+if RunService:IsStudio() then
+	textIndicator.Text = "Connecting to Studio."
+else
+	textIndicator.Text = "Connecting" .. string.gsub(str, "[ ID ]", game.JobId)
+end
 
 local function onGameLoaded()
 	StarterGui:SetCoreGuiEnabled(Enum.CoreGuiType.PlayerList, false)
@@ -31,6 +36,7 @@ local function onGameLoaded()
 
 	clone.Background.Loading.Text = "Loaded."
 	task.wait(1.5)
+	TweenService:Create(indicator, TweenParams, { ImageColor3 = Color3.fromHex("#ccb6ff") }):Play()
 	TweenService:Create(background, TweenParams, { Position = UDim2.new(0, 0, 2, 0) }):Play()
 	task.wait(2.3)
 	clone:Destroy()

@@ -6,7 +6,7 @@ gitSourceBranch = "main"
 onBrokenLinks = "throw"
 onBrokenMarkdownLinks = "warn"
 
-organizationName = "Dynasty_Studios"
+organizationName = "Dynasty Studios"
 projectName = "Sparking Cards!"
 
 [home]

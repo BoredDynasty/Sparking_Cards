@@ -1,43 +1,29 @@
 --!nocheck
--- This script is also a command script!
 
+print("Server ID [ " .. game.JobId .. " ]")
+
+local CollectionService = game:GetService("CollectionService")
 local MarketplaceService = game:GetService("MarketplaceService")
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
-local RunService = game:GetService("RunService")
-local ServerStorage = game:GetService("ServerStorage")
-local Stats = game:GetService("Stats")
-
-_G.sigma = true
 
 local DataStoreClass = require(ReplicatedStorage.Classes.DataStoreClass)
 local AnalyticsClass = require(ReplicatedStorage.Classes.AnalyticsClass)
 local SafeTeleporter = require(ReplicatedStorage.Modules.SafeTeleporter)
-local UIEffectsClass = require(ReplicatedStorage.Classes.UIEffectsClass)
+local UIEffectsClass = require(ReplicatedStorage.Classes.UIEffect)
+local LoadingClass = require(ReplicatedStorage.Classes.LoadingClass)
 
 local FastTravelRE = ReplicatedStorage.RemoteEvents.FastTravel
+local DialogRE = ReplicatedStorage.RemoteEvents.NewDialogue
 
 local productFunctions = {}
-
-local Contributers = { Dynasty = 1626161479 }
-local ContributerBadge = 2817914035578656
 
 print("Economic Analytics are enabled.")
 print("Custom Analytics are enabled.")
 
-local function chatted(player: Player)
-	player.CharacterAdded:Connect(function(character)
-		player.Chatted:Connect(function(message)
-			local talkingTime = #message / 3
-			local faces = ServerStorage.Assets.Faces -- // Not sure why I added this var
-			local head = character:FindFirstChild("Head")
-			local defaultFace = head.FaceDecals.Mouth
-			head.FaceDecals.Mouth.Texture = "rbxassetid://3256217481" -- Mouth
-			UIEffectsClass.Sound("DialogText")
-			task.wait(talkingTime)
-			defaultFace.Texture = defaultFace.Texture
-		end)
-	end)
+local function touchDialog(otherPart: BasePart, player)
+	local message = otherPart:GetAttribute("TouchDialog")
+	DialogRE:FireClient(player, message)
 end
 
 local function addDecorations(player: Player)
@@ -146,7 +132,6 @@ end
 local function onPlayerAdded(player)
 	local experience = DataStoreClass.PlayerAdded(player)
 	AnalyticsClass.LogCustomEvent(player, "ExperiencePoints")
-	chatted(player)
 	addDecorations(player)
 	player.Character.Animate.walk.WalkAnim.AnimationId = "http://www.roblox.com/asset/?id=14512867805"
 	player.CharacterRemoving:Connect(function(character)
@@ -155,7 +140,7 @@ local function onPlayerAdded(player)
 end
 
 local function FastTravel(player, from: string, travelAreas: {}, FastTravelGui: ScreenGui?)
-	return SafeTeleporter.Teleport({player}, travelAreas[2])
+	return SafeTeleporter.Teleport({ player }, travelAreas[2])
 end
 
 local function onPlayerRemoving(player)
@@ -163,9 +148,35 @@ local function onPlayerRemoving(player)
 	task.defer(player.Destroy, player)
 end
 
+task.spawn(function()
+	for _, tag in pairs(CollectionService:GetTagged("TeleportPart")) do
+		local Teleport = tag
+
+		local destination = Teleport:GetAttribute("Destination")
+
+		Teleport.ClickDetector.MouseClick:Connect(function(player)
+			LoadingClass.New(1.2, player)
+			task.wait(1)
+			player.Character.HumanoidRootPart:PivotTo(destination)
+		end)
+	end
+	for _, tag in CollectionService:GetTagged("TouchDialog") do
+		local otherPart: BasePart? = tag
+		local cooldown = {}
+		otherPart.Touched:Connect(function(player)
+			if not table.find(cooldown, otherPart) then
+				table.insert(cooldown, otherPart)
+				touchDialog(otherPart, player)
+				task.wait(10)
+				table.remove(cooldown, otherPart)
+			end
+		end)
+	end
+end)
+
 -- Set the callback; this can only be done once by one server-side script
 MarketplaceService.ProcessReceipt = processReceipt
-DataStoreClass.StartBindToClose(DataStoreClass.StartBindToClose)
+DataStoreClass.StartBindToClose()
 ReplicatedStorage.RemoteEvents.JoinQueueEvent.OnServerInvoke(teleport)
 FastTravelRE.OnServerEvent:Connect(FastTravel)
 Players.PlayerAdded:Connect(onPlayerAdded)

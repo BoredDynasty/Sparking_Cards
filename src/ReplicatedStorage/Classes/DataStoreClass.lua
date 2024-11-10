@@ -1,9 +1,9 @@
---!nocheck
 ---@diagnostic disable-next-line: duplicate-doc-class
----@class DataStore
-local DataStore = {}
----@__index DataStore
-DataStore.__index = DataStore
+--[=[
+	@class DataStoreClass
+-]=]
+local DataStoreClass = {}
+DataStoreClass.__index = DataStoreClass
 
 local DataStoreService = game:GetService("DataStoreService")
 local CardsData = DataStoreService:GetDataStore("Cards")
@@ -14,16 +14,14 @@ local ExperiencePoints = DataStoreService:GetDataStore("ExperiencePoints")
 local PDS = DataStoreService:GetDataStore("PositionDataStore")
 local HostServerData = DataStoreService:GetDataStore("HostServerData")
 
-local MessagingService = game:GetService("MessagingService")
 local Players = game:GetService("Players")
 local Analytics = game:GetService("AnalyticsService")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local RunService = game:GetService("RunService")
 local ContextActionService = game:GetService("ContextActionService")
-local NetworkServer = game:GetService("NetworkServer")
 
 local GlobalSettings = require(ReplicatedStorage.GlobalSettings)
-local UIEffectsClass = require(ReplicatedStorage.Classes.UIEffectsClass)
+local UIEffectsClass = require(ReplicatedStorage.Classes.UIEffect)
 local LevelManager = require(ReplicatedStorage.Modules.LevelManager)
 local RewardsClass = require(ReplicatedStorage.Classes.RewardsClass)
 
@@ -53,16 +51,14 @@ Abilities
 4. Supernatural Radiation
 ]]
 
-local BillBoardGui = ReplicatedStorage.Assets:WaitForChild("BillboardGui")
-
 --[=[
 	Starts up the Data System when a new player joins.
 
 	@function PlayerAdded
-		@within DataStore
+		@within DataStoreClass
 		@param player Player
 --]=]
-function DataStore.PlayerAdded(player: Player) -- Setup DataSystem
+function DataStoreClass.PlayerAdded(player: Player) -- Setup DataSystem
 	local leaderstats = Instance.new("Folder", player)
 	leaderstats.Name = "leaderstats"
 
@@ -147,14 +143,14 @@ end
 
 --[=[
 	@function SaveData
-		@within DataStore
+		@within DataStoreClass
 		@param player Player
 --]=]
-function DataStore.SaveData(player: Player)
+function DataStoreClass.SaveData(player: Player)
 	saveData(player)
 end
 
-function DataStore.PlayerRemoving(player: Player)
+function DataStoreClass.PlayerRemoving(player: Player)
 	saveData(player)
 end
 
@@ -162,7 +158,7 @@ end
 	@function SavePostion
 		@param player Player
 --]=]
-function DataStore.SavePosition(player) -- Saves Player Position
+function DataStoreClass.SavePosition(player) -- Saves Player Position
 	pcall(function()
 		local HumanoidPos = game.Workspace:WaitForChild(player.Name).HumanoidRootPart.Position
 		local HumanoidOri = game.Workspace:WaitForChild(player.Name).HumanoidRootPart.Orientation
@@ -226,13 +222,13 @@ end
 
 --[=[
 	@function SetAsync
-		@within DataStore
+		@within DataStoreClass
 		@param DatastoreName string
 		@param player Player
 		@param value any
 @return boolean, string
 --]=]
-function DataStore:SetAsync(DatastoreName: string, player: Player, value: any) -- CASE SENSITIVE
+function DataStoreClass:SetAsync(DatastoreName: string, player: Player, value: any) -- CASE SENSITIVE
 	local UnknownDataStore = DataStoreService:GetDataStore(DatastoreName)
 	local GotDataStore = false
 	local result
@@ -248,33 +244,33 @@ function DataStore:SetAsync(DatastoreName: string, player: Player, value: any) -
 	return GotDataStore, result
 end
 
-function DataStore:GetAsync(datastore, scope: string?): DataStore
+function DataStoreClass:GetAsync(datastore, scope: string?): DataStore
 	return DataStoreService:GetDataStore(datastore, scope)
 end
 
 --[=[
 	@function getPlayerStats
-		@within DataStore
+		@within DataStoreClass
 		@return Folder?
 --]=]
-function DataStore:getPlayerStats() -- Returns a players "leaderstats" folder
+function DataStoreClass:getPlayerStats() -- Returns a players "leaderstats" folder
 	return Players.LocalPlayer:WaitForChild("leaderstats")
 end
 
 --[=[
 	@function BindSaveButton
-		@within DataStore
+		@within DataStoreClass
 --]=]
-function DataStore.BindSaveButton() -- Listens whenever a player presses a certain button or key, then saves all thier data
+function DataStoreClass.BindSaveButton() -- Listens whenever a player presses a certain button or key, then saves all thier data
 	ContextActionService:BindAction("Save", saveAllData, true, Enum.KeyCode.Escape, Enum.KeyCode.ButtonR3)
 end
 
 --[=[
 	@function StartBindToClose
-		@within DataStore
+		@within DataStoreClass
 		@param custom any
 --]=]
-function DataStore.StartBindToClose(custom) -- If the game is being shutdown, it saves all player data. This cannot work in the Studio.
+function DataStoreClass.StartBindToClose(custom) -- If the game is being shutdown, it saves all player data. This cannot work in the Studio.
 	if not RunService:IsStudio() then
 		if not custom then
 			game:BindToClose(saveAllData)
@@ -289,13 +285,13 @@ end
 
 --[=[
 	@function CreateStat
-		@within DataStore
+		@within DataStoreClass
 		@param player Player
 		@param stat any
 		@param initialValue any
 		@return DataStore?, any?
 --]=]
-function DataStore:CreateStat(player: Player, stat: any, initialValue)
+function DataStoreClass:CreateStat(player: Player, stat: any, initialValue)
 	local data = DataStoreService:GetAsync(stat, player.UserId)
 	local any = Instance.new("StringValue", player:WaitForChild("leaderstats"))
 
@@ -305,4 +301,4 @@ function DataStore:CreateStat(player: Player, stat: any, initialValue)
 	return data, any
 end
 
-return DataStore
+return DataStoreClass

@@ -2,6 +2,8 @@
 
 print(script.Name)
 
+-- // Services
+
 local CollectionService = game:GetService("CollectionService")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Players = game:GetService("Players")
@@ -9,14 +11,37 @@ local TweenService = game:GetService("TweenService")
 local UserInputService = game:GetService("UserInputService")
 local MarketPlaceService = game:GetService("MarketplaceService")
 
-local UIEffectsClass = require(ReplicatedStorage.Classes.UIEffectsClass)
-local Camera = require(ReplicatedStorage.Modules.Camera)
+-- // Requires
+
+local UIEffectsClass = require(ReplicatedStorage.Classes.UIEffect)
 local SoundManager = require(ReplicatedStorage.Modules.SoundManager)
+
+-- // Variables
 
 local player = Players.LocalPlayer
 local Character = player.Character or player.CharacterAdded:Wait()
 local Humanoid = Character:WaitForChild("Humanoid")
 local Mouse = player:GetMouse()
+local Camera = game.Workspace.CurrentCamera
+local TInfo = TweenInfo.new(0.5, Enum.EasingStyle.Circular, Enum.EasingDirection.InOut)
+
+-- // Everything else
+
+-- Main Menu
+local MainMenu = player.PlayerGui.MainHud
+local MainMenuFrame = MainMenu.CanvasGroup.Frame
+MainMenu.CanvasGroup.GroupTransparency = 0
+repeat
+	task.wait()
+	Camera.CameraType = Enum.CameraType.Scriptable
+until Camera.CameraType == Enum.CameraType.Scriptable
+
+Camera.CFrame = CFrame.new(-1604.172, 267.097, 6215.333, 24.286, 65.438, 0) -- The roads
+
+MainMenuFrame.PlayButton.MouseButton1Click:Once(function()
+	Camera.CameraType = Enum.CameraType.Custom
+	TweenService:Create(MainMenu.CanvasGroup, TInfo, { GroupTransparency = 1 }):Play()
+end)
 
 -- PlayerHud
 local PlayerHud = player.PlayerGui.PlayerHud
@@ -25,24 +50,20 @@ local playerProfileImage =
 
 local DialogRemote = ReplicatedStorage.RemoteEvents.NewDialogue
 
-task.spawn(function()
-	while true do
-		task.wait(25)
-		PlayerHud.Player.PlayerImage.Image = playerProfileImage
-		PlayerHud.Player.TextLabel.Text = player.DisplayName
-	end
-end)
-
 UserInputService.WindowFocusReleased:Connect(function()
 	UIEffectsClass.changeColor("Red", PlayerHud.Player.Design.Radial)
 	UIEffectsClass:Zoom(true)
 	UIEffectsClass:BlurEffect(true)
+	PlayerHud.Player.PlayerImage.Image = playerProfileImage
+	PlayerHud.Player.TextLabel.Text = player.DisplayName
 end)
 
 UserInputService.WindowFocused:Connect(function()
 	UIEffectsClass.changeColor("Green", PlayerHud.Player.Design.Radial)
 	UIEffectsClass:Zoom(false)
 	UIEffectsClass:BlurEffect(true)
+	PlayerHud.Player.PlayerImage.Image = playerProfileImage
+	PlayerHud.Player.TextLabel.Text = player.DisplayName
 end)
 
 local function newDialog(dialog)
@@ -117,11 +138,7 @@ UserInputService.InputBegan:Connect(function(input, gameProcessedEvent)
 	end
 
 	if input == Enum.KeyCode.Tab then
-		if HolderFrame.Visible == true then
-			HolderFrame.Visible = false
-		else
-			HolderFrame.Visible = true
-		end
+		HolderFrame.Visible = not HolderFrame.Visible
 	end
 end)
 
@@ -192,3 +209,46 @@ for _, travelPart: BasePart in CollectionService:GetTagged("LeavePlace") do
 		end
 	end)
 end
+
+-- Music
+
+local MusicGui = player.PlayerGui.Music
+local NowPlaying = MusicGui.CanvasGroup.NowPlaying
+
+local currentlyPlaying: string?
+
+local function playlist(directory: Instance?)
+	for i, sound: Sound in directory:GetDescendants() do
+		local alreadyPlayed = {}
+		table.insert(alreadyPlayed, sound, i)
+		sound.Volume = 0.2
+		sound.Looped = false
+		sound:Play()
+		task.wait(sound.TimeLength)
+		local new = next(directory:GetDescendants(), sound)
+		currentlyPlaying = sound or new
+		if table.find(alreadyPlayed, sound) then
+			print("Replaying playlist | " .. directory.Name)
+		end
+	end
+	print("Task performed")
+	return currentlyPlaying
+end
+
+NowPlaying.MouseEnter:Wait()
+local pauseTime = 5
+NowPlaying.Text = [[Keep hovering to <font color="#ff4e41"Pause>/font>.]]
+repeat
+	task.wait(1)
+	pauseTime = pauseTime - 1
+	print("Waiting until pause")
+	if NowPlaying.MouseLeave then
+		print("Cancelled action.")
+		task.synchronize()
+		return
+	end
+until pauseTime == 0
+NowPlaying.Text = "Paused [ musicName ]"
+local gsub = string.gsub(NowPlaying.Text, "[ musicName ]", currentlyPlaying)
+NowPlaying.Text = "Paused " .. gsub
+print("Task performed. Very sigma")

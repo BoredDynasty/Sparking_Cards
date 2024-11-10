@@ -6,7 +6,7 @@ local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local TweenService = game:GetService("TweenService")
 
-local UIEffectsClass = require(ReplicatedStorage.Classes.UIEffectsClass)
+local UIEffectsClass = require(ReplicatedStorage.Classes.UIEffects)
 
 local TweenParams = UIEffectsClass:newTweenInfo(0.35, "Sine", "In", 1, false, 0) :: TweenInfo
 
