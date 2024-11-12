@@ -1,11 +1,9 @@
 --!nocheck
 
 -- // Services
+local Players = game:GetService("Players")
 
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
-local Players = game:GetService("Players")
-local MarketplaceService = game:GetService("MarketplaceService")
-local Analytics = game:GetService("AnalyticsService")
 local CollectionService = game:GetService("CollectionService")
 local TweenService = game:GetService("TweenService")
 
@@ -14,13 +12,12 @@ local TweenService = game:GetService("TweenService")
 local AwardClass = require(ReplicatedStorage.Classes.RewardsClass)
 
 local AwardableTag = CollectionService:GetTagged("Awardable")
-local TutorialTag = CollectionService:GetTagged("Tutorial")
 
-for _, Awardable in pairs(AwardableTag) do
+for _, Awardable in AwardableTag do
 	local AwardablePart = Awardable
 
-	AwardablePart.Touched:Once(function(hit)
-		local Player = game.Players:GetPlayerFromCharacter(hit.Parent)
+	AwardablePart.Touched:Once(function(otherPart)
+		local Player = game.Players:GetPlayerFromCharacter(otherPart.Parent)
 		if Player then
 			AwardClass.NewReward(Player, 50)
 		else
@@ -29,41 +26,36 @@ for _, Awardable in pairs(AwardableTag) do
 	end)
 end
 
-for _, Tutorial: BasePart in pairs(TutorialTag) do
-	local TutorialPart = Tutorial
-
-	TutorialPart.Touched:Once(function(hit)
-		local description = TutorialPart:GetAttribute("TutorialDescription")
-		local player = Players:GetPlayerFromCharacter(hit.Parent)
-		task.wait(0.05)
-		repeat
-			task.wait()
-		until player:FindFirstChild("PlayerGui")
-		task.wait(0.05)
-		local F = player:FindFirstChild("PlayerGui").Lore.Frame
-		F.Rotation = 90 -- just to set up the visuals
-		F.Size = UDim2.new(0, 0, 0, 0)
-		F.Visible = true
-		F.Description.Text = tostring(description)
-		TweenService:Create(F, TweenInfo.new(1, Enum.EasingStyle.Back, Enum.EasingDirection.InOut), { Rotation = -5 })
-			:Play()
-		TweenService:Create(
-			F,
-			TweenInfo.new(1, Enum.EasingStyle.Back, Enum.EasingDirection.InOut),
-			{ Size = UDim2.new(0.31, 0, 0.409, 0) }
-		):Play()
-
-		F.Exit.MouseButton1Down:Connect(function()
-			TweenService
-				:Create(F, TweenInfo.new(1, Enum.EasingStyle.Back, Enum.EasingDirection.InOut), { Rotation = -5 })
-				:Play()
+for _, part: Part in CollectionService:GetTagged("ShopPart") do
+	local shopPart = part
+	shopPart.Touched:Connect(function(otherPart)
+		local debounce = false
+		if debounce == false then
+			debounce = true
+			local player = Players:GetPlayerFromCharacter(otherPart.Parent)
+			if player then
+				local buyCards = player.PlayerGui.DynamicUI.BuyCards
+				local buyFrame = buyCards.Frame
+				TweenService:Create(
+					buyFrame,
+					TweenInfo.new(1, Enum.EasingStyle.Elastic, Enum.EasingDirection.InOut),
+					{ Position = UDim2.fromScale(0.5, 0.9) }
+				):Play()
+				task.wait(5)
+				debounce = false
+			end
+		end
+	end)
+	shopPart.TouchEnded:Connect(function(otherPart)
+		local player = Players:GetPlayerFromCharacter(otherPart.Parent)
+		if player then
+			local buyCards = player.PlayerGui.DynamicUI.BuyCards
+			local buyFrame = buyCards.Frame
 			TweenService:Create(
-				F,
-				TweenInfo.new(1, Enum.EasingStyle.Back, Enum.EasingDirection.InOut),
-				{ Size = UDim2.new(0.31, 0, 0.409, 0) }
+				buyFrame,
+				TweenInfo.new(1, Enum.EasingStyle.Elastic, Enum.EasingDirection.InOut),
+				{ Position = UDim2.fromScale(0.5, 9) }
 			):Play()
-			F.Description.Text = " "
-			F.Visible = false
-		end)
+		end
 	end)
 end

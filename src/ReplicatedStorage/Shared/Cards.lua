@@ -8,7 +8,6 @@ local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local ServerStorage = game:GetService("ServerStorage")
 
-local AnalyticsClass = require(ReplicatedStorage.Classes.AnalyticsClass)
 local DataStoreClass = require(ReplicatedStorage.Classes.DataStoreClass)
 local RewardsClass = require(ReplicatedStorage.Classes.RewardsClass)
 local GlobalSettings = require(ReplicatedStorage.GlobalSettings)
@@ -41,12 +40,6 @@ function Class:StartListening() --  starts listening
 				end
 
 				RewardsClass.NewReward(player, AwardedCards, nil, nil, AwardedCards)
-				AnalyticsClass.LogEconomyEvent(
-					player,
-					Enum.AnalyticsEconomyFlowType.Source,
-					AwardedCards,
-					Enum.AnalyticsEconomyTransactionType.Gameplay
-				)
 			end
 			local newT = Tagged:Clone()
 			Tagged:Destroy()

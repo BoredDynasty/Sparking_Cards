@@ -1,7 +1,5 @@
+--!nonstrict
 local UserInputService = game:GetService("UserInputService")
-
----@class UserInput
-local UserInput = {}
 
 local inputTypeString
 -- If device has active keyboard and mouse, assume those inputs
@@ -15,10 +13,7 @@ elseif UserInputService.GamepadEnabled then
 	inputTypeString = "Gamepad"
 end
 
----@tag Grabs the clients input type *by* their input type.
----@return string
----@return Enum.UserInputType
-function UserInput.getInputType()
+local function getInputType()
 	local lastInputEnum = UserInputService:GetLastInputType()
 
 	if
@@ -35,4 +30,4 @@ function UserInput.getInputType()
 	return inputTypeString, lastInputEnum
 end
 
-return UserInput
+return getInputType

@@ -8,11 +8,9 @@ DataStoreClass.__index = DataStoreClass
 local DataStoreService = game:GetService("DataStoreService")
 local CardsData = DataStoreService:GetDataStore("Cards")
 local RankData = DataStoreService:GetDataStore("Rank")
-local MultiplierType = DataStoreService:GetDataStore("Card Type")
-local Abilities = DataStoreService:GetDataStore("StoredAbilities")
+local MultiplierType = DataStoreService:GetDataStore("MultiplierType")
 local ExperiencePoints = DataStoreService:GetDataStore("ExperiencePoints")
 local PDS = DataStoreService:GetDataStore("PositionDataStore")
-local HostServerData = DataStoreService:GetDataStore("HostServerData")
 
 local Players = game:GetService("Players")
 local Analytics = game:GetService("AnalyticsService")
@@ -21,19 +19,10 @@ local RunService = game:GetService("RunService")
 local ContextActionService = game:GetService("ContextActionService")
 
 local GlobalSettings = require(ReplicatedStorage.GlobalSettings)
-local UIEffectsClass = require(ReplicatedStorage.Classes.UIEffect)
 local LevelManager = require(ReplicatedStorage.Modules.LevelManager)
 local RewardsClass = require(ReplicatedStorage.Classes.RewardsClass)
 
 local SavedPositionGUI = ReplicatedStorage.Assets:WaitForChild("ScreenGui")
-local Actions = {
-	y = SavedPositionGUI.LastPosition.Yes,
-	n = SavedPositionGUI.LastPosition.No,
-}
-print("We save your data every 30 Seconds. Thought you may want to know.")
-
-local tweenservice = game.TweenService
-local TInfoParams = TweenInfo.new(0.3, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut)
 
 --[[
 Multipliers
@@ -61,33 +50,58 @@ Abilities
 function DataStoreClass.PlayerAdded(player: Player) -- Setup DataSystem
 	local leaderstats = Instance.new("Folder", player)
 	leaderstats.Name = "leaderstats"
-
+	--
 	local Cards = Instance.new("IntValue")
-	Cards.Name = "Cards" --Cash Value
+	Cards.Name = "Cards"
 	Cards.Parent = leaderstats
-	Cards.Value = CardsData:GetAsync(player.UserId) or GlobalSettings.StartingCardsValue
-	CardsData:SetAsync(player.UserId, Cards.Value)
-
+	local _GetAsync = CardsData:GetAsync(player.UserId)
+	Cards.Value = _GetAsync["BaseValue"]
+	Cards:SetAttribute("Fire", _GetAsync.Types["Fire"])
+	Cards:SetAttribute("Frost", _GetAsync.Types["Frost"])
+	Cards:SetAttribute("Plasma", _GetAsync.Types["Plasma"])
+	Cards:SetAttribute("Water", _GetAsync.Types["Water"])
+	CardsData:SetAsync(player.UserId, {
+		["BaseValue"] = Cards.Value or GlobalSettings.StartingCardsValue,
+		["Types"] = {
+			["Fire"] = _GetAsync.Types["any"] or 0,
+			["Frost"] = _GetAsync.Types["any"] or 0,
+			["Plasma"] = _GetAsync.Types["any"] or 0,
+			["Water"] = _GetAsync.Types["any"] or 0,
+		},
+		["Abilities"] = {
+			["Charge"] = {
+				["Healing"] = 10,
+				["Unlocked"] = false,
+			},
+			["Ultimate"] = {
+				["Damage"] = 95,
+				["Healing"] = false,
+				["Unlocked"] = false,
+			},
+			["Fusion Coil"] = {
+				["Damage"] = 1005,
+				["Healing"] = false,
+				["Unlocked"] = false,
+			},
+			["Supernatural Radiation"] = {
+				["Damage"] = math.huge,
+				["Healing"] = false,
+				["Unlocked"] = false,
+			},
+		},
+	})
+	--
 	local Rank = Instance.new("StringValue")
 	Rank.Name = "Rank"
 	Rank.Parent = leaderstats
 	Rank.Value = RankData:GetAsync(player.UserId) or GlobalSettings.StartingRankValue
 	RankData:SetAsync(player.UserId, Rank.Value)
-
+	--
 	local Multiplier = Instance.new("StringValue")
 	Multiplier.Name = "MultiplierType"
 	Multiplier.Parent = leaderstats
 	Multiplier.Value = MultiplierType:GetAsync(player.UserId) or GlobalSettings.StartingMultiplierValue
 	MultiplierType:SetAsync(player.UserId, Multiplier.Value)
-
-	local AbiltiesFolder = Instance.new("Folder")
-	AbiltiesFolder.Parent = player
-	local Ability = Instance.new("StringValue")
-	Ability.Name = "MainAbility"
-	Ability.Parent = AbiltiesFolder
-	Ability.Value = "None"
-	Ability.Value = Abilities:GetAsync(player.UserId) or GlobalSettings.StartingAbilityValue
-	Abilities:SetAsync(player.UserId, Ability.Value)
 
 	local EXP = Instance.new("IntValue")
 	EXP.Name = "ExperiencePoints"
@@ -107,27 +121,26 @@ function DataStoreClass.PlayerAdded(player: Player) -- Setup DataSystem
 		GetPosition = PDS:GetAsync(player.UserId)
 	end)
 
-	if player.PlayerGui.MainHud.CanvasGroup.GroupTransparency == 1 then -- teehee
-		if GetPosition then
-			local SavedPosition = SavedPositionGUI:Clone()
-			SavedPosition.Parent = player.PlayerGui
-			SavedPosition.LastPosition.Visible = true
+	if GetPosition then
+		local SavedPosition = SavedPositionGUI:Clone()
+		SavedPosition.Parent = player.PlayerGui
+		SavedPosition.LastPosition.Visible = true
 
-			SavedPosition.LastPosition.Yes.MouseButton1Down:Connect(function()
-				SavedPosition.Enabled = false
-				Character:MoveTo(Vector3.new(GetPosition[1][1], GetPosition[1][2], GetPosition[1][3]))
-				Character.HumanoidRootPart.Orientation =
-					Vector3.new(GetPosition[2][1], GetPosition[2][2], GetPosition[2][3])
-				print("Set Position of " .. Character.Name)
-			end)
+		SavedPosition.LastPosition.Yes.MouseButton1Down:Connect(function()
+			SavedPosition.Enabled = false
+			Character:MoveTo(Vector3.new(GetPosition[1][1], GetPosition[1][2], GetPosition[1][3]))
+			Character.HumanoidRootPart.Orientation =
+				Vector3.new(GetPosition[2][1], GetPosition[2][2], GetPosition[2][3])
+			print("Set Position of " .. Character.Name)
+		end)
 
-			SavedPosition.LastPosition.No.MouseButton1Down:Connect(function()
-				SavedPosition.Enabled = false
-			end)
-		end
+		SavedPosition.LastPosition.No.MouseButton1Down:Connect(function()
+			SavedPosition.Enabled = false
+			return
+		end)
 	end
 
-	return experience
+	return experience, leaderstats, { CardsData, RankData, ExperiencePoints }
 end
 
 local function saveData(player)
@@ -135,7 +148,6 @@ local function saveData(player)
 		CardsData:SetAsync(player.UserId, player.leaderstats.Cards.Value)
 		RankData:SetAsync(player.UserId, player.leaderstats.Rank.Value)
 		MultiplierType:SetAsync(player.UserId, player.leaderstats.MultiplierType.Value)
-		Abilities:SetAsync(player.UserId, player.leaderstats.MainAbility.Value)
 		ExperiencePoints:SetAsync(player.UserId, player.leaderstats.ExperiencePoints.Value)
 	end)
 	return "Saved!"
@@ -182,15 +194,15 @@ function DataStoreClass.SavePosition(player) -- Saves Player Position
 end
 
 local function saveAllData() -- Saves All Data
-	for i, v in pairs(Players:GetChildren()) do
+	for i, player: Player in pairs(Players:GetPlayers()) do
 		pcall(function()
-			local HumanoidPos = game.Workspace:WaitForChild(v.Name).HumanoidRootPart.Position
-			local HumanoidOri = game.Workspace:WaitForChild(v.Name).HumanoidRootPart.Orientation
+			local HumanoidPos: CFrame? = game.Workspace:WaitForChild(player.Name).HumanoidRootPart.Position
+			local HumanoidOri: CFrame? = game.Workspace:WaitForChild(player.Name).HumanoidRootPart.Orientation
 
-			PDS:SetAsync(v.UserId, {
+			PDS:SetAsync(player.UserId, {
 				{
 					math.floor(HumanoidPos.X),
-					math.floor(HumanoidPos.Y),
+					math.ceil(HumanoidPos.Y),
 					math.floor(HumanoidPos.Z),
 				},
 				{
@@ -201,7 +213,7 @@ local function saveAllData() -- Saves All Data
 			})
 			print(
 				"Saved "
-					.. v.DisplayName
+					.. player.DisplayName
 					.. "'s Position: ("
 					.. math.floor(HumanoidPos.X)
 					.. " , "
@@ -214,7 +226,7 @@ local function saveAllData() -- Saves All Data
 	end
 
 	pcall(function()
-		for _, player in pairs(Players:GetChildren()) do
+		for _, player: Player in pairs(Players:GetChildren()) do
 			saveData(player)
 		end
 	end)
@@ -244,7 +256,7 @@ function DataStoreClass:SetAsync(DatastoreName: string, player: Player, value: a
 	return GotDataStore, result
 end
 
-function DataStoreClass:GetAsync(datastore, scope: string?): DataStore
+function DataStoreClass:GetDataStore(datastore, scope: string?): DataStore
 	return DataStoreService:GetDataStore(datastore, scope)
 end
 
@@ -253,7 +265,7 @@ end
 		@within DataStoreClass
 		@return Folder?
 --]=]
-function DataStoreClass:getPlayerStats() -- Returns a players "leaderstats" folder
+function DataStoreClass:getPlayerStats()
 	return Players.LocalPlayer:WaitForChild("leaderstats")
 end
 

@@ -15,7 +15,28 @@ Global.IntermissionTime = math.random(20, 30) -- Randomized 20 , 30
 Global.MaxTime = 240 -- max gametime
 Global.MaxChoosingTime = 20
 Global.MatchContinued = false
-Global.ValidCards = { Fire = 9, Frost = 5, Plasma = 12, Water = 4 }
+Global.ValidCards = {
+	["Fire"] = {
+		["Damage"] = 32,
+		["RichTextColor"] = "#ccb6ff",
+		["Price"] = 9,
+	},
+	["Plasma"] = {
+		["Damage"] = 21,
+		["RichTextColor"] = "#675496",
+		["Price"] = 13,
+	},
+	["Frost"] = {
+		["Damage"] = 13,
+		["RichTextColor"] = "#675496",
+		["Price"] = 12,
+	},
+	["Water"] = {
+		["Damage"] = 4,
+		["RichTextColor"] = "#55ff7f",
+		["Price"] = 3,
+	},
+}
 Global.IsPrivateServer = false
 Global.IsStudio = false
 Global.DefaultAward = 24 -- default add cards

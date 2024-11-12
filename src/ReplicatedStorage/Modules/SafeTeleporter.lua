@@ -1,78 +1,45 @@
-local Teleporter = {}
+--!strict
 
--- // Services
-local MessagingService = game:GetService("MessagingService")
-local Players = game:GetService("Players")
-local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local TeleportService = game:GetService("TeleportService")
 
--- // Variables
-local JoinQueueEvent = ReplicatedStorage.RemoteEvents.JoinQueueEvent
-local FloodDelay = 15
-local RetryDelay = 20
+local ATTEMPT_LIMIT = 5
+local RETRY_DELAY = 1
+local FLOOD_DELAY = 15
 
--- // Functions
-
---[=[
-    @function Teleport
-        @param players table
-        @param place number
---]=]
-local function Teleport(players: { Player }, place: number)
-	local numPlayers = 0
-	local attempts = 0
-	local attemptLimit = 5
-	local success, result
-
-	assert(place)
-	assert(players.Data)
-
-	for i: number, _ in players.Data do
-		numPlayers = numPlayers + i
-	end
-	if numPlayers < 0 then
-		numPlayers = false -- So assertion can work
-		return
-	end
+local function SafeTeleport(placeId, players, options)
+	local attemptIndex = 0
+	local success, result -- define pcall results outside of loop so results can be reported later on
 
 	repeat
 		success, result = pcall(function()
-			return TeleportService:TeleportAsync(place, players)
+			return TeleportService:TeleportAsync(placeId, players, options) -- teleport the user in a protected call to prevent erroring
 		end)
-		attempts = attempts + 1
-	until success or attempts == attemptLimit
-
-	if attempts == attemptLimit then
-		MessagingService:PublishAsync("TeleportFailed")
-	end
-
-	return assert(numPlayers), result
-end
-
-local function addToQueue(_, players: { Player }, place)
-	local teleported = {
-		["Data"] = {},
-	}
-	for i, player: Player in players do
-		table.insert(teleported.Data, player)
-		if #player >= 2 then
-			MessagingService:PublishAsync("TeleportedQueue", players)
-			Teleport(players, place)
-			table.clear(players)
-			break
+		attemptIndex += 1
+		if not success then
+			task.wait(RETRY_DELAY)
 		end
+	until success or attemptIndex == ATTEMPT_LIMIT -- stop trying to teleport if call was successful, or if retry limit has been reached
+
+	if not success then
+		warn(result) -- print the failure reason to output
 	end
+
+	return success, result
 end
 
-function Teleporter.Teleport(players: { Player }, place: number)
-	local _, results = Teleport(players, place)
-	if results == Enum.TeleportResult.Failure then
-		MessagingService:PublishAsync("TeleportFailed", game.JobId)
+local function handleFailedTeleport(player, teleportResult, errorMessage, targetPlaceId, teleportOptions)
+	if teleportResult == Enum.TeleportResult.Flooded then
+		task.wait(FLOOD_DELAY)
+	elseif teleportResult == Enum.TeleportResult.Failure then
+		task.wait(RETRY_DELAY)
+	else
+		-- if the teleport is invalid, report the error instead of retrying
+		error(("Invalid teleport [%s]: %s"):format(teleportResult.Name, errorMessage))
 	end
-	return results
+
+	SafeTeleport(targetPlaceId, { player }, teleportOptions)
 end
 
-MessagingService:SubscribeAsync("AddQueue", addToQueue)
-MessagingService:SubscribeAsync("TeleportFailed")
+TeleportService.TeleportInitFailed:Connect(handleFailedTeleport)
 
-return Teleporter
+return SafeTeleport

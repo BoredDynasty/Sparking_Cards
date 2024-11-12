@@ -4,12 +4,9 @@
 local Rewards = {}
 Rewards.__index = Rewards
 
-Rewards.AddCardsValue = 20
-
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
-local Players = game:GetService("Players")
 local MarketplaceService = game:GetService("MarketplaceService")
-local Analytics = game:GetService("AnalyticsService")
+local AnalyticsService = game:GetService("AnalyticsService")
 
 local GlobalSettings = require(ReplicatedStorage.GlobalSettings)
 
@@ -53,8 +50,24 @@ function Rewards.NewReward(
 	if AddCards then
 		if hasPass then
 			Cards.Value += AddCards * 2
+			AnalyticsService:LogEconomyEvent(
+				player,
+				Enum.AnalyticsEconomyFlowType.Source,
+				"Cards",
+				AddCards * 2,
+				Cards,
+				Enum.AnalyticsEconomyTransactionType.Gameplay
+			)
 		else
 			Cards.Value += math.ceil(AddCards)
+			AnalyticsService:LogEconomyEvent(
+				player,
+				Enum.AnalyticsEconomyFlowType.Source,
+				"Cards",
+				AddCards,
+				Cards,
+				Enum.AnalyticsEconomyTransactionType.Gameplay
+			)
 		end
 	end
 
@@ -63,8 +76,11 @@ function Rewards.NewReward(
 			Rank.Value = "Gold II"
 		elseif CurrentRank == "Gold II" then
 			Rank.Value = "Platinum III"
+		elseif CurrentRank == "Platinum III" then
+			Rank.Value = "Master IV"
 		elseif CurrentRank == "Master IV" then
 			Rank.Value = "Sparking V"
+			return true
 		end
 	end
 
