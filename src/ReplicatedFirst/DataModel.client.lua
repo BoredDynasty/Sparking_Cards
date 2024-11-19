@@ -42,4 +42,4 @@ local function onGameLoaded()
 	clone:Destroy()
 end
 
-game.Loaded:Connect(onGameLoaded)
+game.Loaded:Once(onGameLoaded)
