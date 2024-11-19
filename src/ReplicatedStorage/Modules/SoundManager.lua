@@ -28,7 +28,8 @@ function Audio.Play(sound: string | number, directory)
 		audio:Play()
 		Debris:AddItem(audio, audio.TimeLength)
 	elseif type(sound) == "number" then
-		audio = Instance.new("Sound", directory)
+		audio = Instance.new("Sound")
+		audio.Parent = SoundService
 		audio:SetAttribute(script.Name, true)
 		audio.SoundId = sound
 		audio:Play()
@@ -43,7 +44,7 @@ end
         @param directory Instance?
 --]=]
 function Audio.Stop(sound: Sound, directory)
-	assert(directory)
+	assert(directory, `There is no directory {directory}.`)
 	if table.find(directory:GetDescendants(), sound) then
 		directory[sound]:Destroy()
 		print(`Removing {sound} sound from {directory.Name}.`)

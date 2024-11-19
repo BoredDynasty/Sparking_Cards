@@ -24,26 +24,20 @@ function Rewards.NewReward(
 	player: Player,
 	AddCards: number,
 	CurrentRank: string,
-	CurrentMultiplier: string,
-	ExperiencePoints: number
+	CurrentMultiplier: string
 )
 	local LeaderstatsFolder: Folder = player:FindFirstChild("leaderstats")
 	local Cards: IntValue = LeaderstatsFolder:FindFirstChild("Cards")
 	local Rank: StringValue = LeaderstatsFolder:FindFirstChild("Rank")
 	local Multiplier: StringValue = LeaderstatsFolder:FindFirstChild("MultiplierType")
-	local Experience: NumberValue = LeaderstatsFolder:FindFirstChild("ExperiencePoints")
 
 	if not AddCards then
 		AddCards = GlobalSettings.DefaultAward
 	end
 
-	if not Experience then
-		ExperiencePoints = GlobalSettings.DefaultAward / 5
-	end
-
 	local hasPass = false
 
-	local success = pcall(function()
+	pcall(function()
 		hasPass = MarketplaceService:UserOwnsGamePassAsync(player.UserId, PassID)
 	end)
 

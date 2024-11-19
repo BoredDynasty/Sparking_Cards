@@ -7,7 +7,6 @@ local MarketplaceService = game:GetService("MarketplaceService")
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local AnalyticsService = game:GetService("AnalyticsService")
-local RunService = game:GetService("RunService")
 
 local DataStoreClass = require(ReplicatedStorage.Classes.DataStoreClass)
 local SafeTeleporter = require(ReplicatedStorage.Modules.SafeTeleporter)
@@ -44,6 +43,14 @@ productFunctions[1904591683] = function(receipt, player)
 			Enum.AnalyticsEconomyTransactionType.IAP.Name,
 			"Extra Cards"
 		)
+		local customFields = {
+			[Enum.AnalyticsCustomFieldKeys.CustomField01.Name] = tostring(receipt),
+			[Enum.AnalyticsCustomFieldKeys.CustomField03.Name] = player.Name,
+			[Enum.AnalyticsCustomFieldKeys.CustomField02.Name] = player.UserId,
+		}
+		AnalyticsService:LogCustomEvent(
+			player, "Receipts", 1, customFields
+		)
 		task.wait(1)
 	end
 	return true -- indicate a successful purchase
@@ -57,6 +64,14 @@ productFunctions[1906572512] = function(receipt, player)
 		task.wait(10)
 		table.clear(alreadyDonated)
 	end
+	local customFields = {
+		[Enum.AnalyticsCustomFieldKeys.CustomField01.Name] = tostring(receipt),
+		[Enum.AnalyticsCustomFieldKeys.CustomField03.Name] = player.Name,
+		[Enum.AnalyticsCustomFieldKeys.CustomField02.Name] = player.UserId,
+	}
+	AnalyticsService:LogCustomEvent(
+		player, "Receipts", 1, customFields
+	)
 	return true
 end
 
@@ -86,21 +101,30 @@ local function processReceipt(receiptInfo)
 	return Enum.ProductPurchaseDecision.NotProcessedYet
 end
 
-local function onPlayerAdded(player)
-	DataStoreClass.PlayerAdded(player)
-	AnalyticsService:LogOnboardingFunnelStepEvent(player, 1, "Player Joined")
-	player.Character.Animate.walk.WalkAnim.AnimationId = "http://www.roblox.com/asset/?id=14512867805"
-	player.CharacterRemoving:Connect(function(character)
-		task.defer(character.Destroy, character)
-	end)
-end
-
 local function FastTravel(place: number, players: { Player }, options)
 	return SafeTeleporter(place, players, options)
 end
 
 local function enterMatch(players: { Player }, options)
 	return SafeTeleporter(90845913624517, players, options)
+end
+
+local function chatted(player, message)
+	if string.find(message, "@match") or string.find(message, "@ready")then
+		enterMatch(player)
+	end
+end
+
+local function onPlayerAdded(player)
+	DataStoreClass.PlayerAdded(player)
+	AnalyticsService:LogOnboardingFunnelStepEvent(player, 1, "Player Joined")
+	player.Character.Animate.walk.WalkAnim.AnimationId = "rbxassetid://14512867805"
+	player.CharacterRemoving:Connect(function(character)
+		task.defer(character.Destroy, character)
+	end)
+	player.Chatted:Connect(function(message)
+		chatted(player, message)
+	end)
 end
 
 local function onPlayerRemoving(player)

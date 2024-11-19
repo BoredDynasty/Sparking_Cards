@@ -2,16 +2,14 @@
 
 local Class = {}
 
-local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local TweenService = game:GetService("TweenService")
 
-local UIEffectsClass = require(ReplicatedStorage.Classes.UIEffects)
+local UIEffectsClass = require(ReplicatedStorage.Classes.UIEffect)
 
 local TweenParams = UIEffectsClass:newTweenInfo(0.35, "Sine", "In", 1, false, 0) :: TweenInfo
 
 local Gui = ReplicatedStorage.LoadingArea
-local Frame = Gui.Background
 
 --[=[
 	Creates a new Loading Screen

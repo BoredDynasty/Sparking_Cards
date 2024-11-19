@@ -4,7 +4,6 @@ print(script.Name)
 
 -- // Services
 
-local CollectionService = game:GetService("CollectionService")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Players = game:GetService("Players")
 local TweenService = game:GetService("TweenService")
@@ -19,9 +18,8 @@ local GlobalSettings = require(ReplicatedStorage.GlobalSettings)
 -- // Variables
 
 local player = Players.LocalPlayer
-local Character = player.Character or player.CharacterAdded:Wait()
-local Humanoid = Character:WaitForChild("Humanoid")
-local Mouse = player:GetMouse()
+local character = player.Character or player.CharacterAdded:Wait()
+local Humanoid = character:WaitForChild("Humanoid")
 local Camera = game.Workspace.CurrentCamera
 local TInfo = TweenInfo.new(0.5, Enum.EasingStyle.Circular, Enum.EasingDirection.InOut)
 
@@ -94,9 +92,9 @@ local EmoteGui = player.PlayerGui.EmoteGUI
 local playingAnimation = nil
 
 local function playanim(AnimationID)
-	if Character ~= nil and Humanoid ~= nil then
+	if character ~= nil and Humanoid ~= nil then
 		local anim = "rbxassetid://" .. tostring(AnimationID)
-		local oldnim = Character:FindFirstChild("LocalAnimation")
+		local oldnim = character:FindFirstChild("LocalAnimation")
 		Humanoid.WalkSpeed = 0
 
 		if playingAnimation ~= nil then
@@ -113,7 +111,8 @@ local function playanim(AnimationID)
 			oldnim:Destroy()
 		end
 
-		local animation = Instance.new("Animation", Character)
+		local animation = Instance.new("Animation")
+		animation.Parent = character
 		animation.Name = "LocalAnimation"
 		animation.AnimationId = anim
 		playingAnimation = Humanoid:LoadAnimation(animation)

@@ -13,7 +13,6 @@ local ExperiencePoints = DataStoreService:GetDataStore("ExperiencePoints")
 local PDS = DataStoreService:GetDataStore("PositionDataStore")
 
 local Players = game:GetService("Players")
-local Analytics = game:GetService("AnalyticsService")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local RunService = game:GetService("RunService")
 local ContextActionService = game:GetService("ContextActionService")
@@ -48,7 +47,8 @@ Abilities
 		@param player Player
 --]=]
 function DataStoreClass.PlayerAdded(player: Player) -- Setup DataSystem
-	local leaderstats = Instance.new("Folder", player)
+	local leaderstats = Instance.new("Folder")
+	leaderstats.Parent = player
 	leaderstats.Name = "leaderstats"
 	--
 	local Cards = Instance.new("IntValue")
@@ -194,7 +194,7 @@ function DataStoreClass.SavePosition(player) -- Saves Player Position
 end
 
 local function saveAllData() -- Saves All Data
-	for i, player: Player in pairs(Players:GetPlayers()) do
+	for _, player: Player in pairs(Players:GetPlayers()) do
 		pcall(function()
 			local HumanoidPos: CFrame? = game.Workspace:WaitForChild(player.Name).HumanoidRootPart.Position
 			local HumanoidOri: CFrame? = game.Workspace:WaitForChild(player.Name).HumanoidRootPart.Orientation
@@ -305,7 +305,8 @@ end
 --]=]
 function DataStoreClass:CreateStat(player: Player, stat: any, initialValue)
 	local data = DataStoreService:GetAsync(stat, player.UserId)
-	local any = Instance.new("StringValue", player:WaitForChild("leaderstats"))
+	local any = Instance.new("StringValue")
+	any.Parent = player:FindFirstChild("leaderstats")
 
 	any.Value = initialValue
 	data:SetAsync(player.UserId, any.Value)

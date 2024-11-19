@@ -9,7 +9,7 @@ local TweenParams = TweenInfo.new(2, Enum.EasingStyle.Sine, Enum.EasingDirection
 ReplicatedFirst:RemoveDefaultLoadingScreen()
 StarterGui:SetCoreGuiEnabled(Enum.CoreGuiType.All, false)
 
-local loadingScreen = script.Loading
+local loadingScreen = script.Parent.Loading
 
 local clone = loadingScreen:Clone()
 clone.Parent = Players.LocalPlayer.PlayerGui
@@ -42,6 +42,4 @@ local function onGameLoaded()
 	clone:Destroy()
 end
 
-game.Loaded:Once(function()
-	onGameLoaded()
-end)
+game.Loaded:Connect(onGameLoaded)
