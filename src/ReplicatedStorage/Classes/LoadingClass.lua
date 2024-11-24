@@ -1,32 +1,23 @@
 --!nocheck
 
-local Class = {}
-
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
-local TweenService = game:GetService("TweenService")
 
-local UIEffectsClass = require(ReplicatedStorage.Classes.UIEffect)
+local UIEffectsClass = require(ReplicatedStorage.Modules.UIEffect)
+local Curvy = require(ReplicatedStorage.Modules.UIEffect.Curvy)
 
-local TweenParams = UIEffectsClass:newTweenInfo(0.35, "Sine", "In", 1, false, 0) :: TweenInfo
-
-local Gui = ReplicatedStorage.LoadingArea
-
---[=[
-	Creates a new Loading Screen
-	@param mapSize number
-	@param player Player
---]=]
-function Class.New(mapSize, player: Player)
+return function(mapSize, player: Player)
+	assert(player, `Player does not exist: {player}`)
 	if not mapSize then
 		mapSize = 1.5
 	end
+	local Gui = ReplicatedStorage.LoadingArea
 
 	local f = Gui:Clone()
 	f.Parent = player.PlayerGui
 
 	f.Background.Visible = true
 
-	TweenService:Create(f.Background, TweenParams, { Position = UDim2.new(0.5, 0, 0.5, 0) })
+	Curvy:Tween(f.Background, nil, f.Background.Position, UDim2.fromScale(0.5, 0.5))
 	UIEffectsClass.Sound("ScreenTransition")
 	UIEffectsClass:Zoom(true)
 	UIEffectsClass.changeColor("Blue", f.Background.Loading.dropshadow_16_20)
@@ -35,12 +26,10 @@ function Class.New(mapSize, player: Player)
 	f.Background.Loading.Text = "Connected."
 	UIEffectsClass.changeColor("Green", f.Background.Loading.dropshadow_16_20)
 	task.wait(2)
-	TweenService:Create(f.Background, TweenParams, { Position = UDim2.new(-2, 0, 0.5, 0) })
+	Curvy:Tween(f.Background, nil, f.Background.Position, UDim2.fromScale(-2, 0.5))
 	UIEffectsClass.Sound("ScreenTransition")
 	UIEffectsClass:Zoom(false)
 	f:Destroy()
 
 	return mapSize
 end
-
-return Class

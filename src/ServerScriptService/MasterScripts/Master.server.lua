@@ -11,6 +11,7 @@ local AnalyticsService = game:GetService("AnalyticsService")
 local DataStoreClass = require(ReplicatedStorage.Classes.DataStoreClass)
 local SafeTeleporter = require(ReplicatedStorage.Modules.SafeTeleporter)
 local LoadingClass = require(ReplicatedStorage.Classes.LoadingClass)
+local MatchHandler = require(ReplicatedStorage.Modules.MatchHandler)
 
 local FastTravelRE: RemoteFunction = ReplicatedStorage.RemoteEvents.FastTravel
 local EnterMatchRE: RemoteFunction = ReplicatedStorage.RemoteEvents
@@ -48,9 +49,7 @@ productFunctions[1904591683] = function(receipt, player)
 			[Enum.AnalyticsCustomFieldKeys.CustomField03.Name] = player.Name,
 			[Enum.AnalyticsCustomFieldKeys.CustomField02.Name] = player.UserId,
 		}
-		AnalyticsService:LogCustomEvent(
-			player, "Receipts", 1, customFields
-		)
+		AnalyticsService:LogCustomEvent(player, "Receipts", 1, customFields)
 		task.wait(1)
 	end
 	return true -- indicate a successful purchase
@@ -69,9 +68,7 @@ productFunctions[1906572512] = function(receipt, player)
 		[Enum.AnalyticsCustomFieldKeys.CustomField03.Name] = player.Name,
 		[Enum.AnalyticsCustomFieldKeys.CustomField02.Name] = player.UserId,
 	}
-	AnalyticsService:LogCustomEvent(
-		player, "Receipts", 1, customFields
-	)
+	AnalyticsService:LogCustomEvent(player, "Receipts", 1, customFields)
 	return true
 end
 
@@ -105,13 +102,21 @@ local function FastTravel(place: number, players: { Player }, options)
 	return SafeTeleporter(place, players, options)
 end
 
-local function enterMatch(players: { Player }, options)
-	return SafeTeleporter(90845913624517, players, options)
+local function enterMatch(players: { Player }, _)
+	return task.spawn(function()
+		for _, player in players do
+			MatchHandler.addPlayer(player)
+		end
+		while true do
+			task.wait(10)
+			MatchHandler.new()
+		end
+	end)
 end
 
 local function chatted(player, message)
-	if string.find(message, "@match") or string.find(message, "@ready")then
-		enterMatch(player)
+	if string.find(message, "@match") or string.find(message, "@ready") then
+		enterMatch({ player })
 	end
 end
 
@@ -141,7 +146,7 @@ local function addDestinations()
 			local destination = Teleport:GetAttribute("Destination")
 
 			Teleport.ClickDetector.MouseClick:Connect(function(player)
-				LoadingClass.New(1.2, player)
+				LoadingClass(1.3, player)
 				task.wait(1)
 				player.Character.HumanoidRootPart:PivotTo(destination)
 			end)
@@ -161,46 +166,15 @@ local function addDestinations()
 	end)
 end
 
-local function createVoid(obj: BasePart)
-	local thread, objects: {}? = task.spawn(function()
-		local yAxis = CFrame.new(0, -176, 0)
-		local object = obj:Clone()
-		local voidObjects: { BasePart } = {}
-		for i = 1, 10000 do
-			task.desynchronize()
-			object.CFrame = yAxis
-			local newObject = object:Clone()
-			newObject.CFrame.X = (object.CFrame.X + 2048)
-			newObject:SetAttribute("Index", i)
-			local otherObject = object:Clone()
-			otherObject.CFrame.Z = (object.CFrame.Z + 2048)
-			otherObject:SetAttribute("Index", i)
-			local newObject2 = object:Clone()
-			newObject2.CFrame.X = (object.CFrame.X - 2048)
-			newObject2:SetAttribute("Index", i)
-			local otherObject2 = object:Clone()
-			otherObject2.CFrame.Z = (object.CFrame.Z - 2048)
-			otherObject2:SetAttribute("Index", i)
-			table.insert(voidObjects, newObject)
-			table.insert(voidObjects, otherObject)
-			table.insert(voidObjects, newObject2)
-			table.insert(voidObjects, otherObject2)
-			if i >= 10000 then
-				print("Task finished. Synchronizing")
-			end
-			task.synchronize()
-		end
-		return voidObjects
-	end)
-	return thread, objects
-end
-
 -- Set the callback; this can only be done once by one server-side script
 MarketplaceService.ProcessReceipt = processReceipt
 DataStoreClass.StartBindToClose()
 addDestinations()
-createVoid()
-FastTravelRE.OnServerInvoke(FastTravel)
-EnterMatchRE.OnServerInvoke(enterMatch)
+FastTravelRE.OnServerInvoke(function(...: any)
+	FastTravel(...)
+end)
+EnterMatchRE.OnServerInvoke(function(...: any)
+	enterMatch(...)
+end)
 Players.PlayerAdded:Connect(onPlayerAdded)
 Players.PlayerRemoving:Connect(onPlayerRemoving)

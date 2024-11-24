@@ -3,7 +3,6 @@
 print(script.Name)
 
 -- // Services
-
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Players = game:GetService("Players")
 local TweenService = game:GetService("TweenService")
@@ -12,12 +11,12 @@ local MarketPlaceService = game:GetService("MarketplaceService")
 
 -- // Requires
 
-local UIEffectsClass = require(ReplicatedStorage.Classes.UIEffect)
-local GlobalSettings = require(ReplicatedStorage.GlobalSettings)
+local UIEffectsClass = require(ReplicatedStorage.Modules.UIEffect)
 
 -- // Variables
 
 local player = Players.LocalPlayer
+local mouse = player:GetMouse()
 local character = player.Character or player.CharacterAdded:Wait()
 local Humanoid = character:WaitForChild("Humanoid")
 local Camera = game.Workspace.CurrentCamera
@@ -159,37 +158,39 @@ end
 
 mainHud()
 
--- Shop
+-- Tooltip
+local tooltipFrame = player.PlayerGui.ToolTip.CanvasGroup.Frame
 
-local Shop = player.PlayerGui.Shop
-local ShopFrame = Shop.CanvasGroup.Frame
-
-local CardsCatagory = ShopFrame.Cards
-local CardsBuyButton = CardsCatagory:FindFirstChildOfClass("TextButton")
-for key, value in GlobalSettings.ValidCards do
-	CardsBuyButton = CardsBuyButton:Clone()
-	CardsBuyButton.Text = key .. [[ <font color="]] .. value["RichTextColor"] .. [[">]] .. value["Price"] .. "</font>"
-end
-
--- Keycode Opening
-
-for _, openByKey: ScreenGui in player.PlayerGui:GetDescendants() do
-	if openByKey:HasTag("Keycode_Open") then
-		UserInputService.InputBegan:Connect(function(input, gameProcessedEvent)
-			if gameProcessedEvent then
-				return
-			end
-			if input.KeyCode == Enum.KeyCode.E then
-				if not openByKey:HasTag("IsOpened") then
-					local canvas = openByKey:FindFirstAncestorOfClass("CanvasGroup")
-					TweenService:Create(canvas, TInfo, { GroupTransparency = 0 }):Play()
-					openByKey:AddTag("IsOpened")
-				else
-					local canvas = openByKey:FindFirstAncestorOfClass("CanvasGroup")
-					TweenService:Create(canvas, TInfo, { GroupTransparency = 1 }):Play()
-					openByKey:RemoveTag("IsOpened")
-				end
-			end
-		end)
+local function showTooltip(text, more)
+	tooltipFrame.Details.Text = text -- Update the tooltip text
+	tooltipFrame.Visible = true
+	if more then
+		if type(more) == "string" then
+			tooltipFrame.Accept.Text = more
+		else
+			tooltipFrame.Accept.MouseButton1Click:Once(more)
+		end
 	end
 end
+
+local function hideTooltip()
+	tooltipFrame.Visible = false
+end
+
+mouse.Move:Connect(function()
+	if tooltipFrame.Visible then
+		local xOffset, yOffset = 10, 10 -- Add some padding
+		tooltipFrame.Position = UDim2.new(0, mouse.X + xOffset, 0, mouse.Y + yOffset)
+	end
+end)
+
+-- Other
+
+-- Tooltip Triggers
+PlayerHud.Player.MouseEnter:Connect(function()
+	showTooltip("That's you!", player.DisplayName)
+end)
+
+PlayerHud.Player.MouseLeave:Connect(function()
+	hideTooltip()
+end)
