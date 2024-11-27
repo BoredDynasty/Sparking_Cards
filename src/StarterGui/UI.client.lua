@@ -3,6 +3,7 @@
 print(script.Name)
 
 -- // Services
+local ContextActionService = game:GetService("ContextActionService")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Players = game:GetService("Players")
 local TweenService = game:GetService("TweenService")
@@ -27,13 +28,16 @@ local TInfo = TweenInfo.new(0.5, Enum.EasingStyle.Circular, Enum.EasingDirection
 -- Main Menu
 local MainMenu = player.PlayerGui.MainHud
 local MainMenuFrame = MainMenu.CanvasGroup.Frame
+MainMenu.CanvasGroup.Visible = true
 MainMenu.CanvasGroup.GroupTransparency = 0
+MainMenuFrame.Visible = true
 repeat
 	task.wait()
 	Camera.CameraType = Enum.CameraType.Scriptable
 until Camera.CameraType == Enum.CameraType.Scriptable
 
-Camera.CFrame = CFrame.new(-1604.172, 267.097, 6215.333, 24.286, 65.438, 0) -- The roads
+---1604.172, 267.097, 6215.333, 24.286, 65.438, 0
+Camera.CFrame = CFrame.new(-1604.172, 267.097, 6215.333) -- The roads
 
 MainMenuFrame.PlayButton.MouseButton1Click:Once(function()
 	Camera.CameraType = Enum.CameraType.Custom
@@ -48,7 +52,7 @@ local playerProfileImage =
 local DialogRemote = ReplicatedStorage.RemoteEvents.NewDialogue
 
 UserInputService.WindowFocusReleased:Connect(function()
-	UIEffectsClass.changeColor("Red", PlayerHud.Player.Design.Radial)
+	UIEffectsClass.changeColor("Red", PlayerHud.Player.Design.Radial.ImageColor3)
 	UIEffectsClass:Zoom(true)
 	UIEffectsClass:BlurEffect(true)
 	PlayerHud.Player.PlayerImage.Image = playerProfileImage
@@ -56,7 +60,7 @@ UserInputService.WindowFocusReleased:Connect(function()
 end)
 
 UserInputService.WindowFocused:Connect(function()
-	UIEffectsClass.changeColor("Green", PlayerHud.Player.Design.Radial)
+	UIEffectsClass.changeColor("Green", PlayerHud.Player.Design.Radial.ImageColor3)
 	UIEffectsClass:Zoom(false)
 	UIEffectsClass:BlurEffect(true)
 	PlayerHud.Player.PlayerImage.Image = playerProfileImage
@@ -65,9 +69,10 @@ end)
 
 local function newDialog(dialog)
 	UIEffectsClass.TypeWriterEffect(dialog, PlayerHud.Player.TextLabel)
-	UIEffectsClass.changeColor("Blue", PlayerHud.Player.Design.Radial)
+	UIEffectsClass.changeColor("Blue", PlayerHud.Player.Design.Radial.ImageColor3)
+	print(`New Dialog for {player.DisplayName}: {dialog}`)
 	task.wait(10)
-	UIEffectsClass.changeColor("Green", PlayerHud.Player.Design.Radial)
+	UIEffectsClass.changeColor("Green", PlayerHud.Player.Design.Radial.ImageColor3)
 end
 
 DialogRemote.OnClientEvent:Connect(newDialog)
@@ -130,30 +135,22 @@ for _, emoteButtons in HolderFrame.Circle:GetDescendants() do
 	end
 end
 
-UserInputService.InputBegan:Connect(function(input, gameProcessedEvent)
-	if gameProcessedEvent then
-		return
-	end
-
-	if input == Enum.KeyCode.Tab then
-		HolderFrame.Visible = not HolderFrame.Visible
-	end
-end)
+ContextActionService:BindAction("Emote", function()
+	EmoteGui.HolderFrame.Visible = not EmoteGui.HolderFrame.Visible
+end, true, Enum.KeyCode.Tab)
 
 -- Main Menu
 local function mainHud()
 	local MainHudGui = player.PlayerGui.MainHud
 	local Canvas = MainHudGui.CanvasGroup
 	local Frame = Canvas:FindFirstChild("Frame")
-	UIEffectsClass.Sound("MainMenu")
 
 	Canvas.GroupTransparency = 0
 
 	local function continueGameplay()
-		UIEffectsClass:changeVisibility(Canvas, false, Frame)
-		UIEffectsClass.Sound("MainMenu", true)
+		UIEffectsClass:changeVisibility(Canvas, false)
 	end
-	Frame.PlayButton.MouseButton1Down:Connect(continueGameplay)
+	Frame.PlayButton.MouseButton1Down:Once(continueGameplay)
 end
 
 mainHud()

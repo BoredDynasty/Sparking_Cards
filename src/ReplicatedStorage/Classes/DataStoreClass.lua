@@ -16,12 +16,69 @@ local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local RunService = game:GetService("RunService")
 local ContextActionService = game:GetService("ContextActionService")
+local MessagingService = game:GetService("MessagingService")
 
 local GlobalSettings = require(ReplicatedStorage.GlobalSettings)
 local LevelManager = require(ReplicatedStorage.Modules.LevelManager)
 local RewardsClass = require(ReplicatedStorage.Classes.RewardsClass)
 
 local SavedPositionGUI = ReplicatedStorage.Assets:WaitForChild("ScreenGui")
+
+local function periodicStatScanning(player, int, frequency: number)
+	frequency = frequency * 1000 :: number
+	while task.wait(frequency) do
+		local playerTab = {}
+		if not table.find(playerTab, player) then
+			local cardVal: IntValue = player:WaitForChild("Cards")
+			table.insert(playerTab, playerTab, int)
+			for _, otherPlayer in pairs(playerTab) do
+				if otherPlayer ~= player then
+					local cardValOther: IntValue = otherPlayer[1]
+					if cardValOther.Value > cardVal.Value then
+						-- cardVal.Value = cardValOther.Value
+						print(`{otherPlayer.Name} > {player.Name}`)
+						-- We are going to send this data to other servers.
+						local data: { any } = {
+							["best"] = {
+								["name"] = otherPlayer.Name,
+								["id"] = otherPlayer.UserId,
+							},
+							["worst"] = {
+								["name"] = player.Name,
+								["id"] = player.UserId,
+							},
+							["diff"] = cardValOther.Value - cardVal.Value,
+							["server_id"] = game.JobId,
+							["players"] = {
+								player,
+								otherPlayer,
+							},
+						}
+						MessagingService:PublishAsync("server_plr_stats", data)
+					else
+						print(`{player.Name} > {otherPlayer.Name}`)
+					end
+				end
+			end
+		end
+	end
+end
+
+local function calculate(inst: IntValue | Instance)
+	local total: number | nil
+	local fire: number = tonumber(inst:GetAttribute("Fire"))
+	local frost: number = tonumber(inst:GetAttribute("Frost"))
+	local plasma: number = tonumber(inst:GetAttribute("Plasma"))
+	local water: number = tonumber(inst:GetAttribute("Water"))
+
+	if fire and frost and plasma and water then
+		total = fire + frost + plasma + water
+	else
+		warn(`The following attributes are missing: {fire}, {frost}, {plasma}, {water}.`)
+	end
+	inst:SetAttribute("Total", total)
+	return total
+end
 
 --[[
 Multipliers
@@ -54,19 +111,13 @@ function DataStoreClass.PlayerAdded(player: Player) -- Setup DataSystem
 	local Cards = Instance.new("IntValue")
 	Cards.Name = "Cards"
 	Cards.Parent = leaderstats
-	local _GetAsync = CardsData:GetAsync(player.UserId)
-	Cards.Value = _GetAsync["BaseValue"]
-	Cards:SetAttribute("Fire", _GetAsync.Types["Fire"])
-	Cards:SetAttribute("Frost", _GetAsync.Types["Frost"])
-	Cards:SetAttribute("Plasma", _GetAsync.Types["Plasma"])
-	Cards:SetAttribute("Water", _GetAsync.Types["Water"])
 	CardsData:SetAsync(player.UserId, {
-		["BaseValue"] = Cards.Value or GlobalSettings.StartingCardsValue,
+		["BaseValue"] = calculate(Cards) or 4,
 		["Types"] = {
-			["Fire"] = _GetAsync.Types["any"] or 0,
-			["Frost"] = _GetAsync.Types["any"] or 0,
-			["Plasma"] = _GetAsync.Types["any"] or 0,
-			["Water"] = _GetAsync.Types["any"] or 0,
+			["Fire"] = Cards:GetAttribute("Fire") or 1,
+			["Frost"] = Cards:GetAttribute("Frost") or 1,
+			["Plasma"] = Cards:GetAttribute("Plasma") or 1,
+			["Water"] = Cards:GetAttribute("Water") or 1,
 		},
 		["Abilities"] = {
 			["Charge"] = {
@@ -90,6 +141,13 @@ function DataStoreClass.PlayerAdded(player: Player) -- Setup DataSystem
 			},
 		},
 	})
+	local _GetAsync = CardsData:GetAsync(player.UserId)
+	Cards.Value = _GetAsync.BaseValue
+	Cards:SetAttribute("Fire", _GetAsync.Types["Fire"])
+	Cards:SetAttribute("Frost", _GetAsync.Types["Frost"])
+	Cards:SetAttribute("Plasma", _GetAsync.Types["Plasma"])
+	Cards:SetAttribute("Water", _GetAsync.Types["Water"])
+	task.spawn(periodicStatScanning, player, Cards, 0.05)
 	--
 	local Rank = Instance.new("StringValue")
 	Rank.Name = "Rank"

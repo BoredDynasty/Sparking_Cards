@@ -5,9 +5,11 @@ local Players = game:GetService("Players")
 
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local MemoryStoreService = game:GetService("MemoryStoreService")
-local TeleportService = game:GetService("TeleportService")
 
 local SafeTeleporter = require(ReplicatedStorage.Modules.SafeTeleporter)
+
+-- // Types
+type data = { any }
 
 -- // Variables
 local queueMap = MemoryStoreService:GetSortedMap("queue")
@@ -43,7 +45,7 @@ function Match.new()
 
 			if timeOverMin >= 20 or amountQueued == maximum then
 				for _, data in pairs(queuedPlayers) do
-					local userId = data.value
+					local userId = data.Value
 					local player = Players:GetPlayerByUserId(userId)
 
 					if player then

@@ -14,7 +14,7 @@ local LoadingClass = require(ReplicatedStorage.Classes.LoadingClass)
 local MatchHandler = require(ReplicatedStorage.Modules.MatchHandler)
 
 local FastTravelRE: RemoteFunction = ReplicatedStorage.RemoteEvents.FastTravel
-local EnterMatchRE: RemoteFunction = ReplicatedStorage.RemoteEvents
+local EnterMatchRE: RemoteFunction = ReplicatedStorage.RemoteEvents.EnterMatch
 local DialogRE: RemoteEvent = ReplicatedStorage.RemoteEvents.NewDialogue
 
 local productFunctions = {}
@@ -23,8 +23,14 @@ print("Economic Analytics are enabled.")
 print("Custom Analytics are enabled.")
 
 local function touchDialog(otherPart: BasePart, player)
-	local message = otherPart:GetAttribute("TouchDialog")
-	DialogRE:FireClient(player, message)
+	if not player then
+		player = Players:GetPlayerFromCharacter(otherPart.Parent)
+	end
+	local message = otherPart:GetAttribute("TouchDialog") or otherPart:GetAttribute("DialogText")
+	if message then
+		DialogRE:FireClient(player, message)
+		print(`Sending Dialog to {player.DisplayName}: {message}`)
+	end
 end
 
 -- This product Id gives the player more cards (cards as in money)
@@ -139,29 +145,38 @@ local function onPlayerRemoving(player)
 end
 
 local function addDestinations()
+	local cooldown = {}
 	return task.spawn(function()
 		for _, tag in pairs(CollectionService:GetTagged("TeleportPart")) do
 			local Teleport = tag
-
 			local destination = Teleport:GetAttribute("Destination")
-
 			Teleport.ClickDetector.MouseClick:Connect(function(player)
 				LoadingClass(1.3, player)
 				task.wait(1)
 				player.Character.HumanoidRootPart:PivotTo(destination)
 			end)
 		end
-		for _, tag in CollectionService:GetTagged("TouchDialog") do
+		for _, tag in CollectionService:GetTagged("DialogTrigger") do
 			local otherPart: BasePart? = tag
-			local cooldown = {}
 			otherPart.Touched:Connect(function(player)
-				if not table.find(cooldown, otherPart) then
-					table.insert(cooldown, otherPart)
+				if not table.find(cooldown, player) then
+					table.insert(cooldown, player)
 					touchDialog(otherPart, player)
 					task.wait(10)
-					table.remove(cooldown, otherPart)
+					table.remove(cooldown, player)
 				end
 			end)
+			if otherPart:FindFirstChildOfClass("ClickDetector") then
+				local clickDetect = otherPart:FindFirstChildOfClass("ClickDetector")
+				clickDetect.MouseClick:Connect(function(player)
+					if not table.find(cooldown, player) then
+						table.insert(cooldown, player)
+						touchDialog(otherPart, player)
+						task.wait(10)
+						table.remove(cooldown, player)
+					end
+				end)
+			end
 		end
 	end)
 end
@@ -170,11 +185,7 @@ end
 MarketplaceService.ProcessReceipt = processReceipt
 DataStoreClass.StartBindToClose()
 addDestinations()
-FastTravelRE.OnServerInvoke(function(...: any)
-	FastTravel(...)
-end)
-EnterMatchRE.OnServerInvoke(function(...: any)
-	enterMatch(...)
-end)
+FastTravelRE.OnServerInvoke = FastTravel
+EnterMatchRE.OnServerInvoke = enterMatch
 Players.PlayerAdded:Connect(onPlayerAdded)
 Players.PlayerRemoving:Connect(onPlayerRemoving)
