@@ -36,17 +36,15 @@ end
 -- This product Id gives the player more cards (cards as in money)
 productFunctions[1904591683] = function(receipt, player)
 	local leaderstats = player:FindFirstChild("leaderstats")
-	local Cards = leaderstats and leaderstats:FindFirstChild("Cards")
+	local Cards: IntValue = leaderstats and leaderstats:FindFirstChild("Cards")
 	if Cards then
-		--local newMultiplier = math.ceil(50 * MultiplierNumber)
-		--Cards.Value += newMultiplier
 		Cards.Value += 50
 		AnalyticsService:LogEconomyEvent(
 			player,
 			Enum.AnalyticsEconomyFlowType.Source,
 			"Cards",
 			50,
-			DataStoreClass:getPlayerStats(),
+			DataStoreClass:getPlayerStats().Value,
 			Enum.AnalyticsEconomyTransactionType.IAP.Name,
 			"Extra Cards"
 		)

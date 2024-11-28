@@ -323,8 +323,8 @@ end
 		@within DataStoreClass
 		@return Folder?
 --]=]
-function DataStoreClass:getPlayerStats()
-	return Players.LocalPlayer:WaitForChild("leaderstats")
+function DataStoreClass:getPlayerStats(): IntValue
+	return Players.LocalPlayer:WaitForChild("leaderstats").Cards
 end
 
 --[=[
