@@ -318,6 +318,10 @@ function DataStoreClass:GetDataStore(datastore, scope: string?): DataStore
 	return DataStoreService:GetDataStore(datastore, scope)
 end
 
+function DataStoreClass:GetAsync(datastore, key)
+	return datastore:GetAsync(key)
+end
+
 --[=[
 	@function getPlayerStats
 		@within DataStoreClass
