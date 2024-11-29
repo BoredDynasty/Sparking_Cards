@@ -1,9 +1,5 @@
 --!nocheck
 
----@class Rewards
-local Rewards = {}
-Rewards.__index = Rewards
-
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local MarketplaceService = game:GetService("MarketplaceService")
 local AnalyticsService = game:GetService("AnalyticsService")
@@ -14,18 +10,13 @@ local PassID = 891181374
 
 --[=[
 	Creates a new Reward for a player.
-	@param player Player
-	@param AddCards number
-	@param CurrentRank string
-	@param CurrentMultiplier string
-	@param ExperiencePoints number
+		@param player Player
+		@param AddCards number
+		@param CurrentRank string
+		@param CurrentMultiplier string
+		@param ExperiencePoints number
 --]=]
-function Rewards.NewReward(
-	player: Player,
-	AddCards: number,
-	CurrentRank: string,
-	CurrentMultiplier: string
-)
+return function(player: Player, AddCards: number, CurrentRank: string, CurrentMultiplier: string)
 	local LeaderstatsFolder: Folder = player:FindFirstChild("leaderstats")
 	local Cards: IntValue = LeaderstatsFolder:FindFirstChild("Cards")
 	local Rank: StringValue = LeaderstatsFolder:FindFirstChild("Rank")
@@ -88,5 +79,3 @@ function Rewards.NewReward(
 		end
 	end
 end
-
-return Rewards

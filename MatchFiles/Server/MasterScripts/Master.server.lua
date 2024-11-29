@@ -3,20 +3,24 @@
 print("Server ID [ " .. game.JobId .. " ]: Match")
 
 local CollectionService = game:GetService("CollectionService")
-local MarketplaceService = game:GetService("MarketplaceService")
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local AnalyticsService = game:GetService("AnalyticsService")
+local ServerStorage = game:GetService("ServerStorage")
 
 local DataStoreClass = require(ReplicatedStorage.Classes.DataStoreClass)
 local LoadingClass = require(ReplicatedStorage.Classes.LoadingClass)
+local RewardsClass = require(ReplicatedStorage.Classes.RewardsClass)
+local SafeTeleporter = require(ReplicatedStorage.Modules.SafeTeleporter)
+local MapSettings = require(ServerStorage.Modules.MapSettings)
+local MapApply = require(ServerStorage.Modules.MapApply)
 
 local DialogRE: RemoteEvent = ReplicatedStorage.RemoteEvents.NewDialogue
 
-local productFunctions = {}
-
 print("Economic Analytics are enabled.")
 print("Custom Analytics are enabled.")
+
+local elaspedTime = 0
 
 local function touchDialog(otherPart: BasePart, player)
 	if not player then
@@ -29,79 +33,15 @@ local function touchDialog(otherPart: BasePart, player)
 	end
 end
 
--- This product Id gives the player more cards (cards as in money)
-productFunctions[1904591683] = function(receipt, player)
-	local leaderstats = player:FindFirstChild("leaderstats")
-	local Cards: IntValue = leaderstats and leaderstats:FindFirstChild("Cards")
-	if Cards then
-		Cards.Value += 50
-		AnalyticsService:LogEconomyEvent(
-			player,
-			Enum.AnalyticsEconomyFlowType.Source,
-			"Cards",
-			50,
-			DataStoreClass:getPlayerStats().Value,
-			Enum.AnalyticsEconomyTransactionType.IAP.Name,
-			"Extra Cards"
-		)
-		local customFields = {
-			[Enum.AnalyticsCustomFieldKeys.CustomField01.Name] = tostring(receipt),
-			[Enum.AnalyticsCustomFieldKeys.CustomField03.Name] = player.Name,
-			[Enum.AnalyticsCustomFieldKeys.CustomField02.Name] = player.UserId,
-		}
-		AnalyticsService:LogCustomEvent(player, "Receipts", 1, customFields)
-		task.wait(1)
-	end
-	return true -- indicate a successful purchase
-end
-
-productFunctions[1906572512] = function(receipt, player)
-	local alreadyDonated = {}
-	if not table.find(alreadyDonated, player.Name) then
-		table.insert(alreadyDonated, player.Name)
-		print("Donated Successfully!")
-		task.wait(10)
-		table.clear(alreadyDonated)
-	end
-	local customFields = {
-		[Enum.AnalyticsCustomFieldKeys.CustomField01.Name] = tostring(receipt),
-		[Enum.AnalyticsCustomFieldKeys.CustomField03.Name] = player.Name,
-		[Enum.AnalyticsCustomFieldKeys.CustomField02.Name] = player.UserId,
-	}
-	AnalyticsService:LogCustomEvent(player, "Receipts", 1, customFields)
-	return true
-end
-
-local Clone = ReplicatedStorage.Assets.Server:Clone()
-Clone.Parent = game.Workspace
-
-local function processReceipt(receiptInfo)
-	local userId = receiptInfo.PlayerId
-	local productId = receiptInfo.ProductId
-
-	local player = Players:GetPlayerByUserId(userId)
-	if player then
-		-- Get the handler function associated with the developer product ID and attempt to run it
-		local handler = productFunctions[productId]
-		local success, result = pcall(handler, receiptInfo, player)
-		if success then
-			-- The user has received their benefits
-			-- Return "PurchaseGranted" to confirm the transaction
-			return Enum.ProductPurchaseDecision.PurchaseGranted
-		else
-			warn("Failed to process receipt: ", receiptInfo, result)
-		end
-	end
-
-	-- The user's benefits couldn't be awarded
-	-- Return "NotProcessedYet" to try again next time the user joins
-	return Enum.ProductPurchaseDecision.NotProcessedYet
-end
-
 local function chatted(player, message)
 	if string.find(message, "@quit") or string.find(message, "@ggs") then
 		player:Kick("You've quitted the match. ggs!")
 	end
+end
+
+local function decideMap(player)
+	local map = MapSettings.retreiveRandom()
+	MapApply(map, player)
 end
 
 local function onPlayerAdded(player)
@@ -117,6 +57,8 @@ local function onPlayerAdded(player)
 	player.Chatted:Connect(function(message)
 		chatted(player, message)
 	end)
+	-- // Spawning the player to the map
+	decideMap(player)
 end
 
 local function onPlayerRemoving(player)
@@ -126,6 +68,21 @@ local function onPlayerRemoving(player)
 	}
 	AnalyticsService:LogOnboardingFunnelStepEvent(player, 1, "Player Leaving", customFields)
 	player:Destroy() -- performance reasons
+
+	local winner = Players:GetPlayers()
+	for _, _player: Player in winner do
+		local addCards = elaspedTime / 5
+		RewardsClass(player, addCards)
+		customFields = {
+			[Enum.AnalyticsCustomFieldKeys.CustomField01.Name] = `Winner: {_player.Name} AKA: {_player.DisplayName}`,
+			[Enum.AnalyticsCustomFieldKeys.CustomField02.Name] = `{_player.UserId}`,
+			[Enum.AnalyticsCustomFieldKeys.CustomField03.Name] = `Earnings: {addCards}`,
+		}
+		AnalyticsService:LogProgressionCompleteEvent(_player, "Win", 5, "Card-Fighting", customFields)
+		DataStoreClass.SaveData(_player)
+		task.wait(15)
+		SafeTeleporter(6125133811, _player)
+	end
 end
 
 local function addDestinations()
@@ -165,8 +122,6 @@ local function addDestinations()
 	end)
 end
 
--- Set the callback; this can only be done once by one server-side script
-MarketplaceService.ProcessReceipt = processReceipt
 DataStoreClass.StartBindToClose()
 addDestinations()
 Players.PlayerAdded:Connect(onPlayerAdded)

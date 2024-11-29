@@ -24,11 +24,11 @@ function Settings.newMap(mapName): {}?
 	return mapSettings[mapName]
 end
 
-function Settings.retreiveRandom()
+function Settings.retreiveRandom(): {}
 	return mapSettings[math.random(1, #mapSettings)]
 end
 
-function Settings.__rawget()
+function Settings.__rawget(): {}
 	return mapSettings
 end
 
