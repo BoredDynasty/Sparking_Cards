@@ -39,6 +39,14 @@ local function chatted(player, message)
 	end
 end
 
+local function newMatchID(HTTP: HttpService)
+	assert(HTTP)
+	return HTTP:GenerateGUID(false)
+end
+
+local matchID = newMatchID(game:GetService("HttpService"))
+game:SetAttribute("matchID", matchID)
+
 local function decideMap(player)
 	local map = MapSettings.retreiveRandom()
 	MapApply(map, player)
@@ -122,7 +130,24 @@ local function addDestinations()
 	end)
 end
 
+local function startTimer(remote: UnreliableRemoteEvent, _: RemoteEvent)
+	local Timer = require(ReplicatedStorage.Modules.Timer)
+	local newTimer = Timer.new()
+	local frequency = 0
+	--loaded.OnClientEvent:Connect(function()
+	frequency = frequency + 1
+	--end)
+	--if frequency >= 2 then
+	newTimer:Start()
+	local elasped = newTimer:FormatTime()
+	game:SetAttribute("elaspedTime", elasped)
+	remote:FireAllClients(elasped, newTimer)
+	--end
+	return newTimer
+end
+
 DataStoreClass.StartBindToClose()
+startTimer(ReplicatedStorage.RemoteEvents.UpdateTime, ReplicatedStorage.RemoteEvents.GameLoaded)
 addDestinations()
 Players.PlayerAdded:Connect(onPlayerAdded)
 Players.PlayerRemoving:Connect(onPlayerRemoving)

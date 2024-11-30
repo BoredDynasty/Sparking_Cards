@@ -181,6 +181,29 @@ mouse.Move:Connect(function()
 	end
 end)
 
+-- MatchHud
+local MatchHud = player.PlayerGui.MatchHud
+local MatchData = MatchHud.CanvasGroup.Frame.Data
+local MatchStatus = MatchHud.CanvasGroup.Frame.Status
+
+local elapsed = ""
+
+local function getTime(remote: UnreliableRemoteEvent)
+	elapsed = "00:00:00"
+	remote.OnClientEvent:Connect(function(int)
+		elapsed = int
+	end)
+	return elapsed
+end
+
+local matchID: string = game:GetAttribute("matchID")
+
+while true do
+	getTime(ReplicatedStorage.RemoteEvents.UpdateTime)
+	task.wait(1)
+	MatchData.Text = `{elapsed} | ID: {matchID}`
+end
+
 -- Other
 
 -- Tooltip Triggers
