@@ -16,16 +16,12 @@ local mapSettings = {
 		["Accesibility"] = {
 			["Highlights"] = true,
 		},
-		["Model"] = ServerStorage.Maps.Crossroad,
+		["Model"] = ServerStorage.Maps.Classic,
 	},
 }
 
 function Settings.newMap(mapName): {}?
 	return mapSettings[mapName]
-end
-
-function Settings.retreiveRandom(): {}
-	return mapSettings[math.random(1, #mapSettings)]
 end
 
 function Settings.__rawget(): {}

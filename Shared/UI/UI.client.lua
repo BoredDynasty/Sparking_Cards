@@ -52,7 +52,7 @@ local playerProfileImage =
 local DialogRemote = ReplicatedStorage.RemoteEvents.NewDialogue
 
 UserInputService.WindowFocusReleased:Connect(function()
-	UIEffectsClass.changeColor("Red", PlayerHud.Player.Design.Radial.ImageColor3)
+	UIEffectsClass.changeColor("Red", PlayerHud.Player.Design.Radial)
 	UIEffectsClass:Zoom(true)
 	UIEffectsClass:BlurEffect(true)
 	PlayerHud.Player.PlayerImage.Image = playerProfileImage
@@ -60,19 +60,19 @@ UserInputService.WindowFocusReleased:Connect(function()
 end)
 
 UserInputService.WindowFocused:Connect(function()
-	UIEffectsClass.changeColor("Green", PlayerHud.Player.Design.Radial.ImageColor3)
+	UIEffectsClass.changeColor("Green", PlayerHud.Player.Design.Radial)
 	UIEffectsClass:Zoom(false)
-	UIEffectsClass:BlurEffect(true)
+	UIEffectsClass:BlurEffect(false)
 	PlayerHud.Player.PlayerImage.Image = playerProfileImage
 	PlayerHud.Player.TextLabel.Text = player.DisplayName
 end)
 
 local function newDialog(dialog)
 	UIEffectsClass.TypeWriterEffect(dialog, PlayerHud.Player.TextLabel)
-	UIEffectsClass.changeColor("Blue", PlayerHud.Player.Design.Radial.ImageColor3)
+	UIEffectsClass.changeColor("Blue", PlayerHud.Player.Design.Radial)
 	print(`New Dialog for {player.DisplayName}: {dialog}`)
 	task.wait(10)
-	UIEffectsClass.changeColor("Green", PlayerHud.Player.Design.Radial.ImageColor3)
+	UIEffectsClass.changeColor("Green", PlayerHud.Player.Design.Radial)
 end
 
 DialogRemote.OnClientEvent:Connect(newDialog)
@@ -135,9 +135,16 @@ for _, emoteButtons in HolderFrame.Circle:GetDescendants() do
 	end
 end
 
+EmoteGui.HolderFrame.Visible = false
+
 ContextActionService:BindAction("Emote", function()
-	EmoteGui.HolderFrame.Visible = not EmoteGui.HolderFrame.Visible
+	if EmoteGui.HolderFrame.Visible == true then
+		EmoteGui.HolderFrame.Visible = false
+	else
+		EmoteGui.HolderFrame.Visible = true
+	end
 end, true, Enum.KeyCode.Tab)
+print(`UI is halfway executing.`)
 
 -- Main Menu
 local function mainHud()
@@ -199,13 +206,18 @@ end
 local matchID: string = game:GetAttribute("matchID")
 
 while true do
-	getTime(ReplicatedStorage.RemoteEvents.UpdateTime)
+	elasped = getTime(ReplicatedStorage.RemoteEvents.UpdateTime)
 	task.wait(1)
 	MatchData.Text = `{elapsed} | ID: {matchID}`
+	for i, _: Player in Players:GetPlayers() do
+		if i ~= 2 then
+			MatchStatus.Text = "Not Enough Players"
+			warn(`Not enough players {i}, {_}`)
+		end
+	end
 end
 
 -- Other
-
 -- Tooltip Triggers
 PlayerHud.Player.MouseEnter:Connect(function()
 	showTooltip("That's you!", player.DisplayName)
@@ -214,3 +226,5 @@ end)
 PlayerHud.Player.MouseLeave:Connect(function()
 	hideTooltip()
 end)
+
+print(`UI has finished executing.`)

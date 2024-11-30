@@ -22,7 +22,7 @@ local GlobalSettings = require(ReplicatedStorage.GlobalSettings)
 local LevelManager = require(ReplicatedStorage.Modules.LevelManager)
 local RewardsClass = require(ReplicatedStorage.Classes.RewardsClass)
 
-local SavedPositionGUI = ReplicatedStorage.Assets:WaitForChild("ScreenGui")
+local SavedPositionGUI = ReplicatedStorage.Assets:FindFirstChild("ScreenGui")
 
 local function periodicStatScanning(player, int, frequency: number)
 	frequency = frequency * 1000 :: number
@@ -179,7 +179,7 @@ function DataStoreClass.PlayerAdded(player: Player) -- Setup DataSystem
 		GetPosition = PDS:GetAsync(player.UserId)
 	end)
 
-	if GetPosition then
+	if GetPosition and SavedPositionGUI then
 		local SavedPosition = SavedPositionGUI:Clone()
 		SavedPosition.Parent = player.PlayerGui
 		SavedPosition.LastPosition.Visible = true

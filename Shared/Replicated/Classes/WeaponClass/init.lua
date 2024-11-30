@@ -13,7 +13,7 @@ local Players = game:GetService("Players")
 --]=]
 function WeaponClass.new()
 	local self = setmetatable({}, WeaponClass)
-	self.tool = nil
+	self.tool = nil :: Tool
 	self.cooldown = {}
 end
 
@@ -50,6 +50,10 @@ function WeaponClass:Raycast(range: number)
 		end
 	end
 	return target
+end
+
+function WeaponClass:setTool(tool: Tool)
+	self.tool = tool
 end
 
 return WeaponClass

@@ -48,7 +48,7 @@ local matchID = newMatchID(game:GetService("HttpService"))
 game:SetAttribute("matchID", matchID)
 
 local function decideMap(player)
-	local map = MapSettings.retreiveRandom()
+	local map = MapSettings.newMap("Classic")
 	MapApply(map, player)
 end
 
