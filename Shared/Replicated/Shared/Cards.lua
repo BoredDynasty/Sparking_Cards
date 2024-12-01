@@ -6,9 +6,8 @@ local Class = {}
 local CollectionService = game:GetService("CollectionService")
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
-local ServerStorage = game:GetService("ServerStorage")
 
-local Stash = require(ReplicatedStorage.Classes.Stash)
+local DataStoreClass = require(ReplicatedStorage.Classes.DataStoreClass)
 local RewardsClass = require(ReplicatedStorage.Classes.RewardsClass)
 local GlobalSettings = require(ReplicatedStorage.GlobalSettings)
 
@@ -23,15 +22,13 @@ function Class:StartListening() --  starts listening
 		end
 
 		local Tagged = tagged
-		local HumanoidRootPart = Players.LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
-		local leaderstats = Players.LocalPlayer:WaitForChild("leaderstats")
 		Tagged.Touched:Once(function(otherPart)
 			if otherPart.Parent:FindFirstChild("HumanoidRootPart") then
 				local player = Players:GetPlayerFromCharacter(otherPart.Parent)
 				if not player then
 					return
 				end
-				Stash.SaveData(player)
+				DataStoreClass.SaveData(player)
 
 				local AwardedCards = Tagged:GetAttribute("Amount")
 

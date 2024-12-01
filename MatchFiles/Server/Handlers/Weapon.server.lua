@@ -26,7 +26,7 @@ local function iceMagic(player, mouse: Mouse, capability)
 		local shardsNum = math.random(9, 20)
 		local shardIncrements = 70 / shardsNum
 		for i = 1, shardsNum do
-			local newShard: MeshPart | Part = iceShard:Clone()
+			local newShard: MeshPart = iceShard:Clone()
 			newShard.Anchored = true
 			newShard.CanCollide = false
 			-- A buncha math
