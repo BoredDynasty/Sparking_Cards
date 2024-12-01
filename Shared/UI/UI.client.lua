@@ -231,22 +231,20 @@ player:SetAttribute("Chance", "%0")
 local baseHealth = 400
 
 Humanoid.HealthChanged:Connect(function(health)
-	task.spawn(function()
-		print(`{player.DisplayName} health has changed to: {health}`)
-		baseHealth = baseHealth / health
-		local chance = baseHealth
-		local red = 255
-		red = red / 20.4 * (chance / 2)
-		if red > 255 then
-			red = 255
-		end
-		local font_color = tostring(Color3.fromRGB(red, 255, 255))
-		for _, textLabel: TextLabel in ChanceUI.CanvasGroup:GetDescendants() do
-			textLabel.Text = `<font color="{font_color}">{"%"}{player:GetAttribute("Chance") :: string}</font>`
-			UIEffectsClass.CustomAnimation("Click", textLabel) -- To get larger
-			UIEffectsClass.CustomAnimation("Shake", textLabel) -- To rotate
-		end
-	end)
+	print(`{player.DisplayName} health has changed to: {health}`)
+	baseHealth = baseHealth / health
+	local chance = baseHealth
+	local red = 255
+	red = red / 20.4 * (chance / 2)
+	if red > 255 then
+		red = 255
+	end
+	local font_color = tostring(Color3.fromRGB(red, 255, 255))
+	for _, textLabel: TextLabel in ChanceUI.CanvasGroup:GetDescendants() do
+		textLabel.Text = `<font color="{font_color}">%{player:GetAttribute("Chance") :: string}</font>`
+		UIEffectsClass.CustomAnimation("Click", textLabel) -- To get larger
+		UIEffectsClass.CustomAnimation("Shake", textLabel) -- To rotate
+	end
 end)
 
 -- Other

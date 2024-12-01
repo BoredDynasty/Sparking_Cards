@@ -8,7 +8,7 @@ local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local AnalyticsService = game:GetService("AnalyticsService")
 
-local DataStoreClass = require(ReplicatedStorage.Classes.DataStoreClass)
+local Stash = require(ReplicatedStorage.Classes.Stash)
 local SafeTeleporter = require(ReplicatedStorage.Modules.SafeTeleporter)
 local LoadingClass = require(ReplicatedStorage.Classes.LoadingClass)
 local MatchHandler = require(ReplicatedStorage.Modules.MatchHandler)
@@ -44,7 +44,7 @@ productFunctions[1904591683] = function(receipt, player)
 			Enum.AnalyticsEconomyFlowType.Source,
 			"Cards",
 			50,
-			DataStoreClass:getPlayerStats().Value,
+			Stash:getPlayerStats().Value,
 			Enum.AnalyticsEconomyTransactionType.IAP.Name,
 			"Extra Cards"
 		)
@@ -125,7 +125,7 @@ local function chatted(player, message)
 end
 
 local function onPlayerAdded(player)
-	DataStoreClass.PlayerAdded(player)
+	Stash.PlayerAdded(player)
 	AnalyticsService:LogOnboardingFunnelStepEvent(player, 1, "Player Joined")
 	player.Character.Animate.walk.WalkAnim.AnimationId = "rbxassetid://14512867805"
 	player.CharacterRemoving:Connect(function(character)
@@ -137,7 +137,7 @@ local function onPlayerAdded(player)
 end
 
 local function onPlayerRemoving(player)
-	DataStoreClass.PlayerRemoving(player)
+	Stash.PlayerRemoving(player)
 	AnalyticsService:LogOnboardingFunnelStepEvent(player, 1, "Player Leaving")
 	player:Destroy() -- performance reasons
 end
@@ -181,7 +181,7 @@ end
 
 -- Set the callback; this can only be done once by one server-side script
 MarketplaceService.ProcessReceipt = processReceipt
-DataStoreClass.StartBindToClose()
+Stash.StartBindToClose()
 addDestinations()
 FastTravelRE.OnServerInvoke = FastTravel
 EnterMatchRE.OnServerInvoke = enterMatch

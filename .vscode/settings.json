@@ -22,5 +22,13 @@
         7,
         1007
     ],
-    "discord.enabled": true
+    "discord.enabled": true,
+    "robloxLsp.diagnostics.globals": [
+        "io",
+        "package",
+        "load",
+        "dofile",
+        "loadfile",
+        "native"
+    ]
 }

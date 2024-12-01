@@ -1,5 +1,7 @@
 --!nocheck
 
+-- LoadingClass.lua
+
 local ReplicatedFirst = game:GetService("ReplicatedFirst")
 local RunService = game:GetService("RunService")
 local StarterGui = game:GetService("StarterGui")

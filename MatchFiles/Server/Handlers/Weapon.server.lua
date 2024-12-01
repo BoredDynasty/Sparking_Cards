@@ -1,5 +1,7 @@
 -- [TODO) Start Adding Weapons
 
+-- Weapon.server.lua
+
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local ServerStorage = game:GetService("ServerStorage")

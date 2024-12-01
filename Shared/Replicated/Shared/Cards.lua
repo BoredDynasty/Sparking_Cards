@@ -8,7 +8,7 @@ local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local ServerStorage = game:GetService("ServerStorage")
 
-local DataStoreClass = require(ReplicatedStorage.Classes.DataStoreClass)
+local Stash = require(ReplicatedStorage.Classes.Stash)
 local RewardsClass = require(ReplicatedStorage.Classes.RewardsClass)
 local GlobalSettings = require(ReplicatedStorage.GlobalSettings)
 
@@ -31,7 +31,7 @@ function Class:StartListening() --  starts listening
 				if not player then
 					return
 				end
-				DataStoreClass.SaveData(player)
+				Stash.SaveData(player)
 
 				local AwardedCards = Tagged:GetAttribute("Amount")
 

@@ -1,4 +1,4 @@
---!nocheck
+--!nonstrict
 
 print("Server ID [ " .. game.JobId .. " ]: Match")
 
@@ -8,7 +8,7 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local AnalyticsService = game:GetService("AnalyticsService")
 local ServerStorage = game:GetService("ServerStorage")
 
-local DataStoreClass = require(ReplicatedStorage.Classes.DataStoreClass)
+local Stash = require(ReplicatedStorage.Classes.Stash)
 local LoadingClass = require(ReplicatedStorage.Classes.LoadingClass)
 local RewardsClass = require(ReplicatedStorage.Classes.RewardsClass)
 local SafeTeleporter = require(ReplicatedStorage.Modules.SafeTeleporter)
@@ -53,7 +53,58 @@ local function decideMap(player)
 end
 
 local function onPlayerAdded(player)
-	DataStoreClass.PlayerAdded(player)
+	local newStash = Stash.new()
+	local stores = {
+		"Cards",
+		"Rank",
+		"Multiplier",
+		"Experience",
+		"Position",
+	}
+	for _, store: string in stores do
+		local stash = newStash:newStash(store)
+		if store == "Cards" then
+			local _, gottenStash = newStash:getStash(stash, `{player.UserId}-Cards`)
+			newStash:setStash(stash, {
+				["BaseValue"] = newStash.Calculator(player.leaderstats:WaitForChild("Cards")) or 4,
+				["Types"] = {
+					["Fire"] = gottenStash.Types.Fire or 1,
+					["Frost"] = gottenStash.Types.Frost or 1,
+					["Plasma"] = gottenStash.Types.Plasma or 1,
+					["Water"] = gottenStash.Types.Water or 1,
+				},
+				["Abilities"] = {
+					["Charge"] = {
+						["Damage"] = 0,
+						["Healing"] = 10,
+						["Unlocked"] = gottenStash.Abilities.Charge.Unlocked or false,
+					},
+					["Ultimate"] = {
+						["Damage"] = 95,
+						["Healing"] = false,
+						["Unlocked"] = gottenStash.Abilities.Ultimate.Unlocked or false,
+					},
+					["Fusion Coil"] = {
+						["Damage"] = 1005,
+						["Healing"] = false,
+						["Unlocked"] = gottenStash.Abilities["Fusion Coil"].Unlocked or false,
+					},
+					["Supernatural Radiation"] = {
+						["Damage"] = math.huge,
+						["Healing"] = false,
+						["Unlocked"] = gottenStash.Abilities["Supernatural Radiation"].Unlocked or false,
+					},
+				},
+			})
+		end
+	end
+	newStash:PlayerAdded(player, {
+		`{player.UserId}-Cards`,
+		`{player.UserId}-Rank`,
+		`{player.UserId}-Multiplier`,
+		`{player.UserId}-Experience`,
+		`{player.UserId}-Position`,
+	})
 	local customFields = {
 		[Enum.AnalyticsCustomFieldKeys.CustomField01.Name] = "SPARKING-MATCH",
 	}
@@ -70,7 +121,7 @@ local function onPlayerAdded(player)
 end
 
 local function onPlayerRemoving(player)
-	DataStoreClass.PlayerRemoving(player)
+	Stash.PlayerRemoving(player)
 	local customFields = {
 		[Enum.AnalyticsCustomFieldKeys.CustomField01.Name] = "SPARKING-MATCH",
 	}
@@ -87,7 +138,7 @@ local function onPlayerRemoving(player)
 			[Enum.AnalyticsCustomFieldKeys.CustomField03.Name] = `Earnings: {addCards}`,
 		}
 		AnalyticsService:LogProgressionCompleteEvent(_player, "Win", 5, "Card-Fighting", customFields)
-		DataStoreClass.SaveData(_player)
+		Stash.SaveData(_player)
 		task.wait(15)
 		SafeTeleporter(6125133811, _player)
 	end
@@ -149,7 +200,7 @@ local function startTimer(remote: UnreliableRemoteEvent, _: RemoteEvent)
 	return newTimer
 end
 
-DataStoreClass.StartBindToClose()
+Stash.StartBindToClose()
 startTimer(ReplicatedStorage.RemoteEvents.UpdateTime, ReplicatedStorage.RemoteEvents.GameLoaded)
 addDestinations()
 Players.PlayerAdded:Connect(onPlayerAdded)

@@ -5,7 +5,12 @@
 local WeaponClass = {}
 WeaponClass.__index = WeaponClass
 
+local Debris = game:GetService("Debris")
 local Players = game:GetService("Players")
+
+local DamageIndict = require(script.DamageIndict)
+
+export type ToolType = "Melee" | "Projectile"
 
 --[=[
     @within WeaponClass
@@ -14,6 +19,7 @@ local Players = game:GetService("Players")
 function WeaponClass.new()
 	local self = setmetatable({}, WeaponClass)
 	self.tool = nil :: Tool
+	self.type = nil :: string
 	self.cooldown = {}
 end
 
@@ -32,7 +38,8 @@ function WeaponClass:Raycast(range: number)
 	if character and humanoid.Health > 0 then
 		local origin = character.HumanoidRootPart.CFrame.Position
 		local destination = character.HumanoidRootPart.CFrame.Position
-			+ character.HumanoidRootPart.CFrame.LookVector * range
+				+ character.HumanoidRootPart.CFrame.LookVector * range
+			or 100
 
 		local raycastParams = RaycastParams.new()
 		raycastParams.FilterType = Enum.RaycastFilterType.Blacklist
@@ -44,16 +51,13 @@ function WeaponClass:Raycast(range: number)
 				or raycast.Instance.Parent.Parent:FindFirstChild("HumanoidRootPart")
 			then
 				target = raycast.Instance.Parent:FindFirstChild("HumanoidRootPart")
+					or raycast.Instance.Parent.Parent:FindFirstChild("HumanoidRootPart")
 				print(`Found Target: {target}`)
 				target = Players:GetPlayerFromCharacter(target)
 			end
 		end
 	end
 	return target
-end
-
-function WeaponClass:setTool(tool: Tool)
-	self.tool = tool
 end
 
 return WeaponClass

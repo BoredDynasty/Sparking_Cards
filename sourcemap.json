@@ -183,10 +183,10 @@
                             ]
                         },
                         {
-                            "name": "DataStoreClass",
+                            "name": "Stash",
                             "className": "ModuleScript",
                             "filePaths": [
-                                "src/ReplicatedStorage\\Classes\\DataStoreClass.lua"
+                                "src/ReplicatedStorage\\Classes\\Stash.lua"
                             ]
                         },
                         {
