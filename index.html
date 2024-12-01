@@ -29,8 +29,8 @@
 
     <main>
         <h1>SPARKING CARDS!</h1>
-        <md-divider inset></md-divider>
-        <md-outlined-text-field value="I want this..." maxlength="100"="Feedback"
+        <div></div>
+        <md-outlined-text-field maxlength="100"="Feedback"
             supporting-text="Anything you'd like to see added to the game?">
 
         </md-outlined-text-field>
@@ -50,17 +50,21 @@
         <md-divider inset></md-divider>
         <div></div>
         <a href="https://github.com/BoredDynasty/Sparking_Cards">
-            <img src="Files/Images/SourceCode.png" alt="Contribute on GitHub" style="width: 216; height: 90;">
+            <img src="Files/Images/SourceCode.png" alt="Contribute on GitHub" style="width: 118; height: 45;">
         </a>
     </main>
     <style>
-        .main-nav {
+        /* Basic CSS styling for the sidebar */
+        aside {
             background-color: #49454e;
-            position: relative;
-            border: none;
+            width: 321px;
+            height: 100%;
+            position: fixed;
+            top: 0;
+            left: 0;
         }
     </style>
-    <aside class="main-nav">
+    <aside>
         <h2>Navigation</h2>
         <ul>
             <md-text-button trailing-icon>
