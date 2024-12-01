@@ -22,6 +22,8 @@
 
 [SPARKING CARDS!](https://www.roblox.com/games/6125133811/SPARKING-CARDS)
 
+[GitHub.io](https://boreddynasty.github.io/Sparking_Cards/)
+
 ### Beta Phase
 
 ## Update Logs
