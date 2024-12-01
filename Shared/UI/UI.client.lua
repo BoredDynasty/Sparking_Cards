@@ -1,9 +1,10 @@
---!nocheck
+--!nonstrict
+
+-- UI.client.lua
 
 print(script.Name)
 
 -- // Services
-local ContextActionService = game:GetService("ContextActionService")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Players = game:GetService("Players")
 local TweenService = game:GetService("TweenService")
@@ -77,6 +78,8 @@ end
 
 DialogRemote.OnClientEvent:Connect(newDialog)
 
+print(`UI is executing.`)
+
 -- Gamepasses
 
 local BuyCards = player.PlayerGui.DynamicUI.BuyCards
@@ -137,13 +140,11 @@ end
 
 EmoteGui.HolderFrame.Visible = false
 
-ContextActionService:BindAction("Emote", function()
-	if EmoteGui.HolderFrame.Visible == true then
-		EmoteGui.HolderFrame.Visible = false
-	else
-		EmoteGui.HolderFrame.Visible = true
+UserInputService.InputBegan:Connect(function(input, gameProcessedEvent)
+	if input == Enum.KeyCode.Tab and not gameProcessedEvent then
+		EmoteGui.HolderFrame.Visible = not EmoteGui.HolderFrame.Visible
 	end
-end, true, Enum.KeyCode.Tab)
+end)
 print(`UI is halfway executing.`)
 
 -- Main Menu
@@ -188,6 +189,8 @@ mouse.Move:Connect(function()
 	end
 end)
 
+print(`UI is almost done executing.`)
+
 -- MatchHud
 local MatchHud = player.PlayerGui.MatchHud
 local MatchData = MatchHud.CanvasGroup.Frame.Data
@@ -205,17 +208,46 @@ end
 
 local matchID: string = game:GetAttribute("matchID")
 
-while true do
-	elasped = getTime(ReplicatedStorage.RemoteEvents.UpdateTime)
+repeat
+	task.wait(0.5)
+	-- return function()
+	elapsed = getTime(ReplicatedStorage.RemoteEvents.UpdateTime)
 	task.wait(1)
 	MatchData.Text = `{elapsed} | ID: {matchID}`
-	for i, _: Player in Players:GetPlayers() do
-		if i ~= 2 then
-			MatchStatus.Text = "Not Enough Players"
-			warn(`Not enough players {i}, {_}`)
-		end
+-- end
+until string.find(elapsed, "30:00:00")
+
+for i, _: Player in Players:GetPlayers() do
+	if i ~= 2 then
+		MatchStatus.Text = "Not Enough Players"
+		warn(`Not enough players {i}, {_}`)
 	end
 end
+
+-- Chance
+local ChanceUI = player.PlayerGui.Chance
+
+player:SetAttribute("Chance", "%0")
+local baseHealth = 400
+
+Humanoid.HealthChanged:Connect(function(health)
+	task.spawn(function()
+		print(`{player.DisplayName} health has changed to: {health}`)
+		baseHealth = baseHealth / health
+		local chance = baseHealth
+		local red = 255
+		red = red / 20.4 * (chance / 2)
+		if red > 255 then
+			red = 255
+		end
+		local font_color = tostring(Color3.fromRGB(red, 255, 255))
+		for _, textLabel: TextLabel in ChanceUI.CanvasGroup:GetDescendants() do
+			textLabel.Text = `<font color="{font_color}">{"%"}{player:GetAttribute("Chance") :: string}</font>`
+			UIEffectsClass.CustomAnimation("Click", textLabel) -- To get larger
+			UIEffectsClass.CustomAnimation("Shake", textLabel) -- To rotate
+		end
+	end)
+end)
 
 -- Other
 -- Tooltip Triggers

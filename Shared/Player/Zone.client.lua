@@ -8,7 +8,7 @@ local TInfo = TweenInfo.new()
 local Zone = require(ReplicatedStorage.Modules.Zone)
 
 local zones = {
-	["Subway"] = game.Workspace.Zones.Subway,
+	["Subway"] = game.Workspace.Zones:WaitForChild("Subway"),
 }
 
 local subwayZone = Zone.new(zones.Subway)
@@ -22,7 +22,7 @@ local function changeAtmosphere(atmosphere: Atmosphere, color, density, offset, 
 	table.insert(queuedTweens, TweenService:Create(Lighting.ColorCorrection, TInfo, { Brightness = brightness }))
 	for i, tween in ipairs(queuedTweens) do
 		tween:Play()
-		if i >= #tween then
+		if i >= #queuedTweens then
 			for _, _tween in ipairs(queuedTweens) do
 				_tween:Destroy()
 			end

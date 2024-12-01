@@ -1,35 +1,48 @@
 --!nocheck
 
-local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local ReplicatedFirst = game:GetService("ReplicatedFirst")
+local RunService = game:GetService("RunService")
+local StarterGui = game:GetService("StarterGui")
 
-local UIEffectsClass = require(ReplicatedStorage.Modules.UIEffect)
-local Curvy = require(ReplicatedStorage.Modules.UIEffect.Curvy)
+StarterGui:SetCoreGuiEnabled(Enum.CoreGuiType.All, false)
 
 return function(mapSize, player: Player)
-	assert(player, `Player does not exist: {player}`)
-	if not mapSize then
-		mapSize = 1.5
+	local any = ReplicatedFirst.Loading
+
+	local loadingUI = any:Clone()
+	loadingUI.Parent = player.PlayerGui
+
+	local background = loadingUI.CanvasGroup.Background
+
+	local textIndicator = background.Status.StatusText
+	local status = textIndicator.Parent:FindFirstChildOfClass("TextButton")
+	local str = "[ ID ]"
+	if RunService:IsStudio() then
+		textIndicator.Text = "[ TEST ]"
+	else
+		textIndicator.Text = string.gsub(str, "[ ID ]", game.JobId)
 	end
-	local Gui = ReplicatedStorage.LoadingArea
 
-	local f = Gui:Clone()
-	f.Parent = player.PlayerGui
+	StarterGui:SetCoreGuiEnabled(Enum.CoreGuiType.PlayerList, false)
+	StarterGui:SetCoreGuiEnabled(Enum.CoreGuiType.Chat, true)
+	StarterGui:SetCoreGuiEnabled(Enum.CoreGuiType.Health, false)
+	StarterGui:SetCoreGuiEnabled(Enum.CoreGuiType.Backpack, false)
+	StarterGui:SetCoreGuiEnabled(Enum.CoreGuiType.EmotesMenu, false)
+	StarterGui:SetCoreGuiEnabled(Enum.CoreGuiType.Captures, true)
+	StarterGui:SetCoreGuiEnabled(Enum.CoreGuiType.SelfView, true)
 
-	f.Background.Visible = true
+	local publicOffset, publicSize = Vector2.new(442, 152), Vector2.new(36, 36)
+	-- local privateOffset, privateSize = Vector2.new(442, 194), Vector2.new(36, 36)
 
-	Curvy:Tween(f.Background, nil, f.Background.Position, UDim2.fromScale(0.5, 0.5))
-	UIEffectsClass.Sound("ScreenTransition")
-	UIEffectsClass:Zoom(true)
-	UIEffectsClass.changeColor("Blue", f.Background.Loading.dropshadow_16_20)
-	f.Background.Loading.Text = "Connecting..."
-	task.wait(mapSize * 0.5)
-	f.Background.Loading.Text = "Connected."
-	UIEffectsClass.changeColor("Green", f.Background.Loading.dropshadow_16_20)
-	task.wait(2)
-	Curvy:Tween(f.Background, nil, f.Background.Position, UDim2.fromScale(-2, 0.5))
-	UIEffectsClass.Sound("ScreenTransition")
-	UIEffectsClass:Zoom(false)
-	f:Destroy()
+	local imgServer = textIndicator.Parent.TextButton.public
 
-	return mapSize
+	--imgServer.ImageRectOffset = privateOffset
+	--imgServer.ImageRectSize = privateSize
+	imgServer.ImageRectOffset = publicOffset
+	imgServer.ImageRectSize = publicSize
+	--end
+	task.wait(mapSize * 2)
+	status.Text = "Loaded"
+	task.wait(4)
+	loadingUI:Destroy()
 end

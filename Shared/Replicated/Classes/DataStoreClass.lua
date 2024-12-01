@@ -143,10 +143,10 @@ function DataStoreClass.PlayerAdded(player: Player) -- Setup DataSystem
 	})
 	local _GetAsync = CardsData:GetAsync(player.UserId)
 	Cards.Value = _GetAsync.BaseValue
-	Cards:SetAttribute("Fire", _GetAsync.Types["Fire"])
-	Cards:SetAttribute("Frost", _GetAsync.Types["Frost"])
-	Cards:SetAttribute("Plasma", _GetAsync.Types["Plasma"])
-	Cards:SetAttribute("Water", _GetAsync.Types["Water"])
+	Cards:SetAttribute("Fire", _GetAsync.Types.Fire)
+	Cards:SetAttribute("Frost", _GetAsync.Types.Frost)
+	Cards:SetAttribute("Plasma", _GetAsync.Types.Plasma)
+	Cards:SetAttribute("Water", _GetAsync.Types.Water)
 	task.spawn(periodicStatScanning, player, Cards, 0.05)
 	--
 	local Rank = Instance.new("StringValue")
@@ -166,11 +166,6 @@ function DataStoreClass.PlayerAdded(player: Player) -- Setup DataSystem
 	EXP.Parent = leaderstats
 	EXP.Value = ExperiencePoints:GetAsync(player.UserId) or GlobalSettings.StartingExperienceValue
 	ExperiencePoints:SetAsync(player.UserId, EXP.Value)
-
-	local experience = LevelManager.new(Rank.Value)
-	if experience.Name ~= Rank.Value then
-		RewardsClass.NewReward(player, experience.Reward)
-	end
 
 	local Character = game.Workspace:WaitForChild(player.Name)
 	local GetPosition
@@ -198,7 +193,7 @@ function DataStoreClass.PlayerAdded(player: Player) -- Setup DataSystem
 		end)
 	end
 
-	return experience, leaderstats, { CardsData, RankData, ExperiencePoints }
+	return leaderstats, { CardsData, RankData, ExperiencePoints }
 end
 
 local function saveData(player)

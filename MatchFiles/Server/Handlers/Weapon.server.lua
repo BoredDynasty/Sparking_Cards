@@ -5,7 +5,6 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local ServerStorage = game:GetService("ServerStorage")
 local TweenService = game:GetService("TweenService")
 
-local DataStoreClass = require(ReplicatedStorage.Classes.DataStoreClass)
 local DamageIndict = require(ReplicatedStorage.Classes.WeaponClass.DamageIndict)
 
 local AttackRE = ReplicatedStorage.RemoteEvents.Attack
@@ -16,7 +15,7 @@ local cooldown = {}
 
 -- // Functions
 local function iceMagic(player, mouse: Mouse, capability)
-	if not table.find(cooldown, player, "Frost") then
+	if not table.find(cooldown, player) then
 		table.insert(cooldown, player)
 		local iceShard = ServerStorage.Assets.IceShard
 		local start = CFrame.new(player.Character.HumanoidRootPart.Position, mouse.Hit)

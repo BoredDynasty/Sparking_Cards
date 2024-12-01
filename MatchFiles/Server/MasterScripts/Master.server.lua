@@ -133,15 +133,18 @@ end
 local function startTimer(remote: UnreliableRemoteEvent, _: RemoteEvent)
 	local Timer = require(ReplicatedStorage.Modules.Timer)
 	local newTimer = Timer.new()
-	local frequency = 0
-	--loaded.OnClientEvent:Connect(function()
-	frequency = frequency + 1
-	--end)
-	--if frequency >= 2 then
+	-- local frequency = 0
+	-- loaded.OnClientEvent:Connect(function()
+	-- frequency = frequency + 1
+	-- end)
+	-- if frequency >= 2 then
 	newTimer:Start()
-	local elasped = newTimer:FormatTime()
-	game:SetAttribute("elaspedTime", elasped)
-	remote:FireAllClients(elasped, newTimer)
+	while true do
+		task.wait(0.5)
+		local elasped = newTimer:FormatTime()
+		game:SetAttribute("elaspedTime", elasped)
+		remote:FireAllClients(elasped, newTimer)
+	end
 	--end
 	return newTimer
 end
