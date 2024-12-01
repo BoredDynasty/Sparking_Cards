@@ -3,22 +3,75 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sparking Cards</title>
+    <title>Sparking Cards!</title>
     <link rel="stylesheet" href="styles.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500&display=swap" rel="stylesheet">
-    <script src="index.js"></script>
+    <!-- Replace this w/ the path of your icon. -->
+    <!-- Pull Google Material Design -->
+    <script type="importmap">
+        {
+          "imports": {
+            "@material/web/": "https://esm.run/@material/web/"
+          }
+        }
+      </script>
+    <script type="module">
+        import '@material/web/all.js';
+        import { styles as typescaleStyles } from '@material/web/typography/md-typescale-styles.js';
+
+        document.adoptedStyleSheets.push(typescaleStyles.styleSheet);
+    </script>
 </head>
 
 <body>
-    <img attribute="cards_img_head"
-        src="https://github.com/BoredDynasty/Sparking_Cards/blob/web/Files/Images/Sparking%20Cards%20Transparent%20$20BG.png"
-        alt="Sparking Cards" <h1 attribute="cards_welcome"></h1>
-    <p attribute="cards_p"></p>
-    <div></div>
-    <button><a attribute="github_link" href="https://github.com/BoredDynasty/Sparking_Cards">GitHub</a></button>
-    <div></div>
+
+    <main>
+        <h1>SPARKING CARDS!</h1>
+        <md-divider inset></md-divider>
+        <md-outlined-text-field value="I want this..." maxlength="100"="Feedback"
+            supporting-text="Anything you'd like to see added to the game?">
+
+        </md-outlined-text-field>
+        <style>
+            body {
+                background-color: #1d1b20;
+                color: #e2dce4;
+                border: none;
+                font-family: 'Segoe UI';
+            }
+
+            h1 {
+                font-weight: bold;
+            }
+        </style>
+        <div></div>
+        <md-divider inset></md-divider>
+        <div></div>
+        <a href="https://github.com/BoredDynasty/Sparking_Cards">
+            <img src="Files/Images/SourceCode.png" alt="Contribute on GitHub" style="width: 216; height: 90;">
+        </a>
+    </main>
+    <style>
+        .main-nav {
+            background-color: #49454e;
+            position: relative;
+            border: none;
+        }
+    </style>
+    <aside class="main-nav">
+        <h2>Navigation</h2>
+        <ul>
+            <md-text-button trailing-icon>
+                API
+                <svg slot="icon" viewBox="0 0 48 48">
+                    <path
+                        d="M9 42q-1.2 0-2.1-.9Q6 40.2 6 39V9q0-1.2.9-2.1Q7.8 6 9 6h13.95v3H9v30h30V25.05h3V39q0 1.2-.9 2.1-.9.9-2.1.9Zm10.1-10.95L17 28.9 36.9 9H25.95V6H42v16.05h-3v-10.9Z" />
+                </svg>
+            </md-text-button>
+        </ul>
+    </aside>
 
 </body>
 
