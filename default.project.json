@@ -1,5 +1,5 @@
 {
-  "name": "Match",
+  "name": "SPARKING CARDS!",
   "tree": {
     "$className": "DataModel",
     "Chat": {
@@ -30,7 +30,7 @@
     "StarterGui": {
       "$className": "StarterGui",
       "$ignoreUnknownInstances": true,
-      "$path": "Shared/UI"
+      "$path": "game/StarterGui"
     },
     "StarterPack": {
       "$className": "StarterPack",

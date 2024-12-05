@@ -30,5 +30,6 @@
         "dofile",
         "loadfile",
         "native"
-    ]
+    ],
+    "robloxLsp.workspace.loadMode": "All Files"
 }
