@@ -1,28 +1,17 @@
 # Sparking Cards!
 
-> [!TIP]
-> I'm packaging some of the Modules in the game! So that you will be able to use them.
-> 
-> I'm starting to learn normal Lua now. Do you see those ``requires`` wrapped in strings? Those are packages and libraries, like *Discordia*.
->
-> Better sound effects and music is underway!
-
 > [!IMPORTANT]
-> ``2024/10/13`` | I've refurbished the game to be more performant!
+> ``12/4/24`` | I've refurbished the game to be more performant!
 >
-> By removing a ton of unnecessary scripts, the performance went up to an all time high! Thats not all, the *UI* finally started to work.
-> Why didn't I think of this before?
+> The fighting part of the game is almost done! Each attack/ability will have its own separate module.
 >
-> By my estimate, the *PostClass* was making the game unperformant. And it seemed like the entire game was running solely on the PostClass aswell;
-> Don't use HTTPService guys!
-
-> I'm also tryna fix the whackass DataStore system. It's already good enough, but it could be better. *Maybe I should package it in the future? 📦
+> I'm currently pulling free models from the toolbox for the abilities (I can't make VFX myself:sob:)
 >
-> Oh and one more thing, once I learn how to make cutscenes, abilities, and a good Match Making system, this game will quickly start to finish up.
+> With that out of the way, the UI is inspired by smash bros just a little bit. This will be familiar to Smash players (If anyone playing *plays* Smash.)
 
-[SPARKING CARDS!](https://www.roblox.com/games/6125133811/SPARKING-CARDS)
+[base game](https://www.roblox.com/games/6125133811/SPARKING-CARDS)
 
-[GitHub.io](https://boreddynasty.github.io/Sparking_Cards/)
+[interwebs (documentation)](https://boreddynasty.github.io/Sparking_Cards/)
 
 ### Beta Phase
 
@@ -46,10 +35,10 @@
 | Fixed some things 
 | Optimization 
 | Fixed Datastores 
-| Abilites Coming Soon 
+| Abilities Coming Soon 
 | New Multipliers (for the actual game) 
 | New Shop 
-| Added Rewards for when stay (hopefully lemme know if it doesn't work) 
+| Added Rewards for when staying (hopefully lemme know if it doesn't work) 
 | New Main Menu 
 | Fixed UI Scaling
 
