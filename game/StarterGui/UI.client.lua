@@ -4,18 +4,19 @@
 
 print(script.Name)
 
--- // Services
+-- // Services -- //
+local ContextActionService = game:GetService("ContextActionService")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Players = game:GetService("Players")
 local TweenService = game:GetService("TweenService")
 local UserInputService = game:GetService("UserInputService")
 local MarketPlaceService = game:GetService("MarketplaceService")
 
--- // Requires
+-- // Requires -- /
 
 local UIEffectsClass = require(ReplicatedStorage.Modules.UIEffect)
 
--- // Variables
+-- // Variables -- //
 
 local player = Players.LocalPlayer
 local mouse = player:GetMouse()
@@ -24,7 +25,51 @@ local Humanoid = character:WaitForChild("Humanoid")
 local Camera = game.Workspace.CurrentCamera
 local TInfo = TweenInfo.new(0.5, Enum.EasingStyle.Circular, Enum.EasingDirection.InOut)
 
--- // Everything else
+-- // Remotes -- //
+local DataSavedRE = ReplicatedStorage.RemoteEvents.DataSaved
+
+-- // Functions -- //
+local function handleAction(actionName, _, _, gui)
+	if actionName == "Emote" then
+		if gui.Visible == true then
+			gui.Visible = false
+		else
+			gui.Visible = true
+		end
+	end
+end
+
+local function showTooltip(text, more)
+	local tooltipFrame = player.PlayerGui.ToolTip.CanvasGroup.Frame
+	tooltipFrame.Details.Text = text -- Update the tooltip text
+	tooltipFrame.Visible = true
+	tooltipFrame.Accept.Text = more
+end
+
+local function hideTooltip()
+	local tooltipFrame = player.PlayerGui.ToolTip.CanvasGroup.Frame
+	tooltipFrame.Visible = false
+end
+
+mouse.Move:Connect(function()
+	local tooltipFrame = player.PlayerGui.ToolTip.CanvasGroup.Frame
+	task.spawn(function()
+		if tooltipFrame.Visible and not UserInputService:IsKeyDown(Enum.KeyCode.LeftAlt) then
+			-- local xOffset, yOffset = 0, 0 -- Add some padding
+			local position: UDim2
+			position = UDim2.new(0.5, 0, 0.5, 0)
+			tooltipFrame.Position = position
+			tooltipFrame.Position = position
+
+			UIEffectsClass:Zoom(true)
+		-- local position = UDim2.new(0, mouse.X + xOffset, 0, mouse.Y + yOffset)
+		else
+			UIEffectsClass:Zoom(false)
+		end
+	end)
+end)
+
+-- // Everything else -- //
 
 -- Main Menu
 local MainMenu = player.PlayerGui.MainHud
@@ -38,7 +83,7 @@ repeat
 until Camera.CameraType == Enum.CameraType.Scriptable
 
 ---1604.172, 267.097, 6215.333, 24.286, 65.438, 0
-Camera.CFrame = CFrame.new(-1604.172, 267.097, 6215.333) -- The roads
+Camera.CFrame = CFrame.new(-1721.989, 270.293, 182.625) -- The roads
 
 MainMenuFrame.PlayButton.MouseButton1Click:Once(function()
 	Camera.CameraType = Enum.CameraType.Custom
@@ -47,6 +92,7 @@ end)
 
 -- PlayerHud
 local PlayerHud = player.PlayerGui.PlayerHud
+local PlayerHudStatus = PlayerHud.Player.Status
 local playerProfileImage =
 	Players:GetUserThumbnailAsync(player.UserId, Enum.ThumbnailType.HeadShot, Enum.ThumbnailSize.Size420x420)
 
@@ -55,7 +101,7 @@ local DialogRemote = ReplicatedStorage.RemoteEvents.NewDialogue
 UserInputService.WindowFocusReleased:Connect(function()
 	UIEffectsClass.changeColor("Red", PlayerHud.Player.Design.Radial)
 	UIEffectsClass:Zoom(true)
-	UIEffectsClass:BlurEffect(true)
+	-- UIEffectsClass:BlurEffect(true)
 	PlayerHud.Player.PlayerImage.Image = playerProfileImage
 	PlayerHud.Player.TextLabel.Text = player.DisplayName
 end)
@@ -63,20 +109,58 @@ end)
 UserInputService.WindowFocused:Connect(function()
 	UIEffectsClass.changeColor("Green", PlayerHud.Player.Design.Radial)
 	UIEffectsClass:Zoom(false)
-	UIEffectsClass:BlurEffect(false)
+	-- UIEffectsClass:BlurEffect(false)
 	PlayerHud.Player.PlayerImage.Image = playerProfileImage
 	PlayerHud.Player.TextLabel.Text = player.DisplayName
 end)
 
-local function newDialog(dialog)
-	UIEffectsClass.TypeWriterEffect(dialog, PlayerHud.Player.TextLabel)
-	UIEffectsClass.changeColor("Blue", PlayerHud.Player.Design.Radial)
-	print(`New Dialog for {player.DisplayName}: {dialog}`)
-	task.wait(10)
-	UIEffectsClass.changeColor("Green", PlayerHud.Player.Design.Radial)
+local function newDialog(dialog: string)
+	task.spawn(function()
+		UIEffectsClass.TypewriterEffect(dialog, PlayerHud.Player.TextLabel)
+		PlayerHud.Player.TextLabel.TextScaled = true
+		UIEffectsClass.changeColor("Blue", PlayerHud.Player.Design.Radial)
+		print(`New Dialog for {player.DisplayName}: {dialog}`)
+		task.wait(10)
+		UIEffectsClass.changeColor("Green", PlayerHud.Player.Design.Radial)
+		PlayerHud.Player.TextLabel.TextScaled = false
+		PlayerHud.Player.TextLabel.Text = player.DisplayName
+	end)
 end
 
+local function dataSaved()
+	task.spawn(function()
+		local saveStatus = PlayerHud.Player.Check
+		UIEffectsClass.changeColor("#ccb6ff", PlayerHud.Player.Design.Radial)
+		UIEffectsClass.changeColor("#ccb6ff", saveStatus)
+		UIEffectsClass.getModule("Curvy"):Curve(PlayerHud.Player.PlayerImage, TInfo, "ImageTransparency", 1)
+		UIEffectsClass.getModule("Curvy"):Curve(saveStatus, TInfo, "ImageTransparency", 0)
+		saveStatus.Visible = true
+		UIEffectsClass.TypewriterEffect("Saved!", PlayerHud.Player.TextLabel)
+		task.wait(5)
+		UIEffectsClass.changeColor("Green", PlayerHud.Player.Design.Radial)
+		UIEffectsClass.changeColor("Green", saveStatus)
+		UIEffectsClass.getModule("Curvy"):Curve(PlayerHud.Player.PlayerImage, TInfo, "ImageTransparency", 0)
+		UIEffectsClass.getModule("Curvy"):Curve(saveStatus, TInfo, "ImageTransparency", 1)
+		saveStatus.Visible = false
+	end)
+end
+
+PlayerHudStatus.TextButton.MouseButton1Click:Connect(function()
+	task.spawn(function()
+		local EnterMatchRE: RemoteFunction = ReplicatedStorage.RemoteEvents.EnterMatch
+		EnterMatchRE:InvokeServer()
+		newDialog("There's no turning back!")
+		PlayerHudStatus.TextButton.Interactable = false
+		local baseColor = PlayerHudStatus.TextButton.BackgroundColor3
+		local Color = UIEffectsClass.getModule("Color")
+		baseColor = Color:darker(baseColor) :: Color3
+		PlayerHudStatus.TextButton.BackgroundColor3 = baseColor
+		PlayerHudStatus.StatusText.Text = "...?"
+	end)
+end)
+
 DialogRemote.OnClientEvent:Connect(newDialog)
+DataSavedRE.OnClientEvent:Connect(dataSaved)
 
 print(`UI is executing.`)
 
@@ -112,7 +196,6 @@ local function playanim(AnimationID)
 			if oldnim.AnimationId == anim then
 				oldnim:Destroy()
 				Humanoid.WalkSpeed = 14
-
 				return
 			end
 			oldnim:Destroy()
@@ -130,7 +213,7 @@ end
 
 local HolderFrame = EmoteGui.HolderFrame
 
-for _, emoteButtons in HolderFrame.Circle:GetDescendants() do
+for _, emoteButtons in HolderFrame.Circle:GetChildren() do
 	if emoteButtons:IsA("GuiButton") then
 		emoteButtons.MouseButton1Down:Connect(function()
 			playanim(emoteButtons:FindFirstChildOfClass("IntValue").Value)
@@ -140,11 +223,10 @@ end
 
 EmoteGui.HolderFrame.Visible = false
 
-UserInputService.InputBegan:Connect(function(input, gameProcessedEvent)
-	if input == Enum.KeyCode.Tab and not gameProcessedEvent then
-		EmoteGui.HolderFrame.Visible = not EmoteGui.HolderFrame.Visible
-	end
-end)
+ContextActionService:BindAction("Emote", function()
+	handleAction("Emote", Enum.UserInputState.Begin, nil, EmoteGui.HolderFrame)
+end, false, Enum.KeyCode.Tab)
+
 print(`UI is halfway executing.`)
 
 -- Main Menu
@@ -157,36 +239,38 @@ local function mainHud()
 
 	local function continueGameplay()
 		UIEffectsClass:changeVisibility(Canvas, false)
+		repeat
+			task.wait()
+			Camera.CameraType = Enum.CameraType.Custom
+		until Camera.CameraType == Enum.CameraType.Custom
 	end
 	Frame.PlayButton.MouseButton1Down:Once(continueGameplay)
 end
 
 mainHud()
 
--- Tooltip
-local tooltipFrame = player.PlayerGui.ToolTip.CanvasGroup.Frame
-
-local function showTooltip(text, more)
-	tooltipFrame.Details.Text = text -- Update the tooltip text
-	tooltipFrame.Visible = true
-	if more then
-		if type(more) == "string" then
-			tooltipFrame.Accept.Text = more
-		else
-			tooltipFrame.Accept.MouseButton1Click:Once(more)
-		end
+-- Info
+local infoGui = player.PlayerGui.Info.CanvasGroup
+local infoOpen = infoGui.Parent.FAB
+local infoFrame = infoGui.Frame
+infoOpen.MouseButton1Click:Connect(function()
+	task.wait(1)
+	if infoGui.Visible == false then
+		UIEffectsClass:changeVisibility(infoGui, true)
+		UIEffectsClass.BlurEffect(true)
+		UIEffectsClass.Zoom(true)
+	elseif infoGui.Visible == true then
+		UIEffectsClass:changeVisibility(infoGui, false)
+		UIEffectsClass.BlurEffect(false)
+		UIEffectsClass.Zoom(false)
 	end
-end
-
-local function hideTooltip()
-	tooltipFrame.Visible = false
-end
-
-mouse.Move:Connect(function()
-	if tooltipFrame.Visible then
-		local xOffset, yOffset = 10, 10 -- Add some padding
-		tooltipFrame.Position = UDim2.new(0, mouse.X + xOffset, 0, mouse.Y + yOffset)
-	end
+end)
+infoOpen.MouseEnter:Connect(function()
+	showTooltip("Not Finished", "Blog")
+end)
+infoOpen.MouseLeave:Connect(hideTooltip)
+infoFrame.Checkout.MouseButton1Click:Connect(function()
+	UIEffectsClass:changeVisibility(infoGui, false)
 end)
 
 print(`UI is almost done executing.`)
@@ -197,8 +281,6 @@ PlayerHud.Player.MouseEnter:Connect(function()
 	showTooltip("That's you!", player.DisplayName)
 end)
 
-PlayerHud.Player.MouseLeave:Connect(function()
-	hideTooltip()
-end)
+PlayerHud.Player.MouseLeave:Connect(hideTooltip)
 
 print(`UI has finished executing.`)

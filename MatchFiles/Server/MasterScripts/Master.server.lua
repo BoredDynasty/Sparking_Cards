@@ -40,7 +40,6 @@ local function chatted(player, message)
 end
 
 local function newMatchID(HTTP: HttpService)
-	assert(HTTP)
 	return HTTP:GenerateGUID(false)
 end
 

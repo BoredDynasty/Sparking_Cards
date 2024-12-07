@@ -16,53 +16,14 @@ local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local RunService = game:GetService("RunService")
 local ContextActionService = game:GetService("ContextActionService")
-local MessagingService = game:GetService("MessagingService")
 
 local GlobalSettings = require(ReplicatedStorage.GlobalSettings)
-local LevelManager = require(ReplicatedStorage.Modules.LevelManager)
-local RewardsClass = require(ReplicatedStorage.Classes.RewardsClass)
+-- local LevelManager = require(ReplicatedStorage.Modules.LevelManager)
+-- local RewardsClass = require(ReplicatedStorage.Classes.RewardsClass)
 
 local SavedPositionGUI = ReplicatedStorage.Assets:FindFirstChild("ScreenGui")
 
-local function periodicStatScanning(player, int, frequency: number)
-	frequency = frequency * 1000 :: number
-	while task.wait(frequency) do
-		local playerTab = {}
-		if not table.find(playerTab, player) then
-			local cardVal: IntValue = player:WaitForChild("Cards")
-			table.insert(playerTab, playerTab, int)
-			for _, otherPlayer in pairs(playerTab) do
-				if otherPlayer ~= player then
-					local cardValOther: IntValue = otherPlayer[1]
-					if cardValOther.Value > cardVal.Value then
-						-- cardVal.Value = cardValOther.Value
-						print(`{otherPlayer.Name} > {player.Name}`)
-						-- We are going to send this data to other servers.
-						local data: { any } = {
-							["best"] = {
-								["name"] = otherPlayer.Name,
-								["id"] = otherPlayer.UserId,
-							},
-							["worst"] = {
-								["name"] = player.Name,
-								["id"] = player.UserId,
-							},
-							["diff"] = cardValOther.Value - cardVal.Value,
-							["server_id"] = game.JobId,
-							["players"] = {
-								player,
-								otherPlayer,
-							},
-						}
-						MessagingService:PublishAsync("server_plr_stats", data)
-					else
-						print(`{player.Name} > {otherPlayer.Name}`)
-					end
-				end
-			end
-		end
-	end
-end
+local DataSavedRE = ReplicatedStorage.RemoteEvents.DataSaved
 
 local function calculate(inst: IntValue | Instance)
 	local total: number | nil
@@ -74,7 +35,7 @@ local function calculate(inst: IntValue | Instance)
 	if fire and frost and plasma and water then
 		total = fire + frost + plasma + water
 	else
-		warn(`The following attributes are missing: {fire}, {frost}, {plasma}, {water}.`)
+		warn(`The following attributes are missing: {fire}(fire), {frost}(frost), {plasma}(plasma), {water}(water).`)
 	end
 	inst:SetAttribute("Total", total)
 	return total
@@ -147,7 +108,6 @@ function DataStoreClass.PlayerAdded(player: Player) -- Setup DataSystem
 	Cards:SetAttribute("Frost", _GetAsync.Types.Frost)
 	Cards:SetAttribute("Plasma", _GetAsync.Types.Plasma)
 	Cards:SetAttribute("Water", _GetAsync.Types.Water)
-	task.spawn(periodicStatScanning, player, Cards, 0.05)
 	--
 	local Rank = Instance.new("StringValue")
 	Rank.Name = "Rank"
@@ -196,7 +156,10 @@ function DataStoreClass.PlayerAdded(player: Player) -- Setup DataSystem
 	return leaderstats, { CardsData, RankData, ExperiencePoints }
 end
 
-local function saveData(player)
+local function saveData(player, send: boolean)
+	if send == true then
+		DataSavedRE:FireClient(player)
+	end
 	pcall(function()
 		CardsData:SetAsync(player.UserId, player.leaderstats.Cards.Value)
 		RankData:SetAsync(player.UserId, player.leaderstats.Rank.Value)
@@ -212,7 +175,7 @@ end
 		@param player Player
 --]=]
 function DataStoreClass.SaveData(player: Player)
-	saveData(player)
+	saveData(player, true)
 end
 
 function DataStoreClass.PlayerRemoving(player: Player)
@@ -279,8 +242,9 @@ local function saveAllData() -- Saves All Data
 	end
 
 	pcall(function()
+		DataSavedRE:FireAllClients("all")
 		for _, player: Player in pairs(Players:GetChildren()) do
-			saveData(player)
+			saveData(player, false)
 		end
 	end)
 end

@@ -69,7 +69,7 @@ UserInputService.WindowFocused:Connect(function()
 end)
 
 local function newDialog(dialog)
-	UIEffectsClass.TypeWriterEffect(dialog, PlayerHud.Player.TextLabel)
+	UIEffectsClass.TypewriterEffect(dialog, PlayerHud.Player.TextLabel)
 	UIEffectsClass.changeColor("Blue", PlayerHud.Player.Design.Radial)
 	print(`New Dialog for {player.DisplayName}: {dialog}`)
 	task.wait(10)

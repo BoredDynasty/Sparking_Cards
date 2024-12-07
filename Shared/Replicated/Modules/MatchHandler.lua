@@ -1,78 +1,46 @@
---!nonstrict
-
-local Match = {}
+local TeleportService = game:GetService("TeleportService")
 local Players = game:GetService("Players")
+local MessagingService = game:GetService("MessagingService")
+local DataStoreService = game:GetService("DataStoreService")
 
-local ReplicatedStorage = game:GetService("ReplicatedStorage")
-local MemoryStoreService = game:GetService("MemoryStoreService")
+local MatchmakingModule = {}
+local queueDataStore = DataStoreService:GetDataStore("MatchmakingQueue")
 
-local SafeTeleporter = require(ReplicatedStorage.Modules.SafeTeleporter)
+local function addToGlobalQueue(player)
+	local success, err = pcall(function()
+		local queue = queueDataStore:GetAsync("Queue") or {}
+		table.insert(queue, player.UserId)
+		queueDataStore:SetAsync("Queue", queue)
+	end)
+	assert(success, `Failed to add {player} to global queue: {err}!!`)
+end
 
--- // Types
-type data = { any }
+local function checkForMatch()
+	local success, queue = pcall(function()
+		return queueDataStore:GetAsync("Queue") or {}
+	end)
+	if success and #queue >= 2 then
+		local player1Id = table.remove(queue, 1)
+		local player2Id = table.remove(queue, 1)
+		queueDataStore:SetAsync("Queue", queue)
 
--- // Variables
-local queueMap = MemoryStoreService:GetSortedMap("queue")
-local debounce = {}
-local maximum = 2
-local minimum = 2
-local place = 0
+		local player1 = Players:GetPlayerByUserId(player1Id)
+		local player2 = Players:GetPlayerByUserId(player2Id)
 
-function Match.new()
-	--Check when enough players are in the queue to teleport players
-	local lastOverMin = tick()
-
-	while task.wait(1) do
-		local success, queuedPlayers = pcall(function()
-			return queueMap:GetRangeAsync(Enum.SortDirection.Descending, maximum)
-		end)
-
-		if success then
-			local amountQueued = 0
-			for _, _ in pairs(queuedPlayers) do
-				amountQueued += 1
-			end
-			if amountQueued < minimum then
-				lastOverMin = tick()
-			end
-
-			--[[
-            Wait 20 seconds after the minimum players is reached to allow for more players to join the queue
-			Or instantly queue once the maximum players is reached
-            --]]
-
-			local timeOverMin = tick() - lastOverMin
-
-			if timeOverMin >= 20 or amountQueued == maximum then
-				for _, data in pairs(queuedPlayers) do
-					local userId = data.Value
-					local player = Players:GetPlayerByUserId(userId)
-
-					if player then
-						SafeTeleporter(place, queuedPlayers)
-					end
-				end
-			end
+		if player1 and player2 then
+			local placeId = 90845913624517 -- Match
+			TeleportService:TeleportPartyAsync(placeId, { player1, player2 })
 		end
 	end
 end
 
-function Match.addPlayer(player)
-	return queueMap:SetAsync(player.UserId, player.UserId, 3600), queueMap -- 60 Minutes
+function MatchmakingModule.AddPlayerToQueue(player)
+	addToGlobalQueue(player)
+	checkForMatch()
 end
 
-function Match.removePlayer(player)
-	return queueMap:RemoveAsync(player.UserId)
-end
+MessagingService:SubscribeAsync("MatchmakingQueueUpdate", function()
+	checkForMatch()
+end)
 
-function Match:handleNewQueue(player, inQueue)
-	if not table.find(debounce, player) then
-		if inQueue == true then
-			pcall(Match.removePlayer, player)
-		else
-			pcall(Match.addPlayer, player)
-		end
-	end
-end
-
-return Match
+return MatchmakingModule

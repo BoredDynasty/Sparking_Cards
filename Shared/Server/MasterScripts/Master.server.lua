@@ -1,6 +1,8 @@
 --!nocheck
 
-print("Server ID [ " .. game.JobId .. " ]")
+-- Master.server.lua
+
+print(string.format(`Server ID [ {game.JobId} ] \nVER. {game.PlaceVersion}`, "%q"))
 
 local CollectionService = game:GetService("CollectionService")
 local MarketplaceService = game:GetService("MarketplaceService")
@@ -76,8 +78,8 @@ productFunctions[1906572512] = function(receipt, player)
 	return true
 end
 
-local Clone = ReplicatedStorage.Assets.Server:Clone()
-Clone.Parent = game.Workspace
+local ServerAsset = ReplicatedStorage.Assets.Server:Clone()
+ServerAsset.Parent = game.Workspace
 
 local function processReceipt(receiptInfo)
 	local userId = receiptInfo.PlayerId
@@ -106,47 +108,51 @@ local function FastTravel(place: number, players: { Player }, options)
 	return SafeTeleporter(place, players, options)
 end
 
-local function enterMatch(players: { Player }, _)
-	return task.spawn(function()
-		for _, player in players do
-			MatchHandler.addPlayer(player)
-		end
-		while true do
-			task.wait(10)
-			MatchHandler.new()
-		end
-	end)
+local function enterMatch(player: Player)
+	MatchHandler.AddPlayerToQueue(player)
 end
 
 local function chatted(player, message)
 	if string.find(message, "@match") or string.find(message, "@ready") then
-		enterMatch({ player })
+		enterMatch(player)
 	end
 end
 
-local function onPlayerAdded(player)
+local function onPlayerAdded(player: Player)
 	DataStoreClass:PlayerAdded(player)
 	AnalyticsService:LogOnboardingFunnelStepEvent(player, 1, "Player Joined")
-	player.Character.Animate.walk.WalkAnim.AnimationId = "rbxassetid://14512867805"
-	player.CharacterRemoving:Connect(function(character)
-		task.defer(character.Destroy, character)
-	end)
 	player.Chatted:Connect(function(message)
 		chatted(player, message)
+	end)
+	-- // The actual stuff
+	-- // Character
+	player.CharacterAdded:Connect(function(character: Model)
+		local cardBackItem = ReplicatedStorage.Assets.CardBackItem:Clone()
+		cardBackItem.Parent = character
+		local HumanoidRootPart = character:FindFirstChild("HumanoidRootPart")
+		local weldConstraint = Instance.new("WeldConstraint")
+		weldConstraint.Parent = cardBackItem
+		weldConstraint.Part0 = cardBackItem
+		weldConstraint.Part1 = character:FindFirstChild("Torso")
+		cardBackItem.CFrame = HumanoidRootPart.CFrame * CFrame.new(0, 0, 1)
+		--
+		character.Animate.walk.WalkAnim.AnimationId = "rbxassetid://14512867805"
 	end)
 end
 
 local function onPlayerRemoving(player)
 	DataStoreClass:PlayerRemoving(player)
 	AnalyticsService:LogOnboardingFunnelStepEvent(player, 1, "Player Leaving")
-	player:Destroy() -- performance reasons
+	pcall(function()
+		player:Destroy() -- performance reasons
+	end)
 end
 
 local function addDestinations()
 	local cooldown = {}
 	return task.spawn(function()
 		for _, tag in pairs(CollectionService:GetTagged("TeleportPart")) do
-			local Teleport = tag
+			local Teleport: BasePart = tag
 			local destination = Teleport:GetAttribute("Destination")
 			Teleport.ClickDetector.MouseClick:Connect(function(player)
 				LoadingClass(1.3, player)
@@ -155,8 +161,18 @@ local function addDestinations()
 			end)
 		end
 		for _, tag in CollectionService:GetTagged("DialogTrigger") do
-			local otherPart: BasePart? = tag
-			otherPart.Touched:Connect(function(player)
+			local otherPart: BasePart = tag
+			--[[ 
+			local proximityPrompt = Instance.new("ProximityPrompt")
+			proximityPrompt.Parent = otherPart
+			proximityPrompt.ActionText = "Travel"
+			proximityPrompt.ObjectText = "Manhole"
+			proximityPrompt.Triggered:Connect(function(player)
+				
+			end)
+			--]]
+			otherPart.Touched:Connect(function(hit)
+				local player = Players:GetPlayerFromCharacter(hit.Parent)
 				if not table.find(cooldown, player) then
 					table.insert(cooldown, player)
 					touchDialog(otherPart, player)
@@ -166,7 +182,8 @@ local function addDestinations()
 			end)
 			if otherPart:FindFirstChildOfClass("ClickDetector") then
 				local clickDetect = otherPart:FindFirstChildOfClass("ClickDetector")
-				clickDetect.MouseClick:Connect(function(player)
+				clickDetect.MouseClick:Connect(function(hit)
+					local player = Players:GetPlayerFromCharacter(hit.Parent)
 					if not table.find(cooldown, player) then
 						table.insert(cooldown, player)
 						touchDialog(otherPart, player)

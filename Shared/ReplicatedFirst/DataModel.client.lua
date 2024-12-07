@@ -1,3 +1,7 @@
+--!nonstrict
+
+-- DataModel.client.lua
+
 local ReplicatedFirst = game:GetService("ReplicatedFirst")
 local RunService = game:GetService("RunService")
 local StarterGui = game:GetService("StarterGui")
@@ -5,7 +9,6 @@ local Players = game:GetService("Players")
 
 ReplicatedFirst:RemoveDefaultLoadingScreen()
 StarterGui:SetCoreGuiEnabled(Enum.CoreGuiType.All, false)
-
 local any = script.Parent.Loading
 
 local loadingUI = any:Clone()
@@ -34,14 +37,14 @@ local function onGameLoaded()
 	local publicOffset, publicSize = Vector2.new(442, 152), Vector2.new(36, 36)
 	-- local privateOffset, privateSize = Vector2.new(442, 194), Vector2.new(36, 36)
 
-	local imgServer = textIndicator.Parent.TextButton.public
+	local imgServer = status.public
 
 	--imgServer.ImageRectOffset = privateOffset
 	--imgServer.ImageRectSize = privateSize
 	imgServer.ImageRectOffset = publicOffset
 	imgServer.ImageRectSize = publicSize
 	--end
-	status.Text = "Loaded"
+	status.Text = "Loaded!"
 	task.wait(4)
 	loadingUI:Destroy()
 end
