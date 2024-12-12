@@ -65,7 +65,7 @@ productFunctions[1906572512] = function(receipt, player)
 	local alreadyDonated = {}
 	if not table.find(alreadyDonated, player.Name) then
 		table.insert(alreadyDonated, player.Name)
-		print("Donated Successfully!")
+		print(`Donated Successfully: {player.Name}.`)
 		task.wait(10)
 		table.clear(alreadyDonated)
 	end
@@ -127,7 +127,7 @@ local function onPlayerAdded(player: Player)
 	-- // The actual stuff
 	-- // Character
 	player.CharacterAdded:Connect(function(character: Model)
-		local cardBackItem = ReplicatedStorage.Assets.CardBackItem:Clone()
+		local cardBackItem: BasePart = ReplicatedStorage.Assets.CardBackItem:Clone()
 		cardBackItem.Parent = character
 		local HumanoidRootPart = character:FindFirstChild("HumanoidRootPart")
 		local weldConstraint = Instance.new("WeldConstraint")

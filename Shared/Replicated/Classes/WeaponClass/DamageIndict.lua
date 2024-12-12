@@ -14,13 +14,22 @@ local function addEffect(player: Player, amount: number)
 	Debris:AddItem(billboard, 5)
 end
 
-local function indict(player: Player, amount)
+local function indict(player: Player, amount, knockback)
 	local character = player.Character
 
 	if character then
 		local humanoid = character:FindFirstChildOfClass("Humanoid")
 		humanoid:TakeDamage(amount)
 		addEffect(player, amount)
+		if knockback then
+			coroutine.wrap(function()
+				local velocity = Instance.new("BodyVelocity")
+				velocity.MaxForce, velocity.Velocity =
+					Vector3.new(5e2, 5e2, 5e2), character.HumanoidRootPart.CFrame.LookVector * 70
+				velocity.Parent = character
+				Debris:AddItem(velocity, 4.1)
+			end)()
+		end
 	end
 end
 

@@ -25,6 +25,8 @@ else
 	textIndicator.Text = string.gsub(str, "[ ID ]", game.JobId)
 end
 
+local startTime = os.clock()
+
 local function onGameLoaded()
 	StarterGui:SetCoreGuiEnabled(Enum.CoreGuiType.PlayerList, false)
 	StarterGui:SetCoreGuiEnabled(Enum.CoreGuiType.Chat, true)
@@ -37,6 +39,10 @@ local function onGameLoaded()
 	local publicOffset, publicSize = Vector2.new(442, 152), Vector2.new(36, 36)
 	-- local privateOffset, privateSize = Vector2.new(442, 194), Vector2.new(36, 36)
 
+	local loadTime = os.clock() - startTime
+	local roundedLoadTime = math.round(loadTime * 10000) / 10000 -- four decimal places
+	print("Game loaded in " .. roundedLoadTime .. " seconds.")
+	print("Number of instances loaded: " .. #game.Workspace:GetDescendants())
 	local imgServer = status.public
 
 	--imgServer.ImageRectOffset = privateOffset

@@ -20,7 +20,7 @@
     "ServerScriptService": {
       "$className": "ServerScriptService",
       "$ignoreUnknownInstances": true,
-      "$path": "Shared/Server"
+      "$path": "game/Server"
     },
     "ServerStorage": {
       "$className": "ServerStorage",
