@@ -5,6 +5,8 @@
 local DataStoreClass = {}
 DataStoreClass.__index = DataStoreClass
 
+-- // Datastores
+
 local DataStoreService = game:GetService("DataStoreService")
 local CardsData = DataStoreService:GetDataStore("Cards")
 local RankData = DataStoreService:GetDataStore("Rank")
@@ -12,21 +14,21 @@ local MultiplierType = DataStoreService:GetDataStore("MultiplierType")
 local ExperiencePoints = DataStoreService:GetDataStore("ExperiencePoints")
 local PDS = DataStoreService:GetDataStore("PositionDataStore")
 
+local Server = DataStoreService:GetDataStore("Server")
+
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local RunService = game:GetService("RunService")
 local ContextActionService = game:GetService("ContextActionService")
 
 local GlobalSettings = require(ReplicatedStorage.GlobalSettings)
--- local LevelManager = require(ReplicatedStorage.Modules.LevelManager)
--- local RewardsClass = require(ReplicatedStorage.Classes.RewardsClass)
 
 local SavedPositionGUI = ReplicatedStorage.Assets:FindFirstChild("ScreenGui")
 
 local DataSavedRE = ReplicatedStorage.RemoteEvents.DataSaved
 
 local function calculate(inst: IntValue | Instance)
-	local total: number | nil
+	local total: number = 0
 	local fire: number = tonumber(inst:GetAttribute("Fire"))
 	local frost: number = tonumber(inst:GetAttribute("Frost"))
 	local plasma: number = tonumber(inst:GetAttribute("Plasma"))
@@ -333,6 +335,13 @@ function DataStoreClass:CreateStat(player: Player, stat: any, initialValue)
 	data:SetAsync(player.UserId, any.Value)
 
 	return data, any
+end
+
+-- // Global Chat Messaging (becuase its fun)
+export type globalChatMessage = { [string]: string } -- player name: chat message
+local function getChatMessageFromServers()
+	local ChatMessage: globalChatMessage = Server:GetAsync("ChatMessages")
+	return ChatMessage
 end
 
 return DataStoreClass

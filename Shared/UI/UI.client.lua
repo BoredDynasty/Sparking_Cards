@@ -200,7 +200,7 @@ local elapsed = ""
 
 local function getTime(remote: UnreliableRemoteEvent)
 	elapsed = "00:00:00"
-	remote.OnClientEvent:Connect(function(int)
+	remote.OnClientEvent:Connect(function(int: number?)
 		elapsed = int
 	end)
 	return elapsed

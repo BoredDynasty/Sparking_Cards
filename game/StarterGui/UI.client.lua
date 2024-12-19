@@ -15,6 +15,7 @@ local MarketPlaceService = game:GetService("MarketplaceService")
 -- // Requires -- /
 
 local UIEffectsClass = require(ReplicatedStorage.Modules.UIEffect)
+-- local Interactions = require(ReplicatedStorage.Modules.Interactions)
 
 -- // Variables -- //
 
@@ -257,11 +258,9 @@ infoOpen.MouseButton1Click:Connect(function()
 	task.wait(1)
 	if infoGui.Visible == false then
 		UIEffectsClass:changeVisibility(infoGui, true)
-		UIEffectsClass.BlurEffect(true)
 		UIEffectsClass.Zoom(true)
 	elseif infoGui.Visible == true then
 		UIEffectsClass:changeVisibility(infoGui, false)
-		UIEffectsClass.BlurEffect(false)
 		UIEffectsClass.Zoom(false)
 	end
 end)
@@ -276,11 +275,27 @@ end)
 print(`UI is almost done executing.`)
 
 -- Other
+
+local TipGui = player.PlayerGui.Tip
+
+task.spawn(function()
+	while true do
+		-- print("spawn func is working")
+		UIEffectsClass.getModule("Curvy"):Curve(TipGui.Frame.TextLabel, TInfo, "TextTransparency", 1)
+		task.wait(0.5)
+		UIEffectsClass.getModule("Curvy"):Curve(TipGui.Frame.TextLabel, TInfo, "TextTransparency", 0)
+	end
+end)
+
 -- Tooltip Triggers
 PlayerHud.Player.MouseEnter:Connect(function()
 	showTooltip("That's you!", player.DisplayName)
 end)
-
 PlayerHud.Player.MouseLeave:Connect(hideTooltip)
+
+TipGui.Frame.MouseEnter:Connect(function()
+	showTooltip("Just tried to get this update out so it wouldn't be as boring.", "More to come!")
+end)
+TipGui.Frame.MouseLeave:Connect(hideTooltip)
 
 print(`UI has finished executing.`)

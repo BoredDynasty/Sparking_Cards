@@ -34,38 +34,28 @@ local function divideTerrain(totalSize, chunkSize)
 	return chunks
 end
 
--- Coroutine-based worker function
-local function coroutineWorker(chunks)
-	for i, chunk in ipairs(chunks) do
-		print(`Coroutine worker: `, i, chunk)
-		generateChunk(chunk)
-	end
-end
-
--- Main script execution
-local function loadTerrain()
-	local chunks = divideTerrain(TotalRegionSize, ChunkSize)
-	local workers = 4 -- Number of concurrent workers
+-- Function to generate terrain in parallel
+local function generateTerrainInParallel(chunks)
 	local threads = {}
-	local chunksPerWorker = math.ceil(#chunks / workers)
-
-	for i = 1, workers do
-		local startIndex = (i - 1) * chunksPerWorker + 1
-		local endIndex = math.min(i * chunksPerWorker, #chunks)
-		local chunkSubset = { unpack(chunks, startIndex, endIndex) }
-
-		-- Start a coroutine for each worker
+	for _, chunk in ipairs(chunks) do
 		local thread = coroutine.create(function()
-			coroutineWorker(chunkSubset)
-			print("New Thread", threads)
+			generateChunk(chunk)
+
+			print("Generated terrain in parallel: ", chunk)
 		end)
 		table.insert(threads, thread)
 	end
 
-	-- Run all threads
 	for _, thread in ipairs(threads) do
 		coroutine.resume(thread)
 	end
 end
 
-loadTerrain()
+-- Main function to generate the entire terrain
+local function generateTerrain()
+	local chunks = divideTerrain(TotalRegionSize, ChunkSize)
+	generateTerrainInParallel(chunks)
+end
+
+-- Call the main function to generate the terrain
+generateTerrain()

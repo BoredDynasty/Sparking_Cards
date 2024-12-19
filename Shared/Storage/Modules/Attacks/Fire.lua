@@ -3,7 +3,6 @@
 -- Fire.lua
 
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
-local Players = game:GetService("Players")
 local ServerStorage = game:GetService("ServerStorage")
 local DamageIndict = require(ReplicatedStorage.Classes.WeaponClass.DamageIndict)
 
@@ -28,8 +27,8 @@ return function(player, DAMAGE, FIREBALL_SPEED)
 			local region = Region3.new(fireball.Position - size, fireball.Position + size)
 			local partsInRegion = game.Workspace:FindPartsInRegion3(region, nil, math.huge)
 			for _, instance in pairs(partsInRegion) do
-				local character = instance.Parent
-				if character:FindFirstChild("Humanoid") and character.Name ~= character.Name then
+				local otherCharacter = instance.Parent
+				if otherCharacter:FindFirstChild("Humanoid") and otherCharacter.Name ~= otherCharacter.Name then
 					DamageIndict(player, DAMAGE, true)
 				end
 			end

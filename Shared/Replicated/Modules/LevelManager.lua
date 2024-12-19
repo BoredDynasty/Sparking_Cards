@@ -37,7 +37,7 @@ function Manager.new(level)
 	return levels[level]
 end
 
-function Manager.getTable()
+function Manager.rawget()
 	return levels
 end
 
