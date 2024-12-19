@@ -14,6 +14,7 @@ local SafeTeleporter = require(ReplicatedStorage.Modules.SafeTeleporter)
 local LoadingClass = require(ReplicatedStorage.Classes.LoadingClass)
 local MatchHandler = require(ReplicatedStorage.Modules.MatchHandler)
 local DataStoreClass = require(ReplicatedStorage.Classes.DataStoreClass)
+local CameraService = require(ReplicatedStorage.Modules.CameraService)
 
 local FastTravelRE: RemoteFunction = ReplicatedStorage.RemoteEvents.FastTravel
 local EnterMatchRE: RemoteFunction = ReplicatedStorage.RemoteEvents.EnterMatch
@@ -38,7 +39,7 @@ end
 -- This product Id gives the player more cards (cards as in money)
 productFunctions[1904591683] = function(receipt, player)
 	local leaderstats = player:FindFirstChild("leaderstats")
-	local Cards: IntValue = leaderstats and leaderstats:FindFirstChild("Cards")
+	local Cards: IntValue = leaderstats:FindFirstChild("Cards")
 	if Cards then
 		Cards.Value += 50
 		AnalyticsService:LogEconomyEvent(
@@ -109,6 +110,13 @@ local function FastTravel(place: number, players: { Player }, options)
 end
 
 local function enterMatch(player: Player)
+	-- // add an cool effect
+	local character = player.Character
+	if character then
+		for _, otherParts: BasePart in character:GetChildren() do
+			otherParts.Transparency = 0.2
+		end
+	end
 	MatchHandler.AddPlayerToQueue(player)
 end
 
@@ -148,50 +156,85 @@ local function onPlayerRemoving(player)
 	end)
 end
 
+local function isPlayerNearPart(player: Player, region: Region3)
+	local character = player.Character
+	if character and character:FindFirstChild("HumanoidRootPart") then
+		local playerPosition = character.HumanoidRootPart.Position
+		return region:Contains(playerPosition)
+	end
+	return false
+end
+
+local function panCameraAtObject(otherPart: BasePart, value)
+	-- // we want to grab the players attention to the object
+	if value == true then
+		CameraService:SetCameraHost(otherPart)
+	elseif value == false then
+		CameraService:SetCameraView("Default")
+	end
+end
+
+local function getClickDetector(otherPart: BasePart, cooldown: { Player })
+	if otherPart:FindFirstChildOfClass("ClickDetector") then
+		local clickDetect = otherPart:FindFirstChildOfClass("ClickDetector")
+		clickDetect.MouseClick:Connect(function(hit)
+			local player = Players:GetPlayerFromCharacter(hit.Parent)
+			if not table.find(cooldown, player) then
+				table.insert(cooldown, player)
+				touchDialog(otherPart, player)
+				task.delay(10, table.remove, cooldown, 1)
+			end
+		end)
+	end
+end
+
+local function otherPartTouched(otherPart: BasePart, cooldown: { Player })
+	otherPart.Touched:Connect(function(hit)
+		local player = Players:GetPlayerFromCharacter(hit.Parent)
+		if not table.find(cooldown, player) then
+			table.insert(cooldown, player)
+			touchDialog(otherPart, player)
+			task.wait(10)
+			table.remove(cooldown, 1)
+		end
+	end)
+end
+
+local function teleportPartClicked(otherPart: BasePart, destination: Vector3)
+	local player = Players:GetPlayerFromCharacter(otherPart.Parent)
+	if player then -- // check if we have the player
+		otherPart.ClickDetector.MouseClick:Connect(function()
+			LoadingClass(1.3, player)
+			task.wait(1)
+			player.Character.HumanoidRootPart:PivotTo(destination)
+		end)
+	end
+end
+
 local function addDestinations()
 	local cooldown = {}
 	return task.spawn(function()
 		for _, tag in pairs(CollectionService:GetTagged("TeleportPart")) do
 			local Teleport: BasePart = tag
 			local destination = Teleport:GetAttribute("Destination")
-			Teleport.ClickDetector.MouseClick:Connect(function(player)
-				LoadingClass(1.3, player)
-				task.wait(1)
-				player.Character.HumanoidRootPart:PivotTo(destination)
-			end)
+			teleportPartClicked(Teleport, destination)
+			local range = Vector3.new(10, 10, 10)
+			local region = Region3.new(Teleport.Position - range / 2, Teleport.Position + range / 2)
+			for _, player in pairs(Players:GetPlayers()) do
+				if isPlayerNearPart(player, region) then
+					panCameraAtObject(Teleport, true)
+					print("Player is near the part: ", player)
+				else
+					panCameraAtObject(Teleport, false)
+					print("Player is not near the part: ", player)
+				end
+			end
 		end
 		for _, tag in CollectionService:GetTagged("DialogTrigger") do
 			local otherPart: BasePart = tag
-			--[[ 
-			local proximityPrompt = Instance.new("ProximityPrompt")
-			proximityPrompt.Parent = otherPart
-			proximityPrompt.ActionText = "Travel"
-			proximityPrompt.ObjectText = "Manhole"
-			proximityPrompt.Triggered:Connect(function(player)
-				
-			end)
-			--]]
-			otherPart.Touched:Connect(function(hit)
-				local player = Players:GetPlayerFromCharacter(hit.Parent)
-				if not table.find(cooldown, player) then
-					table.insert(cooldown, player)
-					touchDialog(otherPart, player)
-					task.wait(10)
-					table.remove(cooldown, player)
-				end
-			end)
-			if otherPart:FindFirstChildOfClass("ClickDetector") then
-				local clickDetect = otherPart:FindFirstChildOfClass("ClickDetector")
-				clickDetect.MouseClick:Connect(function(hit)
-					local player = Players:GetPlayerFromCharacter(hit.Parent)
-					if not table.find(cooldown, player) then
-						table.insert(cooldown, player)
-						touchDialog(otherPart, player)
-						task.wait(10)
-						table.remove(cooldown, player)
-					end
-				end)
-			end
+			-- // Call functions
+			getClickDetector(otherPart, cooldown)
+			otherPartTouched(otherPart, cooldown)
 		end
 	end)
 end
