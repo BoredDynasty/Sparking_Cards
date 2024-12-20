@@ -1,7 +1,7 @@
 # SPARKING CARDS!
 
 > [!IMPORTANT]
-> ``12/4/24`` | I've refurbished the game to be more performant!
+> `12/4/24` | I've refurbished the game to be more performant!
 >
 > The fighting part of the game is almost done! Each attack/ability will have its own separate module.
 >

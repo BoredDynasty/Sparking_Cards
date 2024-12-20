@@ -1,16 +1,15 @@
 # SPARKING CARDS!
 
-## Changelog
+## Changelog | Beta Phase
 
 > [!NOTE]
 > Instead of placing the **changelog** inside the main `README.md` file, I've moved it here!
 
 > Handy, eh?
 
-### Beta Phase
-
 #### Update Logs
-- Beta 1
+
+#### Beta 1
   
 > Beta Phase 
 | <font color="#ff4e41">This is not the full release...</font> 
@@ -21,7 +20,7 @@
 | Map Improvements 
 | Game Progress <font color="#ffff7f">~34%</font>.
 
-- Early Alpha 5
+#### Early Alpha 5
 
 > Early Alpha 
 | Changed some fonts to the "Builder" font. 
@@ -36,7 +35,7 @@
 | New Main Menu 
 | Fixed UI Scaling
 
-- Early Alpha 4
+#### Early Alpha 4
 
 > Early Alpha
 | Made everything more convenient for the Developer
@@ -49,7 +48,7 @@
 > | Fixed UI Scaling
 > | Other Subtle Changes
 
-- Early Alpha 3
+#### Early Alpha 3
 
 > Early Alpha
 > | Added New Map
@@ -65,7 +64,7 @@
 > | Loading Screen
 > | New Lighting
 
-- Early Alpha 2
+-####Early Alpha 2
 
 > Early Alpha
 > | New Framework Place
@@ -79,7 +78,7 @@
 > | New Mouse Cursor (I know it's not ideal but what else do I have? i actually have alot lol.)
 > | A little more Terrain Blending |
 
-- Early Alpha 1
+#### Early Alpha 1
 
 > Early Alpha
 > | New Lobby
@@ -93,4 +92,4 @@
 > | Added Ranks
 > | Added Funky Features (Emphasis on ("Features")
 
-> No update logs before that.
+No update logs before that.

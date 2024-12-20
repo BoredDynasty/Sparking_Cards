@@ -127,7 +127,7 @@ local function chatted(player, message)
 end
 
 local function onPlayerAdded(player: Player)
-	DataStoreClass:PlayerAdded(player)
+	DataStoreClass.PlayerAdded(player)
 	AnalyticsService:LogOnboardingFunnelStepEvent(player, 1, "Player Joined")
 	player.Chatted:Connect(function(message)
 		chatted(player, message)
@@ -148,8 +148,8 @@ local function onPlayerAdded(player: Player)
 	end)
 end
 
-local function onPlayerRemoving(player)
-	DataStoreClass:PlayerRemoving(player)
+local function onPlayerRemoving(player: Player)
+	DataStoreClass.PlayerRemoving(player)
 	AnalyticsService:LogOnboardingFunnelStepEvent(player, 1, "Player Leaving")
 	pcall(function()
 		player:Destroy() -- performance reasons

@@ -14,8 +14,6 @@ local MultiplierType = DataStoreService:GetDataStore("MultiplierType")
 local ExperiencePoints = DataStoreService:GetDataStore("ExperiencePoints")
 local PDS = DataStoreService:GetDataStore("PositionDataStore")
 
-local Server = DataStoreService:GetDataStore("Server")
-
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local RunService = game:GetService("RunService")
@@ -159,16 +157,18 @@ function DataStoreClass.PlayerAdded(player: Player) -- Setup DataSystem
 end
 
 local function saveData(player, send: boolean)
-	if send == true then
-		DataSavedRE:FireClient(player)
-	end
-	pcall(function()
-		CardsData:SetAsync(player.UserId, player.leaderstats.Cards.Value)
-		RankData:SetAsync(player.UserId, player.leaderstats.Rank.Value)
-		MultiplierType:SetAsync(player.UserId, player.leaderstats.MultiplierType.Value)
-		ExperiencePoints:SetAsync(player.UserId, player.leaderstats.ExperiencePoints.Value)
+	task.spawn(function()
+		if send == true then
+			DataSavedRE:FireClient(player)
+		end
+		pcall(function()
+			CardsData:SetAsync(player.UserId, player.leaderstats.Cards.Value)
+			RankData:SetAsync(player.UserId, player.leaderstats.Rank.Value)
+			MultiplierType:SetAsync(player.UserId, player.leaderstats.MultiplierType.Value)
+			ExperiencePoints:SetAsync(player.UserId, player.leaderstats.ExperiencePoints.Value)
+		end)
+		return "Saved!"
 	end)
-	return "Saved!"
 end
 
 --[=[
@@ -181,7 +181,7 @@ function DataStoreClass.SaveData(player: Player)
 end
 
 function DataStoreClass.PlayerRemoving(player: Player)
-	saveData(player)
+	saveData(player, false)
 end
 
 --[=[
@@ -335,13 +335,6 @@ function DataStoreClass:CreateStat(player: Player, stat: any, initialValue)
 	data:SetAsync(player.UserId, any.Value)
 
 	return data, any
-end
-
--- // Global Chat Messaging (becuase its fun)
-export type globalChatMessage = { [string]: string } -- player name: chat message
-local function getChatMessageFromServers()
-	local ChatMessage: globalChatMessage = Server:GetAsync("ChatMessages")
-	return ChatMessage
 end
 
 return DataStoreClass
