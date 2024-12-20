@@ -1,17 +1,18 @@
-# SPARKING CARDS!
-
-## Changelog | Beta Phase
+# SPARKING CARDS! | Changelog
 
 > [!NOTE]
 > Instead of placing the **changelog** inside the main `README.md` file, I've moved it here!
 
-> Handy, eh?
+> Handy, yeah?
 
-#### Update Logs
+> [!IMPORTANT]
+> We are on **Beta Phase.**
+
+### Update Logs
 
 #### Beta 1
   
-> Beta Phase 
+ Beta Phase 
 | <font color="#ff4e41">This is not the full release...</font> 
 | Fixed all the UI! 
 | Huge performance patch 
@@ -22,7 +23,7 @@
 
 #### Early Alpha 5
 
-> Early Alpha 
+ Early Alpha 
 | Changed some fonts to the "Builder" font. 
 | Added more analytics for the Developer 
 | Fixed some things 
@@ -37,59 +38,59 @@
 
 #### Early Alpha 4
 
-> Early Alpha
+ Early Alpha
 | Made everything more convenient for the Developer
-> | Removed the Lobby Barrier
-> | Optimization Fixes
-> | Added A Gamepass
-> | Fixed Datastores
-> | Train In-Progress (it was originally gonna release this update)
-> | Moved Lobby Away from Test Grounds
-> | Fixed UI Scaling
-> | Other Subtle Changes
+| Removed the Lobby Barrier
+| Optimization Fixes
+| Added A Gamepass
+| Fixed Datastores
+| Train In-Progress (it was originally gonna release this update)
+| Moved Lobby Away from Test Grounds
+| Fixed UI Scaling
+| Other Subtle Changes
 
 #### Early Alpha 3
 
-> Early Alpha
-> | Added New Map
-> | More Sounds
-> | Added Day / Night Cycle
-> | New Assets
-> | A little more optimization
-> | New DeathScreen
-> | Fixed DataStores
-> | Fixed Spelling
-> | Trains in Progress
-> | Added Clouds
-> | Loading Screen
-> | New Lighting
+ Early Alpha
+| Added New Map
+| More Sounds
+| Added Day / Night Cycle
+| New Assets
+| A little more optimization
+| New DeathScreen
+| Fixed DataStores
+| Fixed Spelling
+| Trains in Progress
+| Added Clouds
+| Loading Screen
+| New Lighting
 
--####Early Alpha 2
+#### Early Alpha 2
 
-> Early Alpha
-> | New Framework Place
-> | More Volumetrics
-> | Bug Fixes
-> | Spelling Changes
-> | Removed Some Cooldowns
-> | New Emotes
-> | Activity Indicator (To the Left of your Player Hud.)
-> | Fixed DataStores
-> | New Mouse Cursor (I know it's not ideal but what else do I have? i actually have alot lol.)
-> | A little more Terrain Blending |
+ Early Alpha
+| New Framework Place
+| More Volumetrics
+| Bug Fixes
+| Spelling Changes
+| Removed Some Cooldowns
+| New Emotes
+| Activity Indicator (To the Left of your Player Hud.)
+| Fixed DataStores
+| New Mouse Cursor (I know it's not ideal but what else do I have? i actually have alot lol.)
+| A little more Terrain Blending 
 
 #### Early Alpha 1
 
-> Early Alpha
-> | New Lobby
-> | Added Dev Notes
-> | New Buttons
-> | Dialogue
-> | Added More Tool Tips
-> | New Assets
-> | Console Support
-> | Forced Screen Orientation For Mobile
-> | Added Ranks
-> | Added Funky Features (Emphasis on ("Features")
+ Early Alpha
+| New Lobby
+| Added Dev Notes
+| New Buttons
+| Dialogue
+| Added More Tool Tips
+| New Assets
+| Console Support
+| Forced Screen Orientation For Mobile
+| Added Ranks
+| Added Funky Features (Emphasis on ("Features")
 
-No update logs before that.
+**No update logs before that.**
