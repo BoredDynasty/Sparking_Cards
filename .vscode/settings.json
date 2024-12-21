@@ -31,5 +31,6 @@
         "loadfile",
         "native"
     ],
-    "robloxLsp.workspace.loadMode": "All Files"
+    "robloxLsp.workspace.loadMode": "Rojo Project",
+    "robloxLsp.workspace.rojoProjectFile": ""
 }

@@ -13,7 +13,7 @@ local UserInputService = game:GetService("UserInputService")
 local MarketPlaceService = game:GetService("MarketplaceService")
 
 -- // Requires -- /
-
+---@module Packages.UIEffect
 local UIEffectsClass = require(ReplicatedStorage.Modules.UIEffect)
 local CameraService = require(ReplicatedStorage.Modules.CameraService)
 

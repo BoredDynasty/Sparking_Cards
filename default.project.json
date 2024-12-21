@@ -15,7 +15,17 @@
     "ReplicatedStorage": {
       "$className": "ReplicatedStorage",
       "$ignoreUnknownInstances": true,
-      "$path": "Shared/Replicated"
+      "$path": "Shared/Replicated",
+      "Modules": {
+        "$className": "Folder",
+        "$ignoreUnknownInstances": true,
+        "$path": "Shared/Replicated/Modules",
+        "UIEffect": {
+          "$className": "ModuleScript",
+          "$ignoreUnknownInstances": true,
+          "$path": "Packeges/UIEffects"
+        }
+      }
     },
     "ServerScriptService": {
       "$className": "ServerScriptService",
