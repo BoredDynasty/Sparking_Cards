@@ -95,7 +95,8 @@ end)
 
 -- PlayerHud
 local PlayerHud = player.PlayerGui.PlayerHud
-local PlayerHudStatus = PlayerHud.Player.Status
+local OpenProfile = PlayerHud.Player.Design.Background -- im not sure why i labelled this as background
+local Profile = PlayerHud.CanvasGroup.Frame
 local playerProfileImage =
 	Players:GetUserThumbnailAsync(player.UserId, Enum.ThumbnailType.HeadShot, Enum.ThumbnailSize.Size420x420)
 
@@ -103,6 +104,7 @@ local DialogRemote = ReplicatedStorage.RemoteEvents.NewDialogue
 
 local LargeDialog = player.PlayerGui.Dialog.CanvasGroup.Frame
 
+--[[ This part was causing problems somehow
 UserInputService.WindowFocusReleased:Connect(function()
 	UIEffectsClass.changeColor("Red", PlayerHud.Player.Design.Radial)
 	UIEffectsClass:Zoom(true)
@@ -118,28 +120,26 @@ UserInputService.WindowFocused:Connect(function()
 	PlayerHud.Player.PlayerImage.Image = playerProfileImage
 	PlayerHud.Player.TextLabel.Text = player.DisplayName
 end)
+--]]
 
-local function newDialog(dialog: string, larger: boolean)
+local function reloadProfileImg(img: string)
 	task.spawn(function()
-		if not larger or larger == false then
-			UIEffectsClass.TypewriterEffect(dialog, PlayerHud.Player.TextLabel)
-			PlayerHud.Player.TextLabel.TextScaled = true
-			UIEffectsClass.changeColor("Blue", PlayerHud.Player.Design.Radial)
-			print(`New Dialog for {player.DisplayName}: {dialog}`)
-			task.wait(10)
-			UIEffectsClass.changeColor("Green", PlayerHud.Player.Design.Radial)
-			PlayerHud.Player.TextLabel.TextScaled = false
-			PlayerHud.Player.TextLabel.Text = player.DisplayName
-		else
-			UIEffectsClass.TypewriterEffect(dialog, LargeDialog.TextLabel)
-			UIEffectsClass.getModule("Curvy"):Curve(LargeDialog, TInfo, "Position", UDim2.new(0.5, 0, 0.944, 0))
-			UIEffectsClass.changeColor("Blue", PlayerHud.Player.Design.Radial)
-			print(`New Dialog for {player.DisplayName}: {dialog}`)
-			task.wait(10)
-			UIEffectsClass.changeColor("Green", PlayerHud.Player.Design.Radial)
-			UIEffectsClass.getModule("Curvy"):Curve(LargeDialog, TInfo, "Position", UDim2.new(0.5, 0, 1.5, 0))
-			LargeDialog.TextLabel.Text = "" -- cleanup
-		end
+		PlayerHud.Player.PlayerImage.Image = img
+		Profile.Frame.PlayerImage.Image = img
+		print(`Reloaded: {player.DisplayName}'s profile image. {img}`) -- debug
+	end)
+end
+
+local function newDialog(dialog: string)
+	task.spawn(function()
+		UIEffectsClass.TypewriterEffect(dialog, LargeDialog.TextLabel)
+		UIEffectsClass.getModule("Curvy"):Curve(LargeDialog, TInfo, "Position", UDim2.new(0.5, 0, 0.944, 0))
+		UIEffectsClass.changeColor("Blue", PlayerHud.Player.Design.Radial)
+		print(`New Dialog for {player.DisplayName}: {dialog}`)
+		task.wait(10)
+		UIEffectsClass.changeColor("Green", PlayerHud.Player.Design.Radial)
+		UIEffectsClass.getModule("Curvy"):Curve(LargeDialog, TInfo, "Position", UDim2.new(0.5, 0, 1.5, 0))
+		LargeDialog.TextLabel.Text = "" -- cleanup
 	end)
 end
 
@@ -177,24 +177,44 @@ local function dataSaved(message: string)
 	end)
 end
 
-PlayerHudStatus.TextButton.MouseButton1Click:Connect(function()
-	task.spawn(function()
-		local EnterMatchRE: RemoteFunction = ReplicatedStorage.RemoteEvents.EnterMatch
-		EnterMatchRE:InvokeServer()
-		newDialog("There's no turning back!", true)
-		PlayerHudStatus.TextButton.Interactable = false
-		local baseColor = PlayerHudStatus.TextButton.BackgroundColor3
-		local Color = UIEffectsClass.getModule("Color")
-		baseColor = Color:darker(baseColor) :: Color3
-		PlayerHudStatus.TextButton.BackgroundColor3 = baseColor
-		PlayerHudStatus.StatusText.Text = "...?"
-	end)
-end)
+local function openProfileGui()
+	if Profile.Visible == false then
+		UIEffectsClass.changeColor("Blue", OpenProfile)
+		UIEffectsClass:changeVisibility(Profile, true)
+		UIEffectsClass:Zoom(true)
+		UIEffectsClass:BlurEffect(true)
+		reloadProfileImg(playerProfileImage)
+	elseif Profile.Visible == true then
+		UIEffectsClass.changeColor("Green", OpenProfile)
+		UIEffectsClass:changeVisibility(Profile, false)
+		UIEffectsClass:Zoom(false)
+		UIEffectsClass:BlurEffect(false)
+		reloadProfileImg(playerProfileImage)
+	end
+end
 
+OpenProfile.MouseButton1Click:Connect(openProfileGui)
 DialogRemote.OnClientEvent:Connect(newDialog)
 DataSavedRE.OnClientEvent:Connect(dataSaved)
 
 print(`UI is executing.`)
+
+-- Battle Gui
+local BattleGui = player.PlayerGui.NewMatch.CanvasGroup
+local NewBattle = BattleGui.Status.TextButton
+
+local function newMatch()
+	local EnterMatchRE: RemoteFunction = ReplicatedStorage.RemoteEvents.EnterMatch
+	EnterMatchRE:InvokeServer()
+	NewBattle.Text = "Finding Battle..."
+	NewBattle.Interactable = false
+	local newBackgroundColor = UIEffectsClass.getModule("Color"):darker(NewBattle.BackgroundTransparency)
+	-- UIEffectsClass.changeColor(newBackgroundColor, NewBattle) this wouldn't work
+	TweenService:Create(NewBattle, TInfo, { BackgroundTransparency = newBackgroundColor }):Play()
+	print(`Invoked new Match for: {player.DisplayName}`)
+end
+
+NewBattle.MouseButton1Click:Connect(newMatch)
 
 -- Gamepasses
 
