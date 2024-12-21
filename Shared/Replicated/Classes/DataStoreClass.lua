@@ -236,8 +236,9 @@ end
 --]=]
 function DataStoreClass.SavePosition(player) -- Saves Player Position
 	pcall(function()
-		local HumanoidPos = game.Workspace:WaitForChild(player.Name).HumanoidRootPart.Position
-		local HumanoidOri = game.Workspace:WaitForChild(player.Name).HumanoidRootPart.Orientation
+		local character = player.Character or game.Workspace:WaitForChild(player.Name)
+		local HumanoidPos: CFrame? = character.HumanoidRootPart.Position
+		local HumanoidOri: CFrame? = character.HumanoidRootPart.Orientation
 
 		PDS:SetAsync(player.UserId, {
 			{ math.floor(HumanoidPos.X), math.floor(HumanoidPos.Y), math.floor(HumanoidPos.Z) },
