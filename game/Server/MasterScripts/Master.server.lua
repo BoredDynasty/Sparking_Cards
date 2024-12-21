@@ -29,11 +29,17 @@ local function touchDialog(otherPart: BasePart, player)
 	if not player then
 		player = Players:GetPlayerFromCharacter(otherPart.Parent)
 	end
-	local message = otherPart:GetAttribute("TouchDialog") or otherPart:GetAttribute("DialogText")
+	local message = otherPart:GetAttribute("TouchDialog")
+		or otherPart:GetAttribute("DialogText")
+		or otherPart:GetAttribute("Dialog")
 	if message then
 		DialogRE:FireClient(player, message)
 		print(`Sending Dialog to {player.DisplayName}: {message}`)
 	end
+end
+
+local function automaticDialog(player: Player, dialog: string)
+	DialogRE:FireClient(player, dialog)
 end
 
 -- This product Id gives the player more cards (cards as in money)
@@ -165,12 +171,13 @@ local function isPlayerNearPart(player: Player, region: Region3)
 	return false
 end
 
-local function panCameraAtObject(otherPart: BasePart, value)
+local function panCameraAtObject(player: Player, otherPart: BasePart, value)
 	-- // we want to grab the players attention to the object
+	local setCameraHost = ReplicatedStorage.RemoteEvents.SetCameraHost
 	if value == true then
-		CameraService:SetCameraHost(otherPart)
+		setCameraHost:FireClient(player, otherPart)
 	elseif value == false then
-		CameraService:SetCameraView("Default")
+		CameraService:SetCameraView(player, "Default")
 	end
 end
 
@@ -220,12 +227,12 @@ local function addDestinations()
 			teleportPartClicked(Teleport, destination)
 			local range = Vector3.new(10, 10, 10)
 			local region = Region3.new(Teleport.Position - range / 2, Teleport.Position + range / 2)
-			for _, player in pairs(Players:GetPlayers()) do
+			for _, player: Player in pairs(Players:GetPlayers()) do
 				if isPlayerNearPart(player, region) then
-					panCameraAtObject(Teleport, true)
+					panCameraAtObject(player, Teleport, true)
 					print("Player is near the part: ", player)
 				else
-					panCameraAtObject(Teleport, false)
+					panCameraAtObject(player, Teleport, false)
 					print("Player is not near the part: ", player)
 				end
 			end
@@ -239,10 +246,33 @@ local function addDestinations()
 	end)
 end
 
+local function add_NPC_Interactions()
+	return task.spawn(function()
+		for _, tag in CollectionService:GetTagged("NPC") do
+			local otherPart: BasePart = tag:FindFirstChild("HumanoidRootPart")
+			local region =
+				Region3.new(otherPart.Position - Vector3.new(10, 10, 10), otherPart.Position + Vector3.new(10, 10, 10))
+			-- we have to make sure that the player is near the NPC
+			for _, player in pairs(Players:GetPlayers()) do
+				if isPlayerNearPart(player, region) then
+					panCameraAtObject(otherPart, true)
+					print("Player is near the NPC: ", player, otherPart.Name)
+					print("Sending new Dialog")
+					automaticDialog(player, `{otherPart.Parent.Name}: {otherPart.Parent:GetAttribute("Dialog")}`)
+				else
+					panCameraAtObject(otherPart, false)
+					print("Player is not near the NPC: ", player)
+				end
+			end
+		end
+	end)
+end
+
 -- Set the callback; this can only be done once by one server-side script
 MarketplaceService.ProcessReceipt = processReceipt
 DataStoreClass:StartBindToClose()
 addDestinations()
+add_NPC_Interactions()
 FastTravelRE.OnServerInvoke = FastTravel
 EnterMatchRE.OnServerInvoke = enterMatch
 Players.PlayerAdded:Connect(onPlayerAdded)

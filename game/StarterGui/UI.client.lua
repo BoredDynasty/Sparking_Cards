@@ -15,6 +15,8 @@ local MarketPlaceService = game:GetService("MarketplaceService")
 -- // Requires -- /
 
 local UIEffectsClass = require(ReplicatedStorage.Modules.UIEffect)
+local CameraService = require(ReplicatedStorage.Modules.CameraService)
+
 -- local Interactions = require(ReplicatedStorage.Modules.Interactions)
 
 -- // Variables -- //
@@ -99,6 +101,8 @@ local playerProfileImage =
 
 local DialogRemote = ReplicatedStorage.RemoteEvents.NewDialogue
 
+local LargeDialog = player.PlayerGui.Dialog.CanvasGroup.Frame
+
 UserInputService.WindowFocusReleased:Connect(function()
 	UIEffectsClass.changeColor("Red", PlayerHud.Player.Design.Radial)
 	UIEffectsClass:Zoom(true)
@@ -115,34 +119,61 @@ UserInputService.WindowFocused:Connect(function()
 	PlayerHud.Player.TextLabel.Text = player.DisplayName
 end)
 
-local function newDialog(dialog: string)
+local function newDialog(dialog: string, larger: boolean)
 	task.spawn(function()
-		UIEffectsClass.TypewriterEffect(dialog, PlayerHud.Player.TextLabel)
-		PlayerHud.Player.TextLabel.TextScaled = true
-		UIEffectsClass.changeColor("Blue", PlayerHud.Player.Design.Radial)
-		print(`New Dialog for {player.DisplayName}: {dialog}`)
-		task.wait(10)
-		UIEffectsClass.changeColor("Green", PlayerHud.Player.Design.Radial)
-		PlayerHud.Player.TextLabel.TextScaled = false
-		PlayerHud.Player.TextLabel.Text = player.DisplayName
+		if not larger or larger == false then
+			UIEffectsClass.TypewriterEffect(dialog, PlayerHud.Player.TextLabel)
+			PlayerHud.Player.TextLabel.TextScaled = true
+			UIEffectsClass.changeColor("Blue", PlayerHud.Player.Design.Radial)
+			print(`New Dialog for {player.DisplayName}: {dialog}`)
+			task.wait(10)
+			UIEffectsClass.changeColor("Green", PlayerHud.Player.Design.Radial)
+			PlayerHud.Player.TextLabel.TextScaled = false
+			PlayerHud.Player.TextLabel.Text = player.DisplayName
+		else
+			UIEffectsClass.TypewriterEffect(dialog, LargeDialog.TextLabel)
+			UIEffectsClass.getModule("Curvy"):Curve(LargeDialog, TInfo, "Position", UDim2.new(0.5, 0, 0.944, 0))
+			UIEffectsClass.changeColor("Blue", PlayerHud.Player.Design.Radial)
+			print(`New Dialog for {player.DisplayName}: {dialog}`)
+			task.wait(10)
+			UIEffectsClass.changeColor("Green", PlayerHud.Player.Design.Radial)
+			UIEffectsClass.getModule("Curvy"):Curve(LargeDialog, TInfo, "Position", UDim2.new(0.5, 0, 1.5, 0))
+			LargeDialog.TextLabel.Text = "" -- cleanup
+		end
 	end)
 end
 
-local function dataSaved()
+local function dataSaved(message: string)
 	task.spawn(function()
-		local saveStatus = PlayerHud.Player.Check
-		UIEffectsClass.changeColor("#ccb6ff", PlayerHud.Player.Design.Radial)
-		UIEffectsClass.changeColor("#ccb6ff", saveStatus)
-		UIEffectsClass.getModule("Curvy"):Curve(PlayerHud.Player.PlayerImage, TInfo, "ImageTransparency", 1)
-		UIEffectsClass.getModule("Curvy"):Curve(saveStatus, TInfo, "ImageTransparency", 0)
-		saveStatus.Visible = true
-		UIEffectsClass.TypewriterEffect("Saved!", PlayerHud.Player.TextLabel)
-		task.wait(5)
-		UIEffectsClass.changeColor("Green", PlayerHud.Player.Design.Radial)
-		UIEffectsClass.changeColor("Green", saveStatus)
-		UIEffectsClass.getModule("Curvy"):Curve(PlayerHud.Player.PlayerImage, TInfo, "ImageTransparency", 0)
-		UIEffectsClass.getModule("Curvy"):Curve(saveStatus, TInfo, "ImageTransparency", 1)
-		saveStatus.Visible = false
+		if not message then
+			local saveStatus = PlayerHud.Player.Check
+			UIEffectsClass.changeColor("#ccb6ff", PlayerHud.Player.Design.Radial)
+			UIEffectsClass.changeColor("#ccb6ff", saveStatus)
+			UIEffectsClass.getModule("Curvy"):Curve(PlayerHud.Player.PlayerImage, TInfo, "ImageTransparency", 1)
+			UIEffectsClass.getModule("Curvy"):Curve(saveStatus, TInfo, "ImageTransparency", 0)
+			saveStatus.Visible = true
+			UIEffectsClass.TypewriterEffect("Saved!", PlayerHud.Player.TextLabel)
+			task.wait(5)
+			UIEffectsClass.changeColor("Green", PlayerHud.Player.Design.Radial)
+			UIEffectsClass.changeColor("Green", saveStatus)
+			UIEffectsClass.getModule("Curvy"):Curve(PlayerHud.Player.PlayerImage, TInfo, "ImageTransparency", 0)
+			UIEffectsClass.getModule("Curvy"):Curve(saveStatus, TInfo, "ImageTransparency", 1)
+			saveStatus.Visible = false
+		elseif message then
+			local saveStatus = PlayerHud.Player.Check
+			UIEffectsClass.changeColor("#ccb6ff", PlayerHud.Player.Design.Radial)
+			UIEffectsClass.changeColor("#ccb6ff", saveStatus)
+			UIEffectsClass.getModule("Curvy"):Curve(PlayerHud.Player.PlayerImage, TInfo, "ImageTransparency", 1)
+			UIEffectsClass.getModule("Curvy"):Curve(saveStatus, TInfo, "ImageTransparency", 0)
+			saveStatus.Visible = true
+			UIEffectsClass.TypewriterEffect(message, PlayerHud.Player.TextLabel)
+			task.wait(5)
+			UIEffectsClass.changeColor("Green", PlayerHud.Player.Design.Radial)
+			UIEffectsClass.changeColor("Green", saveStatus)
+			UIEffectsClass.getModule("Curvy"):Curve(PlayerHud.Player.PlayerImage, TInfo, "ImageTransparency", 0)
+			UIEffectsClass.getModule("Curvy"):Curve(saveStatus, TInfo, "ImageTransparency", 1)
+			saveStatus.Visible = false
+		end
 	end)
 end
 
@@ -150,7 +181,7 @@ PlayerHudStatus.TextButton.MouseButton1Click:Connect(function()
 	task.spawn(function()
 		local EnterMatchRE: RemoteFunction = ReplicatedStorage.RemoteEvents.EnterMatch
 		EnterMatchRE:InvokeServer()
-		newDialog("There's no turning back!")
+		newDialog("There's no turning back!", true)
 		PlayerHudStatus.TextButton.Interactable = false
 		local baseColor = PlayerHudStatus.TextButton.BackgroundColor3
 		local Color = UIEffectsClass.getModule("Color")
@@ -286,6 +317,16 @@ task.spawn(function()
 		UIEffectsClass.getModule("Curvy"):Curve(TipGui.Frame.TextLabel, TInfo, "TextTransparency", 0)
 	end
 end)
+
+local function setCameraHost(otherPart)
+	if type(otherPart) == "string" then
+		CameraService:SetCameraView(otherPart) -- "otherPart" is a string
+	else
+		CameraService:SetCameraHost(otherPart)
+	end
+end
+
+ReplicatedStorage.RemoteEvents.SetCameraHost.OnClientEvent:Connect(setCameraHost)
 
 -- Tooltip Triggers
 PlayerHud.Player.MouseEnter:Connect(function()

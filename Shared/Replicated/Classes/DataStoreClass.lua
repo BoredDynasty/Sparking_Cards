@@ -13,6 +13,7 @@ local RankData = DataStoreService:GetDataStore("Rank")
 local MultiplierType = DataStoreService:GetDataStore("MultiplierType")
 local ExperiencePoints = DataStoreService:GetDataStore("ExperiencePoints")
 local PDS = DataStoreService:GetDataStore("PositionDataStore")
+local DailyRewards = DataStoreClass:GetDataStore("DailyStreak")
 
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
@@ -39,6 +40,15 @@ local function calculate(inst: IntValue | Instance)
 	end
 	inst:SetAttribute("Total", total)
 	return total
+end
+
+-- Function to check if the player is eligible for a daily reward
+local function getDailyRewards(lastLogin)
+	local currentDate = os.date("*t") -- Get current date table
+	local lastDate = os.date("*t", lastLogin) -- Convert last login timestamp to date table
+
+	-- Check if the last login was on a different day
+	return currentDate.year ~= lastDate.year or currentDate.yday ~= lastDate.yday
 end
 
 --[[
@@ -69,63 +79,77 @@ function DataStoreClass.PlayerAdded(player: Player) -- Setup DataSystem
 	leaderstats.Parent = player
 	leaderstats.Name = "leaderstats"
 	--
+
+	local success, data = nil, nil
+
 	local Cards = Instance.new("IntValue")
 	Cards.Name = "Cards"
 	Cards.Parent = leaderstats
-	CardsData:SetAsync(player.UserId, {
-		["BaseValue"] = calculate(Cards) or 4,
-		["Types"] = {
-			["Fire"] = Cards:GetAttribute("Fire") or 1,
-			["Frost"] = Cards:GetAttribute("Frost") or 1,
-			["Plasma"] = Cards:GetAttribute("Plasma") or 1,
-			["Water"] = Cards:GetAttribute("Water") or 1,
-		},
-		["Abilities"] = {
-			["Charge"] = {
-				["Healing"] = 10,
-				["Unlocked"] = false,
-			},
-			["Ultimate"] = {
-				["Damage"] = 95,
-				["Healing"] = false,
-				["Unlocked"] = false,
-			},
-			["Fusion Coil"] = {
-				["Damage"] = 1005,
-				["Healing"] = false,
-				["Unlocked"] = false,
-			},
-			["Supernatural Radiation"] = {
-				["Damage"] = math.huge,
-				["Healing"] = false,
-				["Unlocked"] = false,
-			},
-		},
-	})
-	local _GetAsync = CardsData:GetAsync(player.UserId)
-	Cards.Value = _GetAsync.BaseValue
-	Cards:SetAttribute("Fire", _GetAsync.Types.Fire)
-	Cards:SetAttribute("Frost", _GetAsync.Types.Frost)
-	Cards:SetAttribute("Plasma", _GetAsync.Types.Plasma)
-	Cards:SetAttribute("Water", _GetAsync.Types.Water)
-	--
-	local Rank = Instance.new("StringValue")
-	Rank.Name = "Rank"
-	Rank.Parent = leaderstats
-	Rank.Value = RankData:GetAsync(player.UserId) or GlobalSettings.StartingRankValue
-	RankData:SetAsync(player.UserId, Rank.Value)
-	--
-	local Multiplier = Instance.new("StringValue")
-	Multiplier.Name = "MultiplierType"
-	Multiplier.Parent = leaderstats
-	Multiplier.Value = MultiplierType:GetAsync(player.UserId) or GlobalSettings.StartingMultiplierValue
-	MultiplierType:SetAsync(player.UserId, Multiplier.Value)
+	success, data = pcall(function()
+		return CardsData:GetAsync(player.UserId)
+	end)
+	if not success or data == nil then
+		data = { BaseValue = 4, Types = { Fire = 1, Frost = 1, Plasma = 1, Water = 1 }, Abilities = {} }
+	elseif success and data then
+		pcall(function()
+			CardsData:SetAsync(player.UserId, {
+				["BaseValue"] = calculate(Cards) or 4,
+				["Types"] = {
+					["Fire"] = Cards:GetAttribute("Fire") or 1,
+					["Frost"] = Cards:GetAttribute("Frost") or 1,
+					["Plasma"] = Cards:GetAttribute("Plasma") or 1,
+					["Water"] = Cards:GetAttribute("Water") or 1,
+				},
+				["Abilities"] = {
+					["Charge"] = {
+						["Healing"] = 10,
+						["Unlocked"] = false,
+					},
+					["Ultimate"] = {
+						["Damage"] = 95,
+						["Healing"] = false,
+						["Unlocked"] = false,
+					},
+					["Fusion Coil"] = {
+						["Damage"] = 1005,
+						["Healing"] = false,
+						["Unlocked"] = false,
+					},
+					["Supernatural Radiation"] = {
+						["Damage"] = math.huge, -- teehee
+						["Healing"] = false,
+						["Unlocked"] = false,
+					},
+				},
+			})
+		end)
+	end
+	task.spawn(function()
+		local _GetAsync = CardsData:GetAsync(player.UserId)
+		Cards.Value = _GetAsync.BaseValue
+		Cards:SetAttribute("Fire", _GetAsync.Types.Fire)
+		Cards:SetAttribute("Frost", _GetAsync.Types.Frost)
+		Cards:SetAttribute("Plasma", _GetAsync.Types.Plasma)
+		Cards:SetAttribute("Water", _GetAsync.Types.Water)
+		--
+		local Rank = Instance.new("StringValue")
+		Rank.Name = "Rank"
+		Rank.Parent = leaderstats
+		Rank.Value = RankData:GetAsync(player.UserId) or GlobalSettings.StartingRankValue
+		RankData:SetAsync(player.UserId, Rank.Value)
+		--
+		local Multiplier = Instance.new("StringValue")
+		Multiplier.Name = "MultiplierType"
+		Multiplier.Parent = leaderstats
+		Multiplier.Value = MultiplierType:GetAsync(player.UserId) or GlobalSettings.StartingMultiplierValue
+		MultiplierType:SetAsync(player.UserId, Multiplier.Value)
 
-	local EXP = Instance.new("IntValue")
-	EXP.Name = "ExperiencePoints"
-	EXP.Parent = leaderstats
-	EXP.Value = ExperiencePoints:GetAsync(player.UserId) or GlobalSettings.StartingExperienceValue
-	ExperiencePoints:SetAsync(player.UserId, EXP.Value)
+		local EXP = Instance.new("IntValue")
+		EXP.Name = "ExperiencePoints"
+		EXP.Parent = leaderstats
+		EXP.Value = ExperiencePoints:GetAsync(player.UserId) or GlobalSettings.StartingExperienceValue
+		ExperiencePoints:SetAsync(player.UserId, EXP.Value)
+	end)
 
 	local Character = game.Workspace:WaitForChild(player.Name)
 	local GetPosition
@@ -153,7 +177,29 @@ function DataStoreClass.PlayerAdded(player: Player) -- Setup DataSystem
 		end)
 	end
 
-	return leaderstats, { CardsData, RankData, ExperiencePoints }
+	success, data = pcall(function()
+		return DailyRewards:GetAsync(player.UserId)
+	end)
+
+	if not success or data == nil then
+		-- Init because theres no data
+		data = { Cards = 0, lastLogin = 0 }
+	end
+
+	if getDailyRewards(data.lastLogin) then
+		-- Reset the daily streak
+		data.Cards = data.Cards + 5
+		data.lastLogin = os.time() -- Update last login time to now
+	end
+
+	-- Save updated data
+	pcall(function()
+		DailyRewards:SetAsync(player.UserId, data)
+	end)
+
+	DataSavedRE:FireClient(player, `You have been awarded {data.Cards} Cards for logging in today!`)
+
+	return leaderstats
 end
 
 local function saveData(player, send: boolean)
