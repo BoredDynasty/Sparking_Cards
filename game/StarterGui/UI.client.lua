@@ -64,10 +64,10 @@ mouse.Move:Connect(function()
 			tooltipFrame.Position = position
 			tooltipFrame.Position = position
 
-			UIEffectsClass:Zoom(true)
+			CameraService:ChangeFOV(70, false)
 		-- local position = UDim2.new(0, mouse.X + xOffset, 0, mouse.Y + yOffset)
 		else
-			UIEffectsClass:Zoom(false)
+			CameraService:ChangeFOV(60, false)
 		end
 	end)
 end)
@@ -149,28 +149,32 @@ local function dataSaved(message: string)
 			local saveStatus = PlayerHud.Player.Check
 			UIEffectsClass.changeColor("#ccb6ff", PlayerHud.Player.Design.Radial)
 			UIEffectsClass.changeColor("#ccb6ff", saveStatus)
-			UIEffectsClass.getModule("Curvy"):Curve(PlayerHud.Player.PlayerImage, TInfo, "ImageTransparency", 1)
+			UIEffectsClass.getModule("Curvy")
+				:Curve(PlayerHud.Player.PlayerImage, TInfo, "ImageTransparency", 1)
 			UIEffectsClass.getModule("Curvy"):Curve(saveStatus, TInfo, "ImageTransparency", 0)
 			saveStatus.Visible = true
 			UIEffectsClass.TypewriterEffect("Saved!", PlayerHud.Player.TextLabel)
 			task.wait(5)
 			UIEffectsClass.changeColor("Green", PlayerHud.Player.Design.Radial)
 			UIEffectsClass.changeColor("Green", saveStatus)
-			UIEffectsClass.getModule("Curvy"):Curve(PlayerHud.Player.PlayerImage, TInfo, "ImageTransparency", 0)
+			UIEffectsClass.getModule("Curvy")
+				:Curve(PlayerHud.Player.PlayerImage, TInfo, "ImageTransparency", 0)
 			UIEffectsClass.getModule("Curvy"):Curve(saveStatus, TInfo, "ImageTransparency", 1)
 			saveStatus.Visible = false
 		elseif message then
 			local saveStatus = PlayerHud.Player.Check
 			UIEffectsClass.changeColor("#ccb6ff", PlayerHud.Player.Design.Radial)
 			UIEffectsClass.changeColor("#ccb6ff", saveStatus)
-			UIEffectsClass.getModule("Curvy"):Curve(PlayerHud.Player.PlayerImage, TInfo, "ImageTransparency", 1)
+			UIEffectsClass.getModule("Curvy")
+				:Curve(PlayerHud.Player.PlayerImage, TInfo, "ImageTransparency", 1)
 			UIEffectsClass.getModule("Curvy"):Curve(saveStatus, TInfo, "ImageTransparency", 0)
 			saveStatus.Visible = true
 			UIEffectsClass.TypewriterEffect(message, PlayerHud.Player.TextLabel)
 			task.wait(5)
 			UIEffectsClass.changeColor("Green", PlayerHud.Player.Design.Radial)
 			UIEffectsClass.changeColor("Green", saveStatus)
-			UIEffectsClass.getModule("Curvy"):Curve(PlayerHud.Player.PlayerImage, TInfo, "ImageTransparency", 0)
+			UIEffectsClass.getModule("Curvy")
+				:Curve(PlayerHud.Player.PlayerImage, TInfo, "ImageTransparency", 0)
 			UIEffectsClass.getModule("Curvy"):Curve(saveStatus, TInfo, "ImageTransparency", 1)
 			saveStatus.Visible = false
 		end
@@ -181,13 +185,13 @@ local function openProfileGui()
 	if Profile.Visible == false then
 		UIEffectsClass.changeColor("Blue", OpenProfile)
 		UIEffectsClass:changeVisibility(Profile, true)
-		UIEffectsClass:Zoom(true)
+		CameraService:ChangeFOV(70, false)
 		UIEffectsClass:BlurEffect(true)
 		reloadProfileImg(playerProfileImage)
 	elseif Profile.Visible == true then
 		UIEffectsClass.changeColor("Green", OpenProfile)
 		UIEffectsClass:changeVisibility(Profile, false)
-		UIEffectsClass:Zoom(false)
+		CameraService:ChangeFOV(60, false)
 		UIEffectsClass:BlurEffect(false)
 		reloadProfileImg(playerProfileImage)
 	end
@@ -309,10 +313,10 @@ infoOpen.MouseButton1Click:Connect(function()
 	task.wait(1)
 	if infoGui.Visible == false then
 		UIEffectsClass:changeVisibility(infoGui, true)
-		UIEffectsClass.Zoom(true)
+		CameraService:ChangeFOV(70, false)
 	elseif infoGui.Visible == true then
 		UIEffectsClass:changeVisibility(infoGui, false)
-		UIEffectsClass.Zoom(false)
+		CameraService:ChangeFOV(60, false)
 	end
 end)
 infoOpen.MouseEnter:Connect(function()

@@ -23,7 +23,7 @@
         "UIEffect": {
           "$className": "ModuleScript",
           "$ignoreUnknownInstances": true,
-          "$path": "Packeges/UIEffects"
+          "$path": "Packages/UIEffect"
         }
       }
     },

@@ -25,7 +25,7 @@ local productFunctions = {}
 print("Economic Analytics are enabled.")
 print("Custom Analytics are enabled.")
 
-local function touchDialog(otherPart: BasePart, player)
+local function touchDialog(otherPart: BasePart, player: Player)
 	if not player then
 		player = Players:GetPlayerFromCharacter(otherPart.Parent)
 	end
@@ -43,7 +43,7 @@ local function automaticDialog(player: Player, dialog: string)
 end
 
 -- This product Id gives the player more cards (cards as in money)
-productFunctions[1904591683] = function(receipt, player)
+productFunctions[1904591683] = function(receipt, player: Player)
 	local leaderstats = player:FindFirstChild("leaderstats")
 	local Cards: IntValue = leaderstats:FindFirstChild("Cards")
 	if Cards then

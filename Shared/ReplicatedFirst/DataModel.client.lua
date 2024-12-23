@@ -6,6 +6,7 @@ local ReplicatedFirst = game:GetService("ReplicatedFirst")
 local RunService = game:GetService("RunService")
 local StarterGui = game:GetService("StarterGui")
 local Players = game:GetService("Players")
+local AnalyticsService = game:GetService("AnalyticsService")
 
 ReplicatedFirst:RemoveDefaultLoadingScreen()
 StarterGui:SetCoreGuiEnabled(Enum.CoreGuiType.All, false)
@@ -43,6 +44,12 @@ local function onGameLoaded()
 	local roundedLoadTime = math.round(loadTime * 10000) / 10000 -- four decimal places
 	print("Game loaded in " .. roundedLoadTime .. " seconds.")
 	print("Number of instances loaded: " .. #game.Workspace:GetDescendants())
+
+	local customFields = {
+		[Enum.AnalyticsCustomFieldKeys.CustomField01.Name] = `Load Time (unrounded): {loadTime}`,
+		[Enum.AnalyticsCustomFieldKeys.CustomField02.Name] = `Load Time (rounded): {roundedLoadTime}`,
+	}
+	AnalyticsService:LogCustomEvent(Players.LocalPlayer, "GameLoaded", roundedLoadTime, customFields)
 	local imgServer = status.public
 
 	--imgServer.ImageRectOffset = privateOffset
