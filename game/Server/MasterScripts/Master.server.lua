@@ -275,40 +275,11 @@ local function add_NPC_Interactions()
 	end)
 end
 
-local function updateBlog(link: string)
-	task.spawn(function()
-		local HttpService = game:GetService("HttpService")
-		local TextService = game:GetService("TextService")
-		while true do
-			task.wait(60 * 60 * 24) -- 24h
-			local blog = HttpService:GetAsync(link)
-			if blog then
-				blog = HttpService:JSONDecode(blog)
-				local filterResult = TextService:FilterStringAsync(blog, 0, Enum.TextFilterContext.PublicChat)
-				if filterResult and filterResult == Enum.FilterResult.Accepted then
-					BlogRE:FireAllClients(blog)
-				end
-			end
-		end
-	end)
-end
-
 -- Set the callback; this can only be done once by one server-side script
 MarketplaceService.ProcessReceipt = processReceipt
 DataStoreClass:StartBindToClose()
 addDestinations()
 add_NPC_Interactions()
-updateBlog([[
-	https:
-	//raw.githubusercontent.com
-	/BoredDynasty
-	/Sparking_Cards
-	/refs
-	/heads
-	/main
-	/game-articles
-	/Articles.json
-	]])
 FastTravelRE.OnServerInvoke = FastTravel
 EnterMatchRE.OnServerInvoke = enterMatch
 Players.PlayerAdded:Connect(onPlayerAdded)
