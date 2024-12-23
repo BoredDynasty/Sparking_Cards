@@ -19,11 +19,13 @@ local CameraService = require(ReplicatedStorage.Modules.CameraService)
 local FastTravelRE: RemoteFunction = ReplicatedStorage.RemoteEvents.FastTravel
 local EnterMatchRE: RemoteFunction = ReplicatedStorage.RemoteEvents.EnterMatch
 local DialogRE: RemoteEvent = ReplicatedStorage.RemoteEvents.NewDialogue
+local BlogRE: RemoteEvent = ReplicatedStorage.RemoteEvents.Blogs
 
 local productFunctions = {}
 
 print("Economic Analytics are enabled.")
 print("Custom Analytics are enabled.")
+print("Developer Notes gets updated every 24h.")
 
 local function touchDialog(otherPart: BasePart, player: Player)
 	if not player then
@@ -250,18 +252,41 @@ local function add_NPC_Interactions()
 	return task.spawn(function()
 		for _, tag in CollectionService:GetTagged("NPC") do
 			local otherPart: BasePart = tag:FindFirstChild("HumanoidRootPart")
-			local region =
-				Region3.new(otherPart.Position - Vector3.new(10, 10, 10), otherPart.Position + Vector3.new(10, 10, 10))
+			local region = Region3.new(
+				otherPart.Position - Vector3.new(10, 10, 10),
+				otherPart.Position + Vector3.new(10, 10, 10)
+			)
 			-- we have to make sure that the player is near the NPC
 			for _, player in pairs(Players:GetPlayers()) do
 				if isPlayerNearPart(player, region) then
 					panCameraAtObject(otherPart, true)
 					print("Player is near the NPC: ", player, otherPart.Name)
 					print("Sending new Dialog")
-					automaticDialog(player, `{otherPart.Parent.Name}: {otherPart.Parent:GetAttribute("Dialog")}`)
+					automaticDialog(
+						player,
+						`{otherPart.Parent.Name}: {otherPart.Parent:GetAttribute("Dialog")}`
+					)
 				else
 					panCameraAtObject(otherPart, false)
 					print("Player is not near the NPC: ", player)
+				end
+			end
+		end
+	end)
+end
+
+local function updateBlog(link: string)
+	task.spawn(function()
+		local HttpService = game:GetService("HttpService")
+		local TextService = game:GetService("TextService")
+		while true do
+			task.wait(60 * 60 * 24) -- 24h
+			local blog = HttpService:GetAsync(link)
+			if blog then
+				blog = HttpService:JSONDecode(blog)
+				local filterResult = TextService:FilterStringAsync(blog, 0, Enum.TextFilterContext.PublicChat)
+				if filterResult and filterResult == Enum.FilterResult.Accepted then
+					BlogRE:FireAllClients(blog)
 				end
 			end
 		end
@@ -273,6 +298,17 @@ MarketplaceService.ProcessReceipt = processReceipt
 DataStoreClass:StartBindToClose()
 addDestinations()
 add_NPC_Interactions()
+updateBlog([[
+	https:
+	//raw.githubusercontent.com
+	/BoredDynasty
+	/Sparking_Cards
+	/refs
+	/heads
+	/main
+	/game-articles
+	/Articles.json
+	]])
 FastTravelRE.OnServerInvoke = FastTravel
 EnterMatchRE.OnServerInvoke = enterMatch
 Players.PlayerAdded:Connect(onPlayerAdded)
