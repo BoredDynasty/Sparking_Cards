@@ -14,6 +14,7 @@ local MultiplierType = DataStoreService:GetDataStore("MultiplierType")
 local ExperiencePoints = DataStoreService:GetDataStore("ExperiencePoints")
 local PDS = DataStoreService:GetDataStore("PositionDataStore")
 local DailyRewards = DataStoreClass:GetDataStore("DailyStreak")
+local TimePlayed = DataStoreClass:GetDataStore("TimePlayed")
 
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
@@ -21,6 +22,7 @@ local RunService = game:GetService("RunService")
 local ContextActionService = game:GetService("ContextActionService")
 
 local GlobalSettings = require(ReplicatedStorage.GlobalSettings)
+local Timer = require(ReplicatedStorage.Modules.Timer)
 
 local SavedPositionGUI = ReplicatedStorage.Assets:FindFirstChild("ScreenGui")
 
@@ -36,7 +38,9 @@ local function calculate(inst: IntValue | Instance)
 	if fire and frost and plasma and water then
 		total = fire + frost + plasma + water
 	else
-		warn(`The following attributes are missing: {fire}(fire), {frost}(frost), {plasma}(plasma), {water}(water).`)
+		warn(
+			`The following attributes are missing: {fire}(fire), {frost}(frost), {plasma}(plasma), {water}(water).`
+		)
 	end
 	inst:SetAttribute("Total", total)
 	return total
@@ -159,21 +163,23 @@ function DataStoreClass.PlayerAdded(player: Player) -- Setup DataSystem
 	end)
 
 	if GetPosition and SavedPositionGUI then
-		local SavedPosition = SavedPositionGUI:Clone()
-		SavedPosition.Parent = player.PlayerGui
-		SavedPosition.LastPosition.Visible = true
+		task.spawn(function()
+			local SavedPosition = SavedPositionGUI:Clone()
+			SavedPosition.Parent = player.PlayerGui
+			SavedPosition.LastPosition.Visible = true
 
-		SavedPosition.LastPosition.Yes.MouseButton1Down:Connect(function()
-			SavedPosition.Enabled = false
-			Character:MoveTo(Vector3.new(GetPosition[1][1], GetPosition[1][2], GetPosition[1][3]))
-			Character.HumanoidRootPart.Orientation =
-				Vector3.new(GetPosition[2][1], GetPosition[2][2], GetPosition[2][3])
-			print("Set Position of " .. Character.Name)
-		end)
+			SavedPosition.LastPosition.Yes.MouseButton1Down:Connect(function()
+				SavedPosition.Enabled = false
+				Character:MoveTo(Vector3.new(GetPosition[1][1], GetPosition[1][2], GetPosition[1][3]))
+				Character.HumanoidRootPart.Orientation =
+					Vector3.new(GetPosition[2][1], GetPosition[2][2], GetPosition[2][3])
+				print("Set Position of " .. Character.Name)
+			end)
 
-		SavedPosition.LastPosition.No.MouseButton1Down:Connect(function()
-			SavedPosition.Enabled = false
-			return
+			SavedPosition.LastPosition.No.MouseButton1Down:Connect(function()
+				SavedPosition.Enabled = false
+				return
+			end)
 		end)
 	end
 
@@ -198,6 +204,48 @@ function DataStoreClass.PlayerAdded(player: Player) -- Setup DataSystem
 	end)
 
 	DataSavedRE:FireClient(player, `You have been awarded {data.Cards} Cards for logging in today!`)
+	local binary_key = [[
+				1110100 
+				1101001 
+				1101101 
+				1100101 
+				101101 
+				1110000 
+				1101100 
+				1100001 
+				1111001 
+				1100101 
+				1100100 
+				101101 
+				1110011 
+				1110100 
+				1101111 
+				1110010 
+				1100101
+			]] -- -- "time-played-store" converted to binary
+	local timePlayed_Data = TimePlayed:GetAsync(binary_key)
+	if not timePlayed_Data then
+		task.spawn(function()
+			local timer = Timer.new()
+			timer:Start()
+			TimePlayed:SetAsync(binary_key, {
+				player,
+				timer.elapsedTime,
+			})
+
+			while true do
+				task.wait(1)
+				TimePlayed:SetAsync(binary_key, {
+					player,
+					timer.elapsedTime,
+				})
+			end
+			player.AncestryChanged:Once(function()
+				timer:Stop() -- Stop the timer when the player leaves
+				-- or else itll cause lag
+			end)
+		end)
+	end
 
 	return leaderstats
 end
