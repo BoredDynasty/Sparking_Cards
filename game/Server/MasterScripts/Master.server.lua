@@ -19,7 +19,6 @@ local CameraService = require(ReplicatedStorage.Modules.CameraService)
 local FastTravelRE: RemoteFunction = ReplicatedStorage.RemoteEvents.FastTravel
 local EnterMatchRE: RemoteFunction = ReplicatedStorage.RemoteEvents.EnterMatch
 local DialogRE: RemoteEvent = ReplicatedStorage.RemoteEvents.NewDialogue
-local BlogRE: RemoteEvent = ReplicatedStorage.RemoteEvents.Blogs
 
 local productFunctions = {}
 
