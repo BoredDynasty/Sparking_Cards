@@ -9,7 +9,6 @@ local AnalyticsService = game:GetService("AnalyticsService")
 local ServerStorage = game:GetService("ServerStorage")
 
 local DataStoreClass = require(ReplicatedStorage.Classes.DataStoreClass)
-local LoadingClass = require(ReplicatedStorage.Classes.LoadingClass)
 local RewardsClass = require(ReplicatedStorage.Classes.RewardsClass)
 local SafeTeleporter = require(ReplicatedStorage.Modules.SafeTeleporter)
 local MapSettings = require(ServerStorage.Modules.MapSettings)
@@ -99,8 +98,6 @@ local function addDestinations()
 			local Teleport = tag
 			local destination = Teleport:GetAttribute("Destination")
 			Teleport.ClickDetector.MouseClick:Connect(function(player)
-				LoadingClass(1.3, player)
-				task.wait(1)
 				player.Character.HumanoidRootPart:PivotTo(destination)
 			end)
 		end

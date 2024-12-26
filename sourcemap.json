@@ -176,24 +176,10 @@
                     ],
                     "children": [
                         {
-                            "name": "AnalyticsClass",
-                            "className": "ModuleScript",
-                            "filePaths": [
-                                "src/ReplicatedStorage\\Classes\\AnalyticsClass.lua"
-                            ]
-                        },
-                        {
                             "name": "Stash",
                             "className": "ModuleScript",
                             "filePaths": [
                                 "src/ReplicatedStorage\\Classes\\Stash.lua"
-                            ]
-                        },
-                        {
-                            "name": "LoadingClass",
-                            "className": "ModuleScript",
-                            "filePaths": [
-                                "src/ReplicatedStorage\\Classes\\LoadingClass.lua"
                             ]
                         },
                         {

@@ -11,13 +11,12 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local AnalyticsService = game:GetService("AnalyticsService")
 
 local SafeTeleporter = require(ReplicatedStorage.Modules.SafeTeleporter)
-local LoadingClass = require(ReplicatedStorage.Classes.LoadingClass)
 local MatchHandler = require(ReplicatedStorage.Modules.MatchHandler)
 local DataStoreClass = require(ReplicatedStorage.Classes.DataStoreClass)
 local CameraService = require(ReplicatedStorage.Modules.CameraService)
 
-local FastTravelRE: RemoteFunction = ReplicatedStorage.RemoteEvents.FastTravel
-local EnterMatchRE: RemoteFunction = ReplicatedStorage.RemoteEvents.EnterMatch
+local FastTravelRE: RemoteEvent = ReplicatedStorage.RemoteEvents.FastTravel
+local EnterMatchRE: RemoteEvent = ReplicatedStorage.RemoteEvents.EnterMatch
 local DialogRE: RemoteEvent = ReplicatedStorage.RemoteEvents.NewDialogue
 
 local productFunctions = {}
@@ -212,8 +211,6 @@ local function teleportPartClicked(otherPart: BasePart, destination: Vector3)
 	local player = Players:GetPlayerFromCharacter(otherPart.Parent)
 	if player then -- // check if we have the player
 		otherPart.ClickDetector.MouseClick:Connect(function()
-			LoadingClass(1.3, player)
-			task.wait(1)
 			player.Character.HumanoidRootPart:PivotTo(destination)
 		end)
 	end
@@ -279,7 +276,7 @@ MarketplaceService.ProcessReceipt = processReceipt
 DataStoreClass:StartBindToClose()
 addDestinations()
 add_NPC_Interactions()
-FastTravelRE.OnServerInvoke = FastTravel
-EnterMatchRE.OnServerInvoke = enterMatch
+FastTravelRE.OnServerEvent:Connect(FastTravel)
+EnterMatchRE.OnServerEvent:Connect(enterMatch)
 Players.PlayerAdded:Connect(onPlayerAdded)
 Players.PlayerRemoving:Connect(onPlayerRemoving)

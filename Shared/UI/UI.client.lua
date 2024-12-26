@@ -13,7 +13,7 @@ local MarketPlaceService = game:GetService("MarketplaceService")
 
 -- // Requires
 
-local UIEffectsClass = require(ReplicatedStorage.Modules.UIEffect)
+local UIEffect = require(ReplicatedStorage.Modules.UIEffect)
 
 -- // Variables
 
@@ -53,27 +53,27 @@ local playerProfileImage =
 local DialogRemote = ReplicatedStorage.RemoteEvents.NewDialogue
 
 UserInputService.WindowFocusReleased:Connect(function()
-	UIEffectsClass.changeColor("Red", PlayerHud.Player.Design.Radial)
-	UIEffectsClass:Zoom(true)
-	UIEffectsClass:BlurEffect(true)
+	UIEffect.changeColor("Red", PlayerHud.Player.Design.Radial)
+	UIEffect:Zoom(true)
+	UIEffect:BlurEffect(true)
 	PlayerHud.Player.PlayerImage.Image = playerProfileImage
 	PlayerHud.Player.TextLabel.Text = player.DisplayName
 end)
 
 UserInputService.WindowFocused:Connect(function()
-	UIEffectsClass.changeColor("Green", PlayerHud.Player.Design.Radial)
-	UIEffectsClass:Zoom(false)
-	UIEffectsClass:BlurEffect(false)
+	UIEffect.changeColor("Green", PlayerHud.Player.Design.Radial)
+	UIEffect:Zoom(false)
+	UIEffect:BlurEffect(false)
 	PlayerHud.Player.PlayerImage.Image = playerProfileImage
 	PlayerHud.Player.TextLabel.Text = player.DisplayName
 end)
 
 local function newDialog(dialog)
-	UIEffectsClass.TypewriterEffect(dialog, PlayerHud.Player.TextLabel)
-	UIEffectsClass.changeColor("Blue", PlayerHud.Player.Design.Radial)
+	UIEffect.TypewriterEffect(dialog, PlayerHud.Player.TextLabel)
+	UIEffect.changeColor("Blue", PlayerHud.Player.Design.Radial)
 	print(`New Dialog for {player.DisplayName}: {dialog}`)
 	task.wait(10)
-	UIEffectsClass.changeColor("Green", PlayerHud.Player.Design.Radial)
+	UIEffect.changeColor("Green", PlayerHud.Player.Design.Radial)
 end
 
 DialogRemote.OnClientEvent:Connect(newDialog)
@@ -156,7 +156,7 @@ local function mainHud()
 	Canvas.GroupTransparency = 0
 
 	local function continueGameplay()
-		UIEffectsClass:changeVisibility(Canvas, false)
+		UIEffect:changeVisibility(Canvas, false)
 	end
 	Frame.PlayButton.MouseButton1Down:Once(continueGameplay)
 end
@@ -242,8 +242,8 @@ Humanoid.HealthChanged:Connect(function(health)
 	local font_color = tostring(Color3.fromRGB(red, 255, 255))
 	for _, textLabel: TextLabel in ChanceUI.CanvasGroup:GetDescendants() do
 		textLabel.Text = `<font color="{font_color}">%{player:GetAttribute("Chance") :: string}</font>`
-		UIEffectsClass.CustomAnimation("Click", textLabel) -- To get larger
-		UIEffectsClass.CustomAnimation("Shake", textLabel) -- To rotate
+		UIEffect.CustomAnimation("Click", textLabel) -- To get larger
+		UIEffect.CustomAnimation("Shake", textLabel) -- To rotate
 	end
 end)
 
