@@ -13,11 +13,12 @@ local AnalyticsService = game:GetService("AnalyticsService")
 local SafeTeleporter = require(ReplicatedStorage.Modules.SafeTeleporter)
 local MatchHandler = require(ReplicatedStorage.Modules.MatchHandler)
 local DataStoreClass = require(ReplicatedStorage.Classes.DataStoreClass)
-local CameraService = require(ReplicatedStorage.Modules.CameraService)
+-- local CameraService = require(ReplicatedStorage.Modules.CameraService)
 
 local FastTravelRE: RemoteEvent = ReplicatedStorage.RemoteEvents.FastTravel
 local EnterMatchRE: RemoteEvent = ReplicatedStorage.RemoteEvents.EnterMatch
 local DialogRE: RemoteEvent = ReplicatedStorage.RemoteEvents.NewDialogue
+local SendAnalytic: RemoteEvent = ReplicatedStorage.RemoteEvents.SendAnalytic
 
 local productFunctions = {}
 
@@ -116,13 +117,6 @@ local function FastTravel(place: number, players: { Player }, options)
 end
 
 local function enterMatch(player: Player)
-	-- // add an cool effect
-	local character = player.Character
-	if character then
-		for _, otherParts: BasePart in character:GetChildren() do
-			otherParts.Transparency = 0.2
-		end
-	end
 	MatchHandler.AddPlayerToQueue(player)
 end
 
@@ -162,13 +156,19 @@ local function onPlayerRemoving(player: Player)
 	end)
 end
 
-local function isPlayerNearPart(player: Player, region: Region3)
+local function isPlayerNearPart(player: Player, part: BasePart, maxDistance: number)
 	local character = player.Character
 	if character and character:FindFirstChild("HumanoidRootPart") then
 		local playerPosition = character.HumanoidRootPart.Position
-		return region:Contains(playerPosition)
+		local partPosition = part.Position
+		local distance = (playerPosition - partPosition).Magnitude
+		return distance <= maxDistance
 	end
-	return false
+end
+
+local function setCameraView(player, view)
+	local setCameraHost = ReplicatedStorage.RemoteEvents.SetCameraHost
+	setCameraHost:FireClient(player, view)
 end
 
 local function panCameraAtObject(player: Player, otherPart: BasePart, value)
@@ -177,7 +177,7 @@ local function panCameraAtObject(player: Player, otherPart: BasePart, value)
 	if value == true then
 		setCameraHost:FireClient(player, otherPart)
 	elseif value == false then
-		CameraService:SetCameraView(player, "Default")
+		setCameraView(player, "Default")
 	end
 end
 
@@ -223,15 +223,13 @@ local function addDestinations()
 			local Teleport: BasePart = tag
 			local destination = Teleport:GetAttribute("Destination")
 			teleportPartClicked(Teleport, destination)
-			local range = Vector3.new(10, 10, 10)
-			local region = Region3.new(Teleport.Position - range / 2, Teleport.Position + range / 2)
 			for _, player: Player in pairs(Players:GetPlayers()) do
-				if isPlayerNearPart(player, region) then
+				if isPlayerNearPart(player, Teleport, 10) then
 					panCameraAtObject(player, Teleport, true)
-					print("Player is near the part: ", player)
+					print("Player is near the part: ", player, Teleport)
 				else
 					panCameraAtObject(player, Teleport, false)
-					print("Player is not near the part: ", player)
+					-- print("Player is not near the part: ", player)
 				end
 			end
 		end
@@ -248,13 +246,9 @@ local function add_NPC_Interactions()
 	return task.spawn(function()
 		for _, tag in CollectionService:GetTagged("NPC") do
 			local otherPart: BasePart = tag:FindFirstChild("HumanoidRootPart")
-			local region = Region3.new(
-				otherPart.Position - Vector3.new(10, 10, 10),
-				otherPart.Position + Vector3.new(10, 10, 10)
-			)
 			-- we have to make sure that the player is near the NPC
 			for _, player in pairs(Players:GetPlayers()) do
-				if isPlayerNearPart(player, region) then
+				if isPlayerNearPart(player, otherPart, 10) then
 					panCameraAtObject(otherPart, true)
 					print("Player is near the NPC: ", player, otherPart.Name)
 					print("Sending new Dialog")
@@ -271,6 +265,11 @@ local function add_NPC_Interactions()
 	end)
 end
 
+local function catchAnalytic(player, topic, param1, customFields)
+	AnalyticsService:LogCustomEvent(player, topic, param1, customFields)
+	print(`New Analytic: `, topic, param1, customFields)
+end
+
 -- Set the callback; this can only be done once by one server-side script
 MarketplaceService.ProcessReceipt = processReceipt
 DataStoreClass:StartBindToClose()
@@ -278,5 +277,6 @@ addDestinations()
 add_NPC_Interactions()
 FastTravelRE.OnServerEvent:Connect(FastTravel)
 EnterMatchRE.OnServerEvent:Connect(enterMatch)
+SendAnalytic.OnServerEvent:Connect(catchAnalytic)
 Players.PlayerAdded:Connect(onPlayerAdded)
 Players.PlayerRemoving:Connect(onPlayerRemoving)

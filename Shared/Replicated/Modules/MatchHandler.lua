@@ -11,6 +11,7 @@ local function addToGlobalQueue(player)
 		local queue = queueDataStore:GetAsync("Queue") or {}
 		table.insert(queue, player.UserId)
 		queueDataStore:SetAsync("Queue", queue)
+		MessagingService:PublishAsync("MatchmakingQueueUpdate")
 	end)
 	assert(success, `Failed to add {player} to global queue: {err}!!`)
 end
@@ -35,12 +36,16 @@ local function checkForMatch()
 end
 
 function MatchmakingModule.AddPlayerToQueue(player)
-	addToGlobalQueue(player)
-	checkForMatch()
+	if not game:GetService("RunService"):IsStudio() then
+		addToGlobalQueue(player)
+		checkForMatch()
+	end
 end
 
 MessagingService:SubscribeAsync("MatchmakingQueueUpdate", function()
-	checkForMatch()
+	if not game:GetService("RunService"):IsStudio() then
+		checkForMatch()
+	end
 end)
 
 return MatchmakingModule

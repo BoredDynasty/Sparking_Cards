@@ -1,5 +1,11 @@
 {
   "name": "SPARKING CARDS!",
+  "gameId": 2232140200,
+  "servePlaceIds": [
+    6125133811,
+    18213010529,
+    90845913624517
+  ],
   "tree": {
     "$className": "DataModel",
     "Chat": {
@@ -15,7 +21,12 @@
     "ReplicatedStorage": {
       "$className": "ReplicatedStorage",
       "$ignoreUnknownInstances": true,
-      "$path": "Shared/Replicated"
+      "$path": "Shared/Replicated",
+      "Packages": {
+        "$className": "Folder",
+        "$ignoreUnknownInstances": true,
+        "$path": "Packages"
+      }
     },
     "ServerScriptService": {
       "$className": "ServerScriptService",

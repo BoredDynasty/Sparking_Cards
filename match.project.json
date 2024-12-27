@@ -1,12 +1,13 @@
 {
   "name": "Match",
+  "gameId": 2232140200,
+  "servePlaceIds": [
+    6125133811,
+    18213010529,
+    90845913624517
+  ],
   "tree": {
     "$className": "DataModel",
-    "Chat": {
-      "$className": "Chat",
-      "$ignoreUnknownInstances": true,
-      "$path": "matchsrc/Chat"
-    },
     "ReplicatedFirst": {
       "$className": "ReplicatedFirst",
       "$ignoreUnknownInstances": true,
@@ -20,7 +21,7 @@
     "ServerScriptService": {
       "$className": "ServerScriptService",
       "$ignoreUnknownInstances": true,
-      "$path": "MatchFiles/Server"
+      "$path": "matchsrc/Server"
     },
     "ServerStorage": {
       "$className": "ServerStorage",
@@ -32,18 +33,8 @@
       "$ignoreUnknownInstances": true,
       "$path": "Shared/UI"
     },
-    "StarterPack": {
-      "$className": "StarterPack",
-      "$ignoreUnknownInstances": true,
-      "$path": "matchsrc/StarterPack"
-    },
     "StarterPlayer": {
       "$className": "StarterPlayer",
-      "StarterCharacterScripts": {
-        "$className": "StarterCharacterScripts",
-        "$ignoreUnknownInstances": true,
-        "$path": "matchsrc/StarterPlayer/StarterCharacterScripts"
-      },
       "StarterPlayerScripts": {
         "$className": "StarterPlayerScripts",
         "$ignoreUnknownInstances": true,
