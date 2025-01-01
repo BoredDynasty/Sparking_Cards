@@ -50,7 +50,7 @@ local function decideMap(player)
 	MapApply(map, player)
 end
 
-local function onPlayerAdded(player)
+local function onPlayerAdded(player: Player)
 	DataStoreClass.PlayerAdded(player)
 	local customFields = {
 		[Enum.AnalyticsCustomFieldKeys.CustomField01.Name] = "SPARKING-MATCH",
@@ -67,7 +67,7 @@ local function onPlayerAdded(player)
 	decideMap(player)
 end
 
-local function onPlayerRemoving(player)
+local function onPlayerRemoving(player: Player)
 	DataStoreClass.PlayerRemoving()
 	local customFields = {
 		[Enum.AnalyticsCustomFieldKeys.CustomField01.Name] = "SPARKING-MATCH",
@@ -95,7 +95,7 @@ local function addDestinations()
 	local cooldown = {}
 	return task.spawn(function()
 		for _, tag in pairs(CollectionService:GetTagged("TeleportPart")) do
-			local Teleport = tag
+			local Teleport: BasePart = tag
 			local destination = Teleport:GetAttribute("Destination")
 			Teleport.ClickDetector.MouseClick:Connect(function(player)
 				player.Character.HumanoidRootPart:PivotTo(destination)
@@ -126,7 +126,7 @@ local function addDestinations()
 	end)
 end
 
-local function startTimer(remote: UnreliableRemoteEvent, _: RemoteEvent)
+local function startTimer(remote: UnreliableRemoteEvent)
 	local Timer = require(ReplicatedStorage.Modules.Timer)
 	local newTimer = Timer.new()
 	-- local frequency = 0
@@ -146,7 +146,7 @@ local function startTimer(remote: UnreliableRemoteEvent, _: RemoteEvent)
 end
 
 DataStoreClass.StartBindToClose()
-startTimer(ReplicatedStorage.RemoteEvents.UpdateTime, ReplicatedStorage.RemoteEvents.GameLoaded)
+startTimer(ReplicatedStorage.RemoteEvents.UpdateTime)
 addDestinations()
 Players.PlayerAdded:Connect(onPlayerAdded)
 Players.PlayerRemoving:Connect(onPlayerRemoving)

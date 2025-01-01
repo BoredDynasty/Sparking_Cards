@@ -43,22 +43,12 @@
       "$ignoreUnknownInstances": true,
       "$path": "game/StarterGui"
     },
-    "StarterPack": {
-      "$className": "StarterPack",
-      "$ignoreUnknownInstances": true,
-      "$path": "src/StarterPack"
-    },
     "StarterPlayer": {
       "$className": "StarterPlayer",
-      "StarterCharacterScripts": {
-        "$className": "StarterCharacterScripts",
-        "$ignoreUnknownInstances": true,
-        "$path": "src/StarterPlayer/StarterCharacterScripts"
-      },
       "StarterPlayerScripts": {
         "$className": "StarterPlayerScripts",
         "$ignoreUnknownInstances": true,
-        "$path": "src/StarterPlayer/StarterPlayerScripts"
+        "$path": "Shared/Player"
       },
       "$ignoreUnknownInstances": true
     },
