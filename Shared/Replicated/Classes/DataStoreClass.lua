@@ -11,7 +11,6 @@ local DataStoreService = game:GetService("DataStoreService")
 local CardsData = DataStoreService:GetDataStore("Cards")
 local RankData = DataStoreService:GetDataStore("Rank")
 local ExperiencePoints = DataStoreService:GetDataStore("ExperiencePoints")
-local PDS = DataStoreService:GetDataStore("PositionDataStore")
 local PlayerRelated = DataStoreService:GetDataStore("PlayerRelated")
 
 local Players = game:GetService("Players")
@@ -20,8 +19,6 @@ local RunService = game:GetService("RunService")
 
 local GlobalSettings = require(ReplicatedStorage.GlobalSettings)
 local Timer = require(ReplicatedStorage.Modules.Timer)
-
-local SavedPositionGUI = ReplicatedStorage.Assets:FindFirstChild("ScreenGui")
 
 local DataSavedRE = ReplicatedStorage.RemoteEvents.DataSaved
 
@@ -62,7 +59,6 @@ function DataStoreClass.PlayerAdded(player: Player) -- Setup DataSystem
 	leaderstats.Parent = player
 	leaderstats.Name = "leaderstats"
 	--
-
 	local success, data = nil, nil
 
 	local Cards = Instance.new("IntValue")
@@ -94,34 +90,6 @@ function DataStoreClass.PlayerAdded(player: Player) -- Setup DataSystem
 	EXP.Parent = leaderstats
 	EXP.Value = ExperiencePoints:GetAsync(`player:{player.UserId}`) or GlobalSettings.StartingExperienceValue
 	ExperiencePoints:SetAsync(`player:{player.UserId}`, EXP.Value)
-
-	local Character = game.Workspace:WaitForChild(player.Name)
-	local GetPosition = nil
-
-	pcall(function()
-		GetPosition = PDS:GetAsync(`player:{player.UserId}`)
-	end)
-
-	if GetPosition and SavedPositionGUI then
-		task.spawn(function()
-			local SavedPosition = SavedPositionGUI:Clone()
-			SavedPosition.Parent = player.PlayerGui
-			SavedPosition.LastPosition.Visible = true
-
-			SavedPosition.LastPosition.Yes.MouseButton1Down:Once(function()
-				SavedPosition.Enabled = false
-				Character:MoveTo(Vector3.new(GetPosition[1][1], GetPosition[1][2], GetPosition[1][3]))
-				Character.HumanoidRootPart.Orientation =
-					Vector3.new(GetPosition[2][1], GetPosition[2][2], GetPosition[2][3])
-				print(`Set Position of {player.DisplayName}`)
-			end)
-
-			SavedPosition.LastPosition.No.MouseButton1Down:Once(function()
-				SavedPosition.Enabled = false
-				return
-			end)
-		end)
-	end
 
 	success, data = pcall(function()
 		return PlayerRelated:GetAsync(`player:{player.UserId}`)
@@ -178,17 +146,15 @@ function DataStoreClass.PlayerAdded(player: Player) -- Setup DataSystem
 end
 
 local function saveData(player, send: boolean)
-	task.spawn(function()
-		if send == true then
-			DataSavedRE:FireClient(player)
-		end
-		pcall(function()
-			CardsData:SetAsync(`player:{player.UserId}`, player.leaderstats.Cards.Value)
-			RankData:SetAsync(`player:{player.UserId}`, player.leaderstats.Rank.Value)
-			ExperiencePoints:SetAsync(`player:{player.UserId}`, player.leaderstats.ExperiencePoints.Value)
-		end)
-		return "Saved!"
+	if send == true then
+		DataSavedRE:FireClient(player)
+	end
+	pcall(function()
+		CardsData:SetAsync(`player:{player.UserId}`, player.leaderstats.Cards.Value)
+		RankData:SetAsync(`player:{player.UserId}`, player.leaderstats.Rank.Value)
+		ExperiencePoints:SetAsync(`player:{player.UserId}`, player.leaderstats.ExperiencePoints.Value)
 	end)
+	return "Saved!"
 end
 
 --[=[
@@ -204,104 +170,13 @@ function DataStoreClass.PlayerRemoving(player: Player)
 	saveData(player, false)
 end
 
---[=[
-	@function SavePostion
-		@param player Player
---]=]
-function DataStoreClass.SavePosition(player) -- Saves Player Position
-	pcall(function()
-		local character = player.Character or game.Workspace:WaitForChild(player.Name)
-		local HumanoidPos: CFrame | Vector3 = character.HumanoidRootPart.Position
-		local HumanoidOri: CFrame | Vector3 = character.HumanoidRootPart.Orientation
-
-		PDS:SetAsync(player.UserId, {
-			{ math.floor(HumanoidPos.X), math.floor(HumanoidPos.Y), math.floor(HumanoidPos.Z) },
-			{ math.floor(HumanoidOri.X), math.floor(HumanoidOri.Y), math.floor(HumanoidOri.Z) },
-		})
-		print(
-			"Saved "
-				.. player.DisplayName
-				.. "'s Position: ("
-				.. math.floor(HumanoidPos.X)
-				.. " , "
-				.. math.floor(HumanoidPos.Y)
-				.. " , "
-				.. math.floor(HumanoidPos.Z)
-				.. " ) "
-		)
-	end)
-end
-
 local function saveAllData() -- Saves All Data
-	for _, player: Player in pairs(Players:GetPlayers()) do
-		pcall(function()
-			local HumanoidPos: CFrame? = game.Workspace:WaitForChild(player.Name).HumanoidRootPart.Position
-			local HumanoidOri: CFrame? = game.Workspace:WaitForChild(player.Name).HumanoidRootPart.Orientation
-
-			PDS:SetAsync(player.UserId, {
-				{
-					math.floor(HumanoidPos.X),
-					math.ceil(HumanoidPos.Y),
-					math.floor(HumanoidPos.Z),
-				},
-				{
-					math.floor(HumanoidOri.X),
-					math.floor(HumanoidOri.Y),
-					math.floor(HumanoidOri.Z),
-				},
-			})
-			print(
-				"Saved "
-					.. player.DisplayName
-					.. "'s Position: ("
-					.. math.floor(HumanoidPos.X)
-					.. " , "
-					.. math.floor(HumanoidPos.Y)
-					.. " , "
-					.. math.floor(HumanoidPos.Z)
-					.. " ) "
-			)
-		end)
-	end
-
 	pcall(function()
 		DataSavedRE:FireAllClients("all")
 		for _, player: Player in pairs(Players:GetChildren()) do
 			saveData(player, false)
 		end
 	end)
-end
-
---[=[
-	@function SetAsync
-		@within DataStoreClass
-		@param DatastoreName string
-		@param player Player
-		@param value any
-@return boolean, string
---]=]
-function DataStoreClass:SetAsync(DatastoreName: string, player: Player, value: any) -- CASE SENSITIVE
-	local UnknownDataStore = DataStoreService:GetDataStore(DatastoreName)
-	local GotDataStore = false
-	local result
-
-	if UnknownDataStore ~= nil then
-		result = "Success"
-		UnknownDataStore:SetAsync(player.UserId, value)
-		GotDataStore = true
-	else
-		result = "Failed"
-	end
-
-	return GotDataStore, result
-end
-
-function DataStoreClass:GetDataStore(datastore, scope: string?): DataStore
-	return DataStoreService:GetDataStore(datastore, scope)
-end
-
-function DataStoreClass:GetAsync(datastore, key)
-	return datastore:GetAsync(key)
 end
 
 --[=[
@@ -318,7 +193,7 @@ end
 		@within DataStoreClass
 		@param custom any
 --]=]
-function DataStoreClass.StartBindToClose(custom) -- If the game is being shutdown, it saves all player data. This cannot work in the Studio.
+function DataStoreClass.StartBindToClose(custom: () -> ()) -- If the game is being shutdown, it saves all player data. This cannot work in the Studio.
 	if not RunService:IsStudio() then
 		if not custom then
 			game:BindToClose(saveAllData)

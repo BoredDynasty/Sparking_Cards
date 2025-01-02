@@ -64,7 +64,6 @@ productFunctions[1904591683] = function(receipt, player: Player)
 			[Enum.AnalyticsCustomFieldKeys.CustomField02.Name] = player.UserId,
 		}
 		AnalyticsService:LogCustomEvent(player, "Receipts", 1, customFields)
-		task.wait(1)
 	end
 	return true -- indicate a successful purchase
 end
@@ -72,10 +71,12 @@ end
 productFunctions[1906572512] = function(receipt, player)
 	local alreadyDonated = {}
 	if not table.find(alreadyDonated, player.Name) then
-		table.insert(alreadyDonated, player.Name)
-		print(`Donated Successfully: {player.Name}.`)
-		task.wait(10)
-		table.clear(alreadyDonated)
+		task.spawn(function()
+			table.insert(alreadyDonated, player.Name)
+			print(`Donated Successfully: {player.Name}.`)
+			task.wait(10)
+			table.clear(alreadyDonated)
+		end)
 	end
 	local customFields = {
 		[Enum.AnalyticsCustomFieldKeys.CustomField01.Name] = tostring(receipt),
@@ -199,10 +200,12 @@ local function otherPartTouched(otherPart: BasePart, cooldown: { Player })
 	otherPart.Touched:Connect(function(hit)
 		local player = Players:GetPlayerFromCharacter(hit.Parent)
 		if not table.find(cooldown, player) then
-			table.insert(cooldown, player)
-			touchDialog(otherPart, player)
-			task.wait(10)
-			table.remove(cooldown, 1)
+			task.spawn(function()
+				table.insert(cooldown, player)
+				touchDialog(otherPart, player)
+				task.wait(10)
+				table.remove(cooldown, 1)
+			end)
 		end
 	end)
 end

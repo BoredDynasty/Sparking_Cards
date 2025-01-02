@@ -77,12 +77,14 @@ end)
 
 local function bobble(humanoid: Humanoid)
 	if humanoid.MoveDirection.Magnitude > 0 then
-		local time = tick()
-		local x = math.cos(time * 5) * 0.25
-		local y = math.abs(math.sin(time * 5)) * 0.25
-		local offset = Vector3.new(x, y, 0)
-		humanoid.CameraOffset = humanoid.CameraOffset:Lerp(offset, 0.25)
-		-- print("bobbling")
+		task.spawn(function()
+			local time = tick()
+			local x = math.cos(time * 5) * 0.25
+			local y = math.abs(math.sin(time * 5)) * 0.25
+			local offset = Vector3.new(x, y, 0)
+			humanoid.CameraOffset = humanoid.CameraOffset:Lerp(offset, 0.25)
+			-- print("bobbling")
+		end)
 	else
 		humanoid.CameraOffset = humanoid.CameraOffset * 0.25
 	end
@@ -127,6 +129,7 @@ print("Camera has finished executing.")
 
 local UIEffect = require(ReplicatedStorage.Packages.UIEffect)
 local CameraService = require(ReplicatedStorage.Modules.CameraService)
+local Timer = require(ReplicatedStorage.Modules.Timer)
 
 -- local Interactions = require(ReplicatedStorage.Modules.Interactions)
 
@@ -156,15 +159,41 @@ local function hideTooltip()
 	tooltipFrame.Visible = false
 end
 
+local function onHover(imgButton: ImageButton)
+	local onHoverImg: Rect | string = imgButton:GetAttribute("OnHover")
+	if type(onHoverImg) == "string" then
+		imgButton.Image = onHoverImg
+	else
+		imgButton.ImageRectOffset = onHoverImg.Width
+		imgButton.ImageRectSize = onHoverImg.Height
+	end
+end
+
+local function onLeave(imgButton: ImageButton)
+	local onLeaveImg: Vector2 | Rect | string = imgButton:GetAttribute("OnLeave")
+	if onLeaveImg then
+		imgButton.Image = onLeaveImg
+	end
+end
+
 local function setCameraView(view)
 	CameraService:SetCameraView(view)
+end
+
+local function getProducts(): { Configuration }
+	local products = {}
+	for _, product: Configuration in ReplicatedStorage.Purchasables:GetChildren() do
+		products[product.Name] = product
+	end
+	print(products)
+	return products
 end
 
 task.spawn(function()
 	mouse.Move:Connect(function()
 		local tooltipFrame: Frame = player.PlayerGui.ToolTip.CanvasGroup.Frame
 		task.spawn(function()
-			if tooltipFrame.Visible and not UserInputService:IsKeyDown(Enum.KeyCode.LeftAlt) then
+			if tooltipFrame.Visible then
 				-- local xOffset, yOffset = 0, 0 -- Add some padding
 				local position: UDim2
 				position = UDim2.new(0.5, 0, 0.5, 0)
@@ -220,11 +249,9 @@ local DialogRemote = ReplicatedStorage.RemoteEvents.NewDialogue
 local LargeDialog = player.PlayerGui.Dialog.CanvasGroup.Frame
 
 local function reloadProfileImg(img: string)
-	task.spawn(function()
-		PlayerHud.Player.PlayerImage.Image = img
-		Profile.Frame.PlayerImage.Image = img
-		print(`Reloaded: {player.DisplayName}'s profile image. {img}`) -- debug
-	end)
+	PlayerHud.Player.PlayerImage.Image = img
+	Profile.Frame.PlayerImage.Image = img
+	print(`Reloaded: {player.DisplayName}'s profile image. {img}`) -- debug
 end
 
 local function newDialog(dialog: string)
@@ -291,8 +318,18 @@ local function openProfileGui()
 end
 
 OpenProfile.MouseButton1Click:Connect(openProfileGui)
+OpenProfile.MouseEnter:Connect(function()
+	onHover(OpenProfile)
+end)
 DialogRemote.OnClientEvent:Connect(newDialog)
 DataSavedRE.OnClientEvent:Connect(dataSaved)
+PlayerHud.Player.MouseEnter:Connect(function()
+	showTooltip(`That's you! <font size="8">this also doesn't work</font>`, player.DisplayName)
+end)
+PlayerHud.Player.MouseLeave:Connect(function()
+	hideTooltip()
+	onLeave(OpenProfile)
+end)
 
 print(`UI is executing.`)
 
@@ -311,6 +348,13 @@ local function newMatch()
 end
 
 NewBattle.MouseButton1Click:Connect(newMatch)
+NewBattle.MouseEnter:Connect(function()
+	showTooltip("This probably doesn't work yet.", "Battle")
+end)
+NewBattle.MouseLeave:Connect(function()
+	hideTooltip()
+	onLeave(NewBattle)
+end)
 
 -- Gamepasses
 
@@ -410,13 +454,193 @@ infoOpen.MouseButton1Click:Connect(function()
 end)
 infoOpen.MouseEnter:Connect(function()
 	showTooltip("Not Finished", "Blog")
+	onHover(infoOpen)
 end)
-infoOpen.MouseLeave:Connect(hideTooltip)
+infoOpen.MouseLeave:Connect(function()
+	hideTooltip()
+	onLeave(infoOpen)
+end)
 infoFrame.Checkout.MouseButton1Click:Connect(function()
 	UIEffect:changeVisibility(infoGui, false)
 end)
 
 print(`UI is almost done executing.`)
+
+-- Shop
+local ShopGui = player.PlayerGui.Shop.CanvasGroup
+local ShopOpen = ShopGui.Parent.FAB -- Floating Action Button
+
+local function openShop()
+	if ShopGui.Visible == false then
+		UIEffect:changeVisibility(ShopGui, true)
+		CameraService:ChangeFOV(70, false)
+	elseif ShopGui.Visible == true then
+		UIEffect:changeVisibility(ShopGui, false)
+		CameraService:ChangeFOV(60, false)
+	end
+end
+
+local products = getProducts()
+
+local function newProductFrame(name, price, quantity, isGamePass, parent)
+	local Item = Instance.new("Frame")
+	local UICorner = Instance.new("UICorner")
+	local Viewport = Instance.new("ViewportFrame")
+	local UIAspectRatioConstraint = Instance.new("UIAspectRatioConstraint")
+	local robuxcoin1_xxlarge = Instance.new("ImageLabel")
+	local TextLabel = Instance.new("TextLabel")
+	local UITextSizeConstraint = Instance.new("UITextSizeConstraint")
+	local UIAspectRatioConstraint_2 = Instance.new("UIAspectRatioConstraint")
+	local Divider = Instance.new("Frame")
+	local UIAspectRatioConstraint_3 = Instance.new("UIAspectRatioConstraint")
+	local ShoppingCart = Instance.new("ImageButton")
+	local UIAspectRatioConstraint_4 = Instance.new("UIAspectRatioConstraint")
+	local UIAspectRatioConstraint_5 = Instance.new("UIAspectRatioConstraint")
+
+	Item.Name = "Item"
+	Item.Parent = parent
+	Item.BackgroundColor3 = Color3.fromRGB(20, 18, 24)
+	Item.BorderColor3 = Color3.fromRGB(0, 0, 0)
+	Item.BorderSizePixel = 0
+	Item.Size = UDim2.new(0.16853933, 0, 0.517241359, 0)
+
+	UICorner.CornerRadius = UDim.new(0.0533333346, 0)
+	UICorner.Parent = Item
+
+	Viewport.BackgroundTransparency = 1.000
+	Viewport.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+	Viewport.BorderSizePixel = 0
+	Viewport.BorderColor3 = Color3.fromRGB(0, 0, 0)
+	Viewport.Name = "Viewport"
+	Viewport.Parent = Item
+
+	UIAspectRatioConstraint.Parent = Viewport
+	UIAspectRatioConstraint.AspectRatio = 1.500
+
+	robuxcoin1_xxlarge.Name = "robuxcoin1_xxlarge"
+	robuxcoin1_xxlarge.Parent = Viewport
+	robuxcoin1_xxlarge.AnchorPoint = Vector2.new(0.5, 0.5)
+	robuxcoin1_xxlarge.BackgroundTransparency = 1.000
+	robuxcoin1_xxlarge.Position = UDim2.new(0.5, 0, 0.5, 0)
+	robuxcoin1_xxlarge.Size = UDim2.new(0, 100, 0, 100)
+	robuxcoin1_xxlarge.Image = "rbxassetid://14976968451"
+	robuxcoin1_xxlarge.ImageRectOffset = Vector2.new(302, 0)
+	robuxcoin1_xxlarge.ImageRectSize = Vector2.new(193, 192)
+
+	TextLabel.Parent = Item
+	TextLabel.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+	TextLabel.BackgroundTransparency = 1.000
+	TextLabel.BorderColor3 = Color3.fromRGB(0, 0, 0)
+	TextLabel.BorderSizePixel = 0
+	TextLabel.Position = UDim2.new(0, 0, 0.666666687, 0)
+	TextLabel.Size = UDim2.new(1, 0, 0.333333343, 0)
+	TextLabel.Font = Enum.Font.GothamBold
+	TextLabel.Text = `{string.upper(name)} %s%s x2<br></br><font color="#ccb6ff">{isGamePass}{price}</font>`
+	TextLabel.TextColor3 = Color3.fromRGB(226, 224, 249)
+	TextLabel.TextScaled = true
+	TextLabel.TextSize = 14.000
+	TextLabel.TextTransparency = 0.200
+	TextLabel.TextWrapped = true
+
+	TextLabel.Text = string.format(TextLabel.Text, "x", quantity)
+
+	UITextSizeConstraint.Parent = TextLabel
+	UITextSizeConstraint.MaxTextSize = 14
+
+	UIAspectRatioConstraint_2.Parent = TextLabel
+	UIAspectRatioConstraint_2.AspectRatio = 3.000
+
+	Divider.Name = "Divider"
+	Divider.Parent = Item
+	Divider.BackgroundColor3 = Color3.fromRGB(226, 224, 249)
+	Divider.BackgroundTransparency = 0.500
+	Divider.BorderColor3 = Color3.fromRGB(0, 0, 0)
+	Divider.BorderSizePixel = 0
+	Divider.Position = UDim2.new(0, 0, 0.666666687, 0)
+	Divider.Size = UDim2.new(1, 0, 0.00666666683, 0)
+
+	UIAspectRatioConstraint_3.Parent = Divider
+	UIAspectRatioConstraint_3.AspectRatio = 150.000
+
+	ShoppingCart.Name = "ShoppingCart"
+	ShoppingCart.Parent = Item
+	ShoppingCart.Active = false
+	ShoppingCart.BackgroundTransparency = 1.000
+	ShoppingCart.Position = UDim2.new(0.926666677, 0, 0.913333356, 0)
+	ShoppingCart.Rotation = 5.000
+	ShoppingCart.Selectable = false
+	ShoppingCart.Size = UDim2.new(0.159999996, 0, 0.159999996, 0)
+	ShoppingCart.Image = "rbxassetid://6764432408"
+	ShoppingCart.ImageColor3 = Color3.fromRGB(103, 84, 150)
+	ShoppingCart.ImageRectOffset = Vector2.new(50, 800)
+	ShoppingCart.ImageRectSize = Vector2.new(50, 50)
+
+	UIAspectRatioConstraint_4.Parent = ShoppingCart
+	UIAspectRatioConstraint_4.DominantAxis = Enum.DominantAxis.Height
+
+	UIAspectRatioConstraint_5.Parent = Item
+
+	return Item
+end
+
+local function loadProducts()
+	for _, product: Configuration in pairs(products) do
+		local productsFrame = ShopGui.Frame.Frame.ScrollingFrame
+
+		local productTitle = product:GetAttribute("title")
+		local productPrice = product:GetAttribute("price")
+		local productQuantity = product:GetAttribute("quantity")
+		local isGamePass = product:GetAttribute("isProduct")
+
+		local productFrame = nil
+
+		task.defer(function()
+			if isGamePass == true then
+				productFrame.ShoppingCart.MouseButton1Click:Connect(function()
+					promptPurchase(product:GetAttribute("id"))
+				end)
+			end
+			isGamePass = "\u{E002}" -- robux syntax
+		end)
+
+		productFrame = newProductFrame(productTitle, productPrice, productQuantity, isGamePass, productsFrame)
+		productFrame.ShoppingCart.MouseHover:Connect(function()
+			showTooltip("Scroll <i>up</i> to add to checkout.", productTitle)
+		end)
+		-- Not Finished
+		-- [TODO) Finish Shop UI
+	end
+end
+
+local function unloadProducts() -- to reset the products
+	local productsFrame = ShopGui.Frame.Frame.ScrollingFrame
+	for _, item in productsFrame:GetChildren() do
+		if item.Name == "Item" then
+			item:Destroy()
+		end
+	end
+end
+
+task.spawn(function()
+	local timer = Timer.new()
+	timer:Start()
+	while true do
+		task.wait(1)
+		if timer.elapsedTime >= 60 then
+			unloadProducts()
+			task.wait(1)
+			loadProducts()
+			timer:Reset()
+			timer:Start()
+		end
+	end
+end)
+
+ShopOpen.MouseButton1Click:Connect(openShop)
+ShopOpen.MouseEnter:Connect(function()
+	showTooltip("Buy yourself something!", "Market/Shop")
+	onHover(ShopOpen)
+end)
 
 -- Other
 
@@ -448,16 +672,5 @@ UserInputService.WindowFocusReleased:Connect(windowReleased)
 UserInputService.WindowFocused:Connect(windowFocused)
 ReplicatedStorage.RemoteEvents.SetCameraHost.OnClientEvent:Connect(setCameraHost)
 ReplicatedStorage.RemoteEvents.SetCameraView.OnClientEvent:Connect(setCameraView)
-
--- Tooltip Triggers
-PlayerHud.Player.MouseEnter:Connect(function()
-	showTooltip(`That's you! <font size="8">this also doesn't work</font>`, player.DisplayName)
-end)
-PlayerHud.Player.MouseLeave:Connect(hideTooltip)
-
-NewBattle.MouseEnter:Connect(function()
-	showTooltip("This probably doesn't work yet.", "Battle")
-end)
-NewBattle.MouseLeave:Connect(hideTooltip)
 
 print(`UI has finished executing.`)
