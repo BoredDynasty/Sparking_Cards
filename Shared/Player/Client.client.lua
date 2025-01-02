@@ -62,41 +62,39 @@ end
 
 local RenderPriority = Enum.RenderPriority.Camera.Value + 1
 RunService:BindToRenderStep("Camera-Sway", RenderPriority + 1, function(delta)
-	task.spawn(function()
-		local mouseDelta = UserInputService:GetMouseDelta()
-		local sway = 0
-		sway = lerp(sway, math.clamp(mouseDelta.X, -5, 5), (5 * delta))
-		-- print("swaying")
-		if not replicateConnection then
-			Camera.CFrame = Camera.CFrame * CFrame.Angles(0, 0, math.rad(sway))
-		end
-	end)
+	local mouseDelta = UserInputService:GetMouseDelta()
+	local sway = 0
+	sway = lerp(sway, math.clamp(mouseDelta.X, -5, 5), (5 * delta))
+	-- print("swaying")
+	if not replicateConnection then
+		Camera.CFrame = Camera.CFrame * CFrame.Angles(0, 0, math.rad(sway))
+	end
 end)
 
 -- Head Bobbing
 
 local function bobble(humanoid: Humanoid)
 	if humanoid.MoveDirection.Magnitude > 0 then
-		task.spawn(function()
-			local time = tick()
-			local x = math.cos(time * 5) * 0.25
-			local y = math.abs(math.sin(time * 5)) * 0.25
-			local offset = Vector3.new(x, y, 0)
-			humanoid.CameraOffset = humanoid.CameraOffset:Lerp(offset, 0.25)
-			-- print("bobbling")
-		end)
+		local time = tick()
+		local x = math.cos(time * 5) * 0.25
+		local y = math.abs(math.sin(time * 5)) * 0.25
+		local offset = Vector3.new(x, y, 0)
+		humanoid.CameraOffset = humanoid.CameraOffset:Lerp(offset, 0.25)
+		-- print("bobbling")
 	else
 		humanoid.CameraOffset = humanoid.CameraOffset * 0.25
 	end
 end
 
-RunService.PreRender:Connect(function()
-	if character then
-		local humanoid = character:WaitForChild("Humanoid")
-		if humanoid then
-			bobble(humanoid)
+task.spawn(function()
+	RunService.PreRender:Connect(function()
+		if character then
+			local humanoid = character:WaitForChild("Humanoid")
+			if humanoid then
+				bobble(humanoid)
+			end
 		end
-	end
+	end)
 end)
 
 -- Tilt
@@ -111,14 +109,16 @@ local function roll(humanoid)
 	Camera.CFrame = Camera.CFrame * rotate
 end
 
-RunService:BindToRenderStep("Tilt", RenderPriority, function()
-	-- print("tilting")
-	if character then
-		local humanoid = character:WaitForChild("Humanoid")
-		if humanoid then
-			roll(humanoid)
+task.spawn(function()
+	RunService:BindToRenderStep("Tilt", RenderPriority, function()
+		-- print("tilting")
+		if character then
+			local humanoid = character:WaitForChild("Humanoid")
+			if humanoid then
+				roll(humanoid)
+			end
 		end
-	end
+	end)
 end)
 
 print("Camera has finished executing.")
@@ -189,24 +189,20 @@ local function getProducts(): { Configuration }
 	return products
 end
 
-task.spawn(function()
-	mouse.Move:Connect(function()
-		local tooltipFrame: Frame = player.PlayerGui.ToolTip.CanvasGroup.Frame
-		task.spawn(function()
-			if tooltipFrame.Visible then
-				-- local xOffset, yOffset = 0, 0 -- Add some padding
-				local position: UDim2
-				position = UDim2.new(0.5, 0, 0.5, 0)
-				tooltipFrame.Position = position
-				tooltipFrame.Position = position
+mouse.Move:Connect(function()
+	local tooltipFrame: Frame = player.PlayerGui.ToolTip.CanvasGroup.Frame
+	if tooltipFrame.Visible then
+		-- local xOffset, yOffset = 0, 0 -- Add some padding
+		local position: UDim2
+		position = UDim2.new(0.5, 0, 0.5, 0)
+		tooltipFrame.Position = position
+		tooltipFrame.Position = position
 
-				CameraService:ChangeFOV(70, false)
-			-- local position = UDim2.new(0, mouse.X + xOffset, 0, mouse.Y + yOffset)
-			else
-				CameraService:ChangeFOV(60, false)
-			end
-		end)
-	end)
+		CameraService:ChangeFOV(70, false)
+		-- local position = UDim2.new(0, mouse.X + xOffset, 0, mouse.Y + yOffset)
+	else
+		CameraService:ChangeFOV(60, false)
+	end
 end)
 
 -- // Everything else -- //
@@ -324,7 +320,7 @@ end)
 DialogRemote.OnClientEvent:Connect(newDialog)
 DataSavedRE.OnClientEvent:Connect(dataSaved)
 PlayerHud.Player.MouseEnter:Connect(function()
-	showTooltip(`That's you! <font size="8">this also doesn't work</font>`, player.DisplayName)
+	showTooltip(`That's you! <br></br><font size="8">this also doesn't work</font>`, player.DisplayName)
 end)
 PlayerHud.Player.MouseLeave:Connect(function()
 	hideTooltip()
@@ -428,10 +424,12 @@ local function mainHud()
 
 	local function continueGameplay()
 		UIEffect:changeVisibility(Canvas, false)
-		repeat
-			task.wait()
-			Camera.CameraType = Enum.CameraType.Custom
-		until Camera.CameraType == Enum.CameraType.Custom
+		task.spawn(function()
+			repeat
+				task.wait()
+				Camera.CameraType = Enum.CameraType.Custom
+			until Camera.CameraType == Enum.CameraType.Custom
+		end)
 	end
 	Frame.PlayButton.MouseButton1Down:Once(continueGameplay)
 end
@@ -607,6 +605,7 @@ local function loadProducts()
 		productFrame.ShoppingCart.MouseHover:Connect(function()
 			showTooltip("Scroll <i>up</i> to add to checkout.", productTitle)
 		end)
+		print("Loaded products", product, product:GetAttributes())
 		-- Not Finished
 		-- [TODO) Finish Shop UI
 	end
@@ -614,8 +613,10 @@ end
 
 local function unloadProducts() -- to reset the products
 	local productsFrame = ShopGui.Frame.Frame.ScrollingFrame
+	print("Unloading products")
 	for _, item in productsFrame:GetChildren() do
 		if item.Name == "Item" then
+			print("Product unloaded", item)
 			item:Destroy()
 		end
 	end
